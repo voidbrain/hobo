@@ -15,5 +15,5 @@
     "skipLibCheck": true,
     "types": ["node"]
   },
-  "include": ["./**/*.ts", "../src/app/core/place.ts"]
+  "include": ["./**/*.ts", "../src/app/core/place.ts", "../src/app/core/trip.ts"]
 }
