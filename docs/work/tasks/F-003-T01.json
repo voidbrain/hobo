@@ -49,5 +49,6 @@
     "estimateAgentHours": 2,
     "days": 0,
     "baselineDays": 1
-  }
+  },
+  "review": "2026-11-26 Claude (Opus, fresh worktree) reviewed PR #6 written by Gemini: no blockers. Added API tests for 400/404/405 answers, unknown home and endpoint places, a single day with no home, time-zone independence across a daylight-saving change, and clearing a deleted place from home and trip endpoints; documented that dates carry no time zone and that shrinking a trip drops stops outside the new range."
 }

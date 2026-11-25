@@ -139,4 +139,118 @@ describe('trips and settings API (F-003-T01)', () => {
     assert.equal((await call(`/api/trips/${created.id}`, { method: 'DELETE' })).status, 204);
     assert.equal((await call(`/api/trips/${created.id}`)).status, 404);
   });
+  it('answers API errors with 400, 404 and 405 and a list of errors', async () => {
+    const post = (body: unknown) =>
+      call('/api/trips', { method: 'POST', body: JSON.stringify(body) });
+    const errorsOf = async (res: Response) => ((await res.json()) as { errors: string[] }).errors;
+
+    const reversed = await post({
+      name: 'Back Again',
+      startDate: '2026-05-02',
+      endDate: '2026-05-01',
+    });
+    assert.equal(reversed.status, 400);
+    assert.deepEqual(await errorsOf(reversed), ['endDate must not be before startDate']);
+    assert.equal(
+      (await post({ name: 'Leap', startDate: '2026-02-29', endDate: '2026-03-01' })).status,
+      400,
+    );
+    assert.equal(
+      (await post({ name: 'Long', startDate: '2026-01-01', endDate: '2027-01-02' })).status,
+      400,
+    );
+    assert.equal((await post({ startDate: '2026-05-01', endDate: '2026-05-01' })).status, 400);
+    assert.equal(
+      (await post({ name: 'Extra', startDate: '2026-05-01', endDate: '2026-05-01', colour: 'red' }))
+        .status,
+      400,
+    );
+    assert.equal(
+      (
+        await post({
+          name: 'Ghost Start',
+          startDate: '2026-05-01',
+          endDate: '2026-05-01',
+          from: { name: 'Nowhere', placeId: 'missing-place' },
+        })
+      ).status,
+      400,
+    );
+    const badHome = await call('/api/settings', {
+      method: 'PATCH',
+      body: JSON.stringify({ home: { name: 'Base', placeId: 'missing-place' } }),
+    });
+    assert.equal(badHome.status, 400);
+    assert.deepEqual(await errorsOf(badHome), ['unknown place id missing-place']);
+
+    const trip = (await (
+      await post({ name: 'One Day', startDate: '2026-05-01', endDate: '2026-05-01' })
+    ).json()) as Trip;
+    assert.equal(trip.from, null, 'with no home set, from and to stay empty');
+    assert.deepEqual(trip.days, [{ date: '2026-05-01', stops: [] }]);
+    const badPatch = await call(`/api/trips/${trip.id}`, {
+      method: 'PATCH',
+      body: JSON.stringify({ startDate: '2026-05-02' }),
+    });
+    assert.equal(badPatch.status, 400);
+    assert.equal(
+      (await call('/api/trips/no-such-trip', { method: 'PATCH', body: '{}' })).status,
+      404,
+    );
+    assert.equal((await call('/api/trips/no-such-trip', { method: 'DELETE' })).status, 404);
+    assert.equal((await call('/api/trips', { method: 'PUT', body: '{}' })).status, 405);
+    assert.equal((await call('/api/settings', { method: 'POST', body: '{}' })).status, 405);
+  });
+
+  it('counts calendar days independently of the server time zone, across a daylight-saving change', async () => {
+    const previous = process.env['TZ'];
+    process.env['TZ'] = 'Europe/Rome';
+    try {
+      const res = await call('/api/trips', {
+        method: 'POST',
+        body: JSON.stringify({
+          name: 'Clock Change',
+          startDate: '2026-03-28',
+          endDate: '2026-03-30',
+        }),
+      });
+      assert.equal(res.status, 201);
+      const trip = (await res.json()) as Trip;
+      assert.deepEqual(
+        trip.days.map((d) => d.date),
+        ['2026-03-28', '2026-03-29', '2026-03-30'],
+      );
+    } finally {
+      if (previous === undefined) delete process.env['TZ'];
+      else process.env['TZ'] = previous;
+    }
+  });
+
+  it('clears a deleted place from home and trip endpoints but keeps their names and locations', async () => {
+    const base = (await (
+      await call('/api/places', {
+        method: 'POST',
+        body: JSON.stringify({ name: 'Cedar Lodge', location: { lat: 10, lng: 20 } }),
+      })
+    ).json()) as Place;
+    const endpoint = { name: 'Cedar Lodge', location: { lat: 10, lng: 20 }, placeId: base.id };
+    await call('/api/settings', { method: 'PATCH', body: JSON.stringify({ home: endpoint }) });
+    const trip = (await (
+      await call('/api/trips', {
+        method: 'POST',
+        body: JSON.stringify({
+          name: 'Lodge Loop',
+          startDate: '2026-06-01',
+          endDate: '2026-06-01',
+        }),
+      })
+    ).json()) as Trip;
+    assert.deepEqual(trip.from, endpoint);
+
+    assert.equal((await call(`/api/places/${base.id}`, { method: 'DELETE' })).status, 204);
+    const cleared = { ...endpoint, placeId: null };
+    assert.deepEqual(((await (await call('/api/settings')).json()) as HoboSettings).home, cleared);
+    const after = (await (await call(`/api/trips/${trip.id}`)).json()) as Trip;
+    assert.deepEqual([after.from, after.to], [cleared, cleared]);
+  });
 });

@@ -46,7 +46,7 @@ Errors are `{ "errors": [ ... ] }`. Other answers: 405 (method), 413 (body too l
 
 ## Trip and settings
 
-A trip (`src/app/core/trip.ts`) spans one or more calendar days (`YYYY-MM-DD`, inclusive) with a start (`from`), an end (`to`), and ordered stop references per day.
+A trip (`src/app/core/trip.ts`) spans one or more calendar days (`YYYY-MM-DD`, inclusive) with a start (`from`), an end (`to`), and ordered stop references per day. Dates are calendar days with no time or time zone: the helpers count them in UTC, so the server's zone and daylight-saving changes never add or drop a day.
 
 | Field | Type | Default on create | Rule |
 |---|---|---|---|
@@ -66,7 +66,7 @@ Pure helpers in `src/app/core/trip.ts` (`datesBetween`, `reconcileTripDays`, `ad
 | `GET /api/trips` | | 200, trips in the order they were added |
 | `POST /api/trips` | a new trip (`from` and `to` default to `settings.home`) | 201 with the trip and its `location` header; 400 with `errors` |
 | `GET /api/trips/:id` | | 200 or 404 |
-| `PATCH /api/trips/:id` | fields to change; changing `startDate`/`endDate` reconciles `days` | 200, 400 or 404 |
+| `PATCH /api/trips/:id` | fields to change; changing `startDate`/`endDate` reconciles `days`: dates still in range keep their stops, stops on dates outside the new range are dropped | 200, 400 or 404 |
 | `DELETE /api/trips/:id` | | 204 or 404 |
 
 Deleting a place removes its `id` from stored trip stops and clears `placeId` on `from`, `to` and `settings.home` in the same SQLite transaction.
