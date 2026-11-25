@@ -6,8 +6,8 @@ How much of the code the unit tests run, per folder. It says what ran, not that 
 
 | Folder | Files | Lines | Statements | Branches | Functions |
 |---|---|---|---|---|---|
-| `src/app/` | 9 | 98.4 % | 98.0 % | 97.5 % | 95.0 % |
-| **all** | 10 | 97.9 % | 97.2 % | 97.5 % | 92.7 % |
+| `src/app/` | 11 | 90.4 % | 87.1 % | 82.5 % | 95.8 % |
+| **all** | 12 | 90.2 % | 86.8 % | 82.5 % | 94.4 % |
 
 ## Files no unit test runs
 
