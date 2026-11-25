@@ -1,6 +1,7 @@
 import { strict as assert } from 'node:assert';
 import { deflateSync } from 'node:zlib';
 import { existsSync, mkdtempSync, readdirSync, readFileSync, rmSync } from 'node:fs';
+import { request } from 'node:http';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { afterEach, beforeEach, describe, it } from 'node:test';
@@ -115,6 +116,84 @@ function makeSyntheticWebpWithExif(): Buffer {
   riffHead.write('RIFF', 0, 4, 'ascii');
   riffHead.writeUInt32LE(body.length, 4);
   return Buffer.concat([riffHead, body]);
+}
+
+/**
+ * A real, decodable 8x8 baseline JPEG (an invented colour gradient, encoded once with macOS sips),
+ * without metadata, used to carry a well-formed EXIF block with a GPS IFD.
+ */
+const PLAIN_JPEG = Buffer.from(
+  '/9j/4AAQSkZJRgABAQAASABIAAD/7QA4UGhvdG9zaG9wIDMuMAA4QklNBAQAAAAAAAA4QklNBCUAAAAAABDUHYzZjwCyBOmA' +
+    'CZjs+EJ+/8AAEQgACAAIAwEiAAIRAQMRAf/EAB8AAAEFAQEBAQEBAAAAAAAAAAABAgMEBQYHCAkKC//EALUQAAIBAwMCBAMF' +
+    'BQQEAAABfQECAwAEEQUSITFBBhNRYQcicRQygZGhCCNCscEVUtHwJDNicoIJChYXGBkaJSYnKCkqNDU2Nzg5OkNERUZHSElK' +
+    'U1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6g4SFhoeIiYqSk5SVlpeYmZqio6Slpqeoqaqys7S1tre4ubrCw8TFxsfIycrS09TV' +
+    '1tfY2drh4uPk5ebn6Onq8fLz9PX29/j5+v/EAB8BAAMBAQEBAQEBAQEAAAAAAAABAgMEBQYHCAkKC//EALURAAIBAgQEAwQH' +
+    'BQQEAAECdwABAgMRBAUhMQYSQVEHYXETIjKBCBRCkaGxwQkjM1LwFWJy0QoWJDThJfEXGBkaJicoKSo1Njc4OTpDREVGR0hJ' +
+    'SlNUVVZXWFlaY2RlZmdoaWpzdHV2d3h5eoKDhIWGh4iJipKTlJWWl5iZmqKjpKWmp6ipqrKztLW2t7i5usLDxMXGx8jJytLT' +
+    '1NXW19jZ2uLj5OXm5+jp6vLz9PX29/j5+v/bAEMABgYGBgYGCgYGCg4KCgoOEg4ODg4SFxISEhISFxwXFxcXFxccHBwcHBwc' +
+    'HCIiIiIiIicnJycnLCwsLCwsLCwsLP/bAEMBBwcHCwoLEwoKEy4fGh8uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4u' +
+    'Li4uLi4uLi4uLi4uLi4uLi4uLv/dAAQAAf/aAAwDAQACEQMRAD8Aw9E8Ffd+T9K6n/hCf9j9K6nRP4a6qvOxWa4j2j94vIM6' +
+    'xX1OPvH/2Q==',
+  'base64',
+);
+
+/** A TIFF/EXIF APP1 segment whose GPS IFD holds invented coordinates 12°34'56" N, 65°43'21" E. */
+function gpsExifSegment(): Buffer {
+  const tiff = Buffer.alloc(140);
+  tiff.write('MM', 0, 'latin1');
+  tiff.writeUInt16BE(42, 2);
+  tiff.writeUInt32BE(8, 4);
+  tiff.writeUInt16BE(1, 8); // IFD0: one entry, the GPSInfo pointer
+  tiff.writeUInt16BE(0x8825, 10);
+  tiff.writeUInt16BE(4, 12);
+  tiff.writeUInt32BE(1, 14);
+  tiff.writeUInt32BE(26, 18);
+  tiff.writeUInt16BE(5, 26); // GPS IFD: version, latitude ref, latitude, longitude ref, longitude
+  let at = 28;
+  const entry = (tag: number, type: number, count: number, value: Buffer | number) => {
+    tiff.writeUInt16BE(tag, at);
+    tiff.writeUInt16BE(type, at + 2);
+    tiff.writeUInt32BE(count, at + 4);
+    if (typeof value === 'number') tiff.writeUInt32BE(value, at + 8);
+    else value.copy(tiff, at + 8);
+    at += 12;
+  };
+  entry(0, 1, 4, Buffer.from([2, 2, 0, 0]));
+  entry(1, 2, 2, Buffer.from('N\0', 'latin1'));
+  entry(2, 5, 3, 92);
+  entry(3, 2, 2, Buffer.from('E\0', 'latin1'));
+  entry(4, 5, 3, 116);
+  const rationals = (offset: number, values: number[]) =>
+    values.forEach((v, i) => {
+      tiff.writeUInt32BE(v, offset + i * 8);
+      tiff.writeUInt32BE(1, offset + i * 8 + 4);
+    });
+  rationals(92, [12, 34, 56]);
+  rationals(116, [65, 43, 21]);
+  return jpegSegment(0xe1, Buffer.concat([Buffer.from('Exif\0\0', 'latin1'), tiff]));
+}
+
+/** The real JPEG with the GPS EXIF segment inserted right after its APP0 (JFIF) segment. */
+function realJpegWithGps(): Buffer {
+  const afterApp0 = 4 + PLAIN_JPEG.readUInt16BE(4);
+  return Buffer.concat([
+    PLAIN_JPEG.subarray(0, afterApp0),
+    gpsExifSegment(),
+    PLAIN_JPEG.subarray(afterApp0),
+  ]);
+}
+
+/** Markers of a JPEG's header segments, up to the start of scan. */
+function jpegMarkers(buf: Buffer): number[] {
+  const markers: number[] = [];
+  let pos = 2;
+  while (pos + 4 <= buf.length && buf[pos] === 0xff) {
+    const marker = buf[pos + 1]!;
+    markers.push(marker);
+    if (marker === 0xda) break;
+    pos += 2 + buf.readUInt16BE(pos + 2);
+  }
+  return markers;
 }
 
 describe('image sanitization and place images API (F-002-T03)', () => {
@@ -252,5 +331,93 @@ describe('image sanitization and place images API (F-002-T03)', () => {
     assert.deepEqual(readdirSync(join(dataDir, 'images')), []);
     const reloaded = (await (await fetch(`${server.url}/api/places/${place.id}`)).json()) as Place;
     assert.deepEqual(reloaded.images, []);
+  });
+  it('removes a well-formed GPS EXIF block from a real JPEG and keeps the picture data', () => {
+    const input = realJpegWithGps();
+    const gpsLatitude = Buffer.from([0, 0, 0, 12, 0, 0, 0, 1, 0, 0, 0, 34, 0, 0, 0, 1]);
+    assert.ok(jpegMarkers(input).includes(0xe1));
+    assert.ok(input.includes(gpsLatitude));
+
+    const result = sanitizeImage(input);
+    assert.equal(result.ok, true);
+    if (!result.ok) return;
+    assert.equal(jpegMarkers(result.data).includes(0xe1), false);
+    assert.equal(result.data.includes(Buffer.from('Exif\0\0', 'latin1')), false);
+    assert.equal(result.data.includes(gpsLatitude), false);
+    const scan = (buf: Buffer) => buf.subarray(buf.indexOf(Buffer.from([0xff, 0xda]))); // SOS to EOI
+    assert.deepEqual(scan(result.data), scan(input));
+    assert.ok(jpegMarkers(result.data).includes(0xc0), 'the frame header is kept');
+  });
+
+  it('refuses a declared oversized upload from its Content-Length before reading the body', async () => {
+    const place = (await (
+      await fetch(server.url + '/api/places', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ name: 'Granite Steps' }),
+      })
+    ).json()) as Place;
+    const { hostname, port } = new URL(server.url);
+    // The client announces a body over the limit, sends a few bytes and never ends it:
+    // only a server that checks Content-Length first can answer.
+    const status = await new Promise<number>((resolvePromise, reject) => {
+      const req = request(
+        {
+          host: hostname,
+          port,
+          method: 'POST',
+          path: `/api/places/${place.id}/images`,
+          headers: {
+            host: 'localhost',
+            'content-type': 'image/jpeg',
+            'content-length': String(MAX_IMAGE_BYTES + 1),
+          },
+        },
+        (res) => {
+          res.resume();
+          resolvePromise(res.statusCode ?? 0);
+          req.destroy();
+        },
+      );
+      req.on('error', () => undefined);
+      req.setTimeout(2000, () => {
+        req.destroy();
+        reject(new Error('no answer before the body was sent'));
+      });
+      req.write(Buffer.from([0xff, 0xd8, 0xff]));
+    });
+    assert.equal(status, 413);
+    assert.equal(existsSync(join(dataDir, 'images')), false);
+  });
+
+  it('deletes the image files of a deleted place and refuses image names that leave the folder', async () => {
+    const place = (await (
+      await fetch(server.url + '/api/places', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ name: 'Willow Ford' }),
+      })
+    ).json()) as Place;
+    const upload = await fetch(`${server.url}/api/places/${place.id}/images`, {
+      method: 'POST',
+      headers: { 'content-type': 'image/jpeg' },
+      body: realJpegWithGps(),
+    });
+    assert.equal(upload.status, 201);
+    const [name] = ((await upload.json()) as Place).images;
+    assert.match(name ?? '', /^[0-9a-f-]{36}\.jpg$/);
+    const served = await fetch(`${server.url}/api/places/${place.id}/images/${name}`);
+    assert.equal(served.headers.get('content-type'), 'image/jpeg');
+    assert.equal(served.headers.get('x-content-type-options'), 'nosniff');
+    await served.arrayBuffer();
+
+    for (const escape of ['..%2Fhobo.sqlite', '..%5Chobo.sqlite', '.hidden.jpg']) {
+      const res = await fetch(`${server.url}/api/places/${place.id}/images/${escape}`);
+      assert.equal(res.status, 404, escape);
+    }
+
+    const removed = await fetch(`${server.url}/api/places/${place.id}`, { method: 'DELETE' });
+    assert.equal(removed.status, 204);
+    assert.deepEqual(readdirSync(join(dataDir, 'images')), []);
   });
 });
