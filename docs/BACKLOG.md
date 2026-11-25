@@ -43,7 +43,7 @@ Bugs (B-) and features (F-) in one list, in work-queue order. Steps: `effort` = 
 
 | Field | Value |
 |---|---|
-| PR / evidence | — |
+| PR / evidence | [#1](https://github.com/voidbrain/hobo/pull/1) |
 | Opened | 2026-11-25 |
 | Verification | Pending |
 | Reviewed | 2026-11-25 |
@@ -85,7 +85,7 @@ Bugs (B-) and features (F-) in one list, in work-queue order. Steps: `effort` = 
 
 | Field | Value |
 |---|---|
-| PR / evidence | — |
+| PR / evidence | [#1](https://github.com/voidbrain/hobo/pull/1) |
 | Opened | 2026-11-25 |
 | Verification | Pending |
 | Reviewed | 2026-11-25 |
@@ -125,7 +125,7 @@ Bugs (B-) and features (F-) in one list, in work-queue order. Steps: `effort` = 
 
 | Field | Value |
 |---|---|
-| PR / evidence | — |
+| PR / evidence | [#1](https://github.com/voidbrain/hobo/pull/1) |
 | Opened | 2026-11-25 |
 | Verification | Pending |
 | Reviewed | 2026-11-25 |
@@ -165,7 +165,7 @@ Bugs (B-) and features (F-) in one list, in work-queue order. Steps: `effort` = 
 
 | Field | Value |
 |---|---|
-| PR / evidence | — |
+| PR / evidence | [#1](https://github.com/voidbrain/hobo/pull/1) |
 | Opened | 2026-11-25 |
 | Verification | Pending |
 | Reviewed | 2026-11-25 |
@@ -191,11 +191,11 @@ Bugs (B-) and features (F-) in one list, in work-queue order. Steps: `effort` = 
 
 **Feature steps**
 
-| Effort | Step | Estimate | Actual | Remaining | Status | Who |
-|---|---|---|---|---|---|:---:|
-| 🟢 Small | <a id="f-001-t01"></a>F-001-T01 — Scaffold the app and apply harness v10.21.3 | 3 h | 0 h | 0 h | Implemented; verification pending | 🤖 |
-| 🟢 Small | <a id="f-001-t02"></a>F-001-T02 — Owner sets branch protection and auto-merge | 0 h | 0 h | 0 h agent + 0.25 h owner | Ready | [🧑‍🔧](work/records/F-001.md) |
-| 🟢 Small | **Total** | 3 h | 0 h (0 of 2 steps recorded) | 0.25 h owner | 0 of 2 completed | |
+| Effort | Step | Estimate | Actual | Remaining | Status | Who | PRs |
+|---|---|---|---|---|---|:---:|---|
+| 🟢 Small | <a id="f-001-t01"></a>F-001-T01 — Scaffold the app and apply harness v10.21.3 | 3 h | 0 h | 0 h | Implemented; verification pending | 🤖 | [PR #1](https://github.com/voidbrain/hobo/pull/1) scaffold and harness |
+| 🟢 Small | <a id="f-001-t02"></a>F-001-T02 — Owner sets branch protection and auto-merge | 0 h | 0 h | 0 h agent + 0.25 h owner | Ready | [🧑‍🔧](work/records/F-001.md) | — |
+| 🟢 Small | **Total** | 3 h | 0 h (0 of 2 steps recorded) | 0.25 h owner | 0 of 2 completed | | |
 
 <details>
 <summary>Next action, estimates and PR history</summary>
@@ -204,7 +204,7 @@ Bugs (B-) and features (F-) in one list, in work-queue order. Steps: `effort` = 
 
 | Field | Value |
 |---|---|
-| PR / evidence | — |
+| PR / evidence | Steps: F-001-T01: [PR #1](https://github.com/voidbrain/hobo/pull/1) scaffold and harness. [#1](https://github.com/voidbrain/hobo/pull/1) |
 | Opened | 2026-11-25 |
 | Verification | Pending |
 | Reviewed | 2026-11-25 |
@@ -245,7 +245,7 @@ Bugs (B-) and features (F-) in one list, in work-queue order. Steps: `effort` = 
 
 | Field | Value |
 |---|---|
-| PR / evidence | — |
+| PR / evidence | [#1](https://github.com/voidbrain/hobo/pull/1) |
 | Opened | 2026-11-25 |
 | Verification | Pending |
 | Reviewed | 2026-11-25 |
@@ -283,7 +283,7 @@ Bugs (B-) and features (F-) in one list, in work-queue order. Steps: `effort` = 
 
 | Field | Value |
 |---|---|
-| PR / evidence | — |
+| PR / evidence | [#1](https://github.com/voidbrain/hobo/pull/1) |
 | Opened | 2026-11-25 |
 | Verification | Pending |
 | Reviewed | 2026-11-25 |
@@ -321,7 +321,7 @@ Bugs (B-) and features (F-) in one list, in work-queue order. Steps: `effort` = 
 
 | Field | Value |
 |---|---|
-| PR / evidence | — |
+| PR / evidence | [#1](https://github.com/voidbrain/hobo/pull/1) |
 | Opened | 2026-11-25 |
 | Verification | Pending |
 | Reviewed | 2026-11-25 |
@@ -360,7 +360,7 @@ Bugs (B-) and features (F-) in one list, in work-queue order. Steps: `effort` = 
 
 | Field | Value |
 |---|---|
-| PR / evidence | — |
+| PR / evidence | [#1](https://github.com/voidbrain/hobo/pull/1) |
 | Opened | 2026-11-25 |
 | Verification | Pending |
 | Reviewed | 2026-11-25 |
@@ -399,7 +399,7 @@ Bugs (B-) and features (F-) in one list, in work-queue order. Steps: `effort` = 
 
 | Field | Value |
 |---|---|
-| PR / evidence | — |
+| PR / evidence | [#1](https://github.com/voidbrain/hobo/pull/1) |
 | Opened | 2026-11-25 |
 | Verification | Pending |
 | Reviewed | 2026-11-25 |
@@ -438,7 +438,7 @@ Bugs (B-) and features (F-) in one list, in work-queue order. Steps: `effort` = 
 
 | Field | Value |
 |---|---|
-| PR / evidence | — |
+| PR / evidence | [#1](https://github.com/voidbrain/hobo/pull/1) |
 | Opened | 2026-11-25 |
 | Verification | Pending |
 | Reviewed | 2026-11-25 |
@@ -477,7 +477,7 @@ Bugs (B-) and features (F-) in one list, in work-queue order. Steps: `effort` = 
 
 | Field | Value |
 |---|---|
-| PR / evidence | — |
+| PR / evidence | [#1](https://github.com/voidbrain/hobo/pull/1) |
 | Opened | 2026-11-25 |
 | Verification | Pending |
 | Reviewed | 2026-11-25 |
@@ -517,7 +517,7 @@ Bugs (B-) and features (F-) in one list, in work-queue order. Steps: `effort` = 
 
 | Field | Value |
 |---|---|
-| PR / evidence | — |
+| PR / evidence | [#1](https://github.com/voidbrain/hobo/pull/1) |
 | Opened | 2026-11-25 |
 | Verification | Pending |
 | Reviewed | 2026-11-25 |
@@ -556,7 +556,7 @@ Bugs (B-) and features (F-) in one list, in work-queue order. Steps: `effort` = 
 
 | Field | Value |
 |---|---|
-| PR / evidence | — |
+| PR / evidence | [#1](https://github.com/voidbrain/hobo/pull/1) |
 | Opened | 2026-11-25 |
 | Verification | Pending |
 | Reviewed | 2026-11-25 |
