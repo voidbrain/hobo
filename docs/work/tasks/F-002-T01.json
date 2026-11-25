@@ -6,7 +6,7 @@
   "goal": "Places persist on the owner's machine through a validated API",
   "status": "ready",
   "acceptance": [
-    "`server/`: Node 24 native TypeScript service with `node:sqlite`, data folder git-ignored",
+    "`server/`: Node 24 native TypeScript service with `node:sqlite` on the owner's machine, data folder and `server/config.local.json` git-ignored; the Angular app talks only to it (no IndexedDB store)",
     "Place schema (name, description, category, tags, notes, location, time spent) with validated create/read/update/delete",
     "Regression tests over the API with invented places; the app reads places through one service",
     "docs/DESIGN.md started: the domain model"

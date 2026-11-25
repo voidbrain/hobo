@@ -16,21 +16,21 @@ Bugs (B-) and features (F-) in one list, in work-queue order. Steps: `effort` = 
 
 | Status | Priority | Effort | Remaining | Depends on | Unlocks | Agent | Procedures | Decisions |
 |---|---|---|---|---|---|:---:|:---:|:---:|
-| 🔴 Open | 🔶 P2 | 🔴 Large | 7 h agent + 0.25 h owner | — | [F-002-T04](#f-002-t04), [F-004-T02](#f-004-t02), [F-004-T03](#f-004-t03), [F-012-T01](#f-012-t01), [F-013-T01](#f-013-t01), [F-013-T02](#f-013-t02) | 🤖 | — | — |
+| 🔴 Open | 🔶 P2 | 🔴 Large | 7 h agent + 0.25 h owner | [F-002-T01](#f-002-t01) | [F-002-T04](#f-002-t04), [F-004-T02](#f-004-t02), [F-004-T03](#f-004-t03), [F-012-T01](#f-012-t01), [F-013-T01](#f-013-t01), [F-013-T02](#f-013-t02) | ⏳ | — | — |
 
-💻 **→** Next: F-007-T01 — Adapter interface, local config and leg cache (Ready).
+💻 **→** Next: F-007-T01 — Adapter interface, local config and leg cache (Planned).
 
 | | |
 |---|---|
-| **Issue** | Maps, routing, the distance/time matrix and geocoding go through one adapter, so providers can change. Start with Leaflet (OpenStreetMap tiles) and OpenRouteService (routing, matrix, geocoding and autocomplete, free key). Leg results are cached so what-if comparisons do not re-query. Keys live in local config, never in git. |
+| **Issue** | Maps, routing, the distance/time matrix and geocoding go through one adapter, so providers can change. Start with Leaflet (OpenStreetMap tiles) and OpenRouteService (routing, matrix, geocoding and autocomplete, free key). Leg results are cached so what-if comparisons do not re-query. Routing and geocoding calls go through `server/`, which holds the key in git-ignored `server/config.local.json`; the key never reaches `public/` or the browser. |
 | **Reproduce** | There is no map and no routing. |
-| **Check** | One `MapProvider` interface; an OpenRouteService implementation tested against recorded fixtures; a Leaflet map component with attribution; a leg cache keyed by provider, profile, from and to; the key read from git-ignored local config; a live route works with the owner's key. |
+| **Check** | One `MapProvider` interface; an OpenRouteService implementation tested against recorded fixtures; a Leaflet map component with attribution; a leg cache keyed by provider, profile, from and to; the key read only by `server/` from git-ignored `server/config.local.json`; a live route works with the owner's key. |
 
 **Feature steps**
 
 | Effort | Step | Estimate | Actual | Remaining | Status | Depends on | Unlocks | Who |
 |---|---|---|---|---|---|---|---|:---:|
-| 🟡 Medium | <a id="f-007-t01"></a>F-007-T01 — Adapter interface, local config and leg cache | 2 h | 0 h | 2 h | Ready | — | [F-007-T02](#f-007-t02), [F-007-T03](#f-007-t03), [F-013-T01](#f-013-t01), [F-013-T02](#f-013-t02) | 🤖 |
+| 🟡 Medium | <a id="f-007-t01"></a>F-007-T01 — Adapter interface, local config and leg cache | 2 h | 0 h | 2 h | Planned | [F-002-T01](#f-002-t01) | [F-007-T02](#f-007-t02), [F-007-T03](#f-007-t03), [F-013-T01](#f-013-t01), [F-013-T02](#f-013-t02) | ⏳ 🤖 |
 | 🟡 Medium | <a id="f-007-t02"></a>F-007-T02 — Leaflet map component | 2 h | 0 h | 2 h | Planned | [F-007-T01](#f-007-t01) | [F-002-T04](#f-002-t04), [F-004-T03](#f-004-t03), [F-012-T01](#f-012-t01) | ⏳ 🤖 |
 | 🟡 Medium | <a id="f-007-t03"></a>F-007-T03 — OpenRouteService provider | 3 h | 0 h | 3 h | Planned | [F-007-T01](#f-007-t01) | [F-002-T04](#f-002-t04), [F-004-T02](#f-004-t02), [F-007-T04](#f-007-t04) | ⏳ 🤖 |
 | 🟢 Small | <a id="f-007-t04"></a>F-007-T04 — Owner adds an OpenRouteService key and checks a live route | 0 h | 0 h | 0 h agent + 0.25 h owner | Planned | [F-007-T03](#f-007-t03) | — | ⏳ 🧑‍🔧 |
@@ -57,13 +57,13 @@ Bugs (B-) and features (F-) in one list, in work-queue order. Steps: `effort` = 
 
 | Status | Priority | Effort | Remaining | Depends on | Unlocks | Agent | Procedures | Decisions |
 |---|---|---|---|---|---|:---:|:---:|:---:|
-| 🔴 Open | 🔶 P2 | 🟣 Very large | 11.5 h | [F-007-T02](#f-007-t02), [F-007-T03](#f-007-t03) | [F-003-T01](#f-003-t01), [F-003-T02](#f-003-t02), [F-011-T01](#f-011-t01) | 🤖 | — | — |
+| 🔴 Open | 🔶 P2 | 🟣 Very large | 11.5 h | [F-007-T02](#f-007-t02), [F-007-T03](#f-007-t03) | [F-003-T01](#f-003-t01), [F-003-T02](#f-003-t02), [F-007-T01](#f-007-t01), [F-011-T01](#f-011-t01) | 🤖 | — | — |
 
 💻 **→** Next: F-002-T01 — Local store service and place model (Ready).
 
 | | |
 |---|---|
-| **Issue** | Places are added at random as they are found, then organised. Each place has a name, description, images, category, tags, notes, a location and the time spent on site (2 h, half day or full day, queues and movement on site included). Data stays on the owner's own machine or base: a local Node 24 service with SQLite (`node:sqlite`), no hosted multi-user backend. |
+| **Issue** | Places are added at random as they are found, then organised. Each place has a name, description, images, category, tags, notes, a location and the time spent on site (2 h, half day or full day, queues and movement on site included). Data stays on the owner's own machine or base: a small Node 24 `server/` with SQLite (`node:sqlite`) that the Angular app talks to; it also serves the NERV MCP server (F-011), share links (F-008) and keeps API keys off the client. IndexedDB is at most an optional offline cache later. No hosted multi-user backend. |
 | **Reproduce** | Open Hobo: there is no way to add a place yet. |
 | **Check** | A place can be added with only a name, then edited to fill every field; images are stored locally with GPS metadata stripped; places can be filtered and grouped by category and tag; data survives a restart and never enters git. |
 
@@ -71,7 +71,7 @@ Bugs (B-) and features (F-) in one list, in work-queue order. Steps: `effort` = 
 
 | Effort | Step | Estimate | Actual | Remaining | Status | Depends on | Unlocks |
 |---|---|---|---|---|---|---|---|
-| 🟡 Medium | <a id="f-002-t01"></a>F-002-T01 — Local store service and place model | 3 h | 0 h | 3 h | Ready | — | [F-002-T02](#f-002-t02), [F-002-T03](#f-002-t03), [F-003-T01](#f-003-t01), [F-011-T01](#f-011-t01) |
+| 🟡 Medium | <a id="f-002-t01"></a>F-002-T01 — Local store service and place model | 3 h | 0 h | 3 h | Ready | — | [F-002-T02](#f-002-t02), [F-002-T03](#f-002-t03), [F-003-T01](#f-003-t01), [F-007-T01](#f-007-t01), [F-011-T01](#f-011-t01) |
 | 🟡 Medium | <a id="f-002-t02"></a>F-002-T02 — Place list and form | 2.5 h | 0 h | 2.5 h | Planned | [F-002-T01](#f-002-t01) | [F-002-T04](#f-002-t04), [F-002-T05](#f-002-t05), [F-003-T02](#f-003-t02) |
 | 🟡 Medium | <a id="f-002-t03"></a>F-002-T03 — Place images | 2 h | 0 h | 2 h | Planned | [F-002-T01](#f-002-t01) | — |
 | 🟡 Medium | <a id="f-002-t04"></a>F-002-T04 — Place location | 2 h | 0 h | 2 h | Planned | [F-002-T02](#f-002-t02), [F-007-T02](#f-007-t02), [F-007-T03](#f-007-t03) | — |
@@ -99,7 +99,7 @@ Bugs (B-) and features (F-) in one list, in work-queue order. Steps: `effort` = 
 
 | Status | Priority | Effort | Remaining | Depends on | Unlocks | Agent | Procedures | Decisions |
 |---|---|---|---|---|---|:---:|:---:|:---:|
-| 🔴 Open | 🔶 P2 | 🔴 Large | 7 h | [F-002-T01](#f-002-t01), [F-002-T02](#f-002-t02) | [F-004-T02](#f-004-t02), [F-006-T01](#f-006-t01) | ⏳ | — | — |
+| 🔴 Open | 🔶 P2 | 🔴 Large | 7 h | [F-002-T01](#f-002-t01), [F-002-T02](#f-002-t02) | [F-004-T02](#f-004-t02), [F-006-T01](#f-006-t01), [F-008-T04](#f-008-t04), [F-011-T01](#f-011-t01) | ⏳ | — | — |
 
 💻 **→** Next: F-003-T01 — Trip model and API (Planned).
 
@@ -113,7 +113,7 @@ Bugs (B-) and features (F-) in one list, in work-queue order. Steps: `effort` = 
 
 | Effort | Step | Estimate | Actual | Remaining | Status | Depends on | Unlocks |
 |---|---|---|---|---|---|---|---|
-| 🟡 Medium | <a id="f-003-t01"></a>F-003-T01 — Trip model and API | 2 h | 0 h | 2 h | Planned | [F-002-T01](#f-002-t01) | [F-003-T02](#f-003-t02), [F-006-T01](#f-006-t01) |
+| 🟡 Medium | <a id="f-003-t01"></a>F-003-T01 — Trip model and API | 2 h | 0 h | 2 h | Planned | [F-002-T01](#f-002-t01) | [F-003-T02](#f-003-t02), [F-006-T01](#f-006-t01), [F-008-T04](#f-008-t04), [F-011-T01](#f-011-t01) |
 | 🟡 Medium | <a id="f-003-t02"></a>F-003-T02 — Trip editor | 3 h | 0 h | 3 h | Planned | [F-003-T01](#f-003-t01), [F-002-T02](#f-002-t02) | [F-003-T03](#f-003-t03), [F-004-T02](#f-004-t02) |
 | 🟡 Medium | <a id="f-003-t03"></a>F-003-T03 — Reorder stops and move them between days | 2 h | 0 h | 2 h | Planned | [F-003-T02](#f-003-t02) | — |
 | 🔴 Large | **Total** | 7 h | 0 h (0 of 3 steps recorded) | 7 h | 0 of 3 completed | | |
@@ -139,7 +139,7 @@ Bugs (B-) and features (F-) in one list, in work-queue order. Steps: `effort` = 
 
 | Status | Priority | Effort | Remaining | Depends on | Unlocks | Agent | Procedures | Decisions |
 |---|---|---|---|---|---|:---:|:---:|:---:|
-| 🔴 Open | 🔶 P2 | 🔴 Large | 5.5 h | [F-003-T02](#f-003-t02), [F-007-T03](#f-007-t03), [F-007-T02](#f-007-t02) | [F-005-T01](#f-005-t01), [F-006-T02](#f-006-t02), [F-008-T01](#f-008-t01), [F-008-T02](#f-008-t02), [F-011-T01](#f-011-t01) | 🤖 | — | — |
+| 🔴 Open | 🔶 P2 | 🔴 Large | 5.5 h | [F-003-T02](#f-003-t02), [F-007-T03](#f-007-t03), [F-007-T02](#f-007-t02) | [F-005-T01](#f-005-t01), [F-006-T02](#f-006-t02), [F-008-T01](#f-008-t01), [F-008-T02](#f-008-t02), [F-008-T04](#f-008-t04), [F-011-T01](#f-011-t01) | 🤖 | — | — |
 
 💻 **→** Next: F-004-T01 — Pure totals (Ready).
 
@@ -154,8 +154,8 @@ Bugs (B-) and features (F-) in one list, in work-queue order. Steps: `effort` = 
 | Effort | Step | Estimate | Actual | Remaining | Status | Depends on | Unlocks |
 |---|---|---|---|---|---|---|---|
 | 🟡 Medium | <a id="f-004-t01"></a>F-004-T01 — Pure totals | 1.5 h | 0 h | 1.5 h | Ready | — | [F-004-T02](#f-004-t02), [F-011-T01](#f-011-t01) |
-| 🟡 Medium | <a id="f-004-t02"></a>F-004-T02 — Legs through the adapter | 2 h | 0 h | 2 h | Planned | [F-004-T01](#f-004-t01), [F-003-T02](#f-003-t02), [F-007-T03](#f-007-t03) | [F-004-T03](#f-004-t03), [F-005-T01](#f-005-t01), [F-008-T01](#f-008-t01) |
-| 🟡 Medium | <a id="f-004-t03"></a>F-004-T03 — Day filter, summary and route on the map | 2 h | 0 h | 2 h | Planned | [F-004-T02](#f-004-t02), [F-007-T02](#f-007-t02) | [F-006-T02](#f-006-t02), [F-008-T02](#f-008-t02) |
+| 🟡 Medium | <a id="f-004-t02"></a>F-004-T02 — Legs through the adapter | 2 h | 0 h | 2 h | Planned | [F-004-T01](#f-004-t01), [F-003-T02](#f-003-t02), [F-007-T03](#f-007-t03) | [F-004-T03](#f-004-t03), [F-005-T01](#f-005-t01), [F-008-T01](#f-008-t01), [F-011-T01](#f-011-t01) |
+| 🟡 Medium | <a id="f-004-t03"></a>F-004-T03 — Day filter, summary and route on the map | 2 h | 0 h | 2 h | Planned | [F-004-T02](#f-004-t02), [F-007-T02](#f-007-t02) | [F-006-T02](#f-006-t02), [F-008-T02](#f-008-t02), [F-008-T04](#f-008-t04) |
 | 🔴 Large | **Total** | 5.5 h | 0 h (0 of 3 steps recorded) | 5.5 h | 0 of 3 completed | | |
 
 <details>
@@ -218,7 +218,7 @@ Bugs (B-) and features (F-) in one list, in work-queue order. Steps: `effort` = 
 
 | Status | Priority | Effort | Remaining | Depends on | Unlocks | Agent | Procedures | Decisions |
 |---|---|---|---|---|---|:---:|:---:|:---:|
-| 🔴 Open | 🔹 P3 | 🔴 Large | 6.5 h agent + 0.5 h owner | [F-004-T02](#f-004-t02), [F-004-T03](#f-004-t03) | [F-009-T01](#f-009-t01) | ⏳ | — | 🤔 |
+| 🔴 Open | 🔹 P3 | 🔴 Large | 6.5 h agent + 0.5 h owner | [F-004-T02](#f-004-t02), [F-004-T03](#f-004-t03), [F-003-T01](#f-003-t01) | [F-009-T01](#f-009-t01) | ⏳ | — | 🤔 |
 
 🧑 **→** Next: [🤔](work/records/F-008.md) F-008-T03 — Owner decides how a read-only link is served (Ready).
 
@@ -235,7 +235,7 @@ Bugs (B-) and features (F-) in one list, in work-queue order. Steps: `effort` = 
 | 🟢 Small | <a id="f-008-t03"></a>F-008-T03 — Owner decides how a read-only link is served | 0 h | 0 h | 0 h agent + 0.5 h owner | Ready | — | [F-008-T04](#f-008-t04) | [🤔](work/records/F-008.md) |
 | 🟡 Medium | <a id="f-008-t01"></a>F-008-T01 — GPX and KML export | 2 h | 0 h | 2 h | Planned | [F-004-T02](#f-004-t02) | — | ⏳ 🤖 |
 | 🟡 Medium | <a id="f-008-t02"></a>F-008-T02 — PDF itinerary | 2 h | 0 h | 2 h | Planned | [F-004-T03](#f-004-t03) | — | ⏳ 🤖 |
-| 🟡 Medium | <a id="f-008-t04"></a>F-008-T04 — Read-only share link | 2.5 h | 0 h | 2.5 h | Planned | [F-008-T03](#f-008-t03) | [F-009-T01](#f-009-t01) | ⏳ 🤖 |
+| 🟡 Medium | <a id="f-008-t04"></a>F-008-T04 — Read-only share link | 2.5 h | 0 h | 2.5 h | Planned | [F-008-T03](#f-008-t03), [F-003-T01](#f-003-t01), [F-004-T03](#f-004-t03) | [F-009-T01](#f-009-t01) | ⏳ 🤖 |
 | 🔴 Large | **Total** | 6.5 h | 0 h (0 of 4 steps recorded) | 6.5 h agent + 0.5 h owner | 0 of 4 completed | | | |
 
 <details>
@@ -419,7 +419,7 @@ Bugs (B-) and features (F-) in one list, in work-queue order. Steps: `effort` = 
 
 | | |
 |---|---|
-| **Issue** | Shared components should come from 🧱 bricks (voidbrain/bricks, planned in the coordinator as solution:F-012). Until it exists, Hobo builds its shared components so they can move there unchanged. |
+| **Issue** | Shared components should come from 🧱 bricks (coordinator solution:F-012), the planned shared UI library voidbrain/bricks. Until it exists, Hobo builds its shared components so they can move there unchanged. |
 | **Reproduce** | — |
 | **Check** | Shared components live in `src/app/shared/`, take inputs and outputs only, use tokens only and inject no app service, and a lint rule enforces it; once bricks exists, they move there and Hobo imports them. |
 
@@ -452,7 +452,7 @@ Bugs (B-) and features (F-) in one list, in work-queue order. Steps: `effort` = 
 
 | Status | Priority | Effort | Remaining | Depends on | Unlocks | Agent | Procedures | Decisions |
 |---|---|---|---|---|---|:---:|:---:|:---:|
-| 🔴 Open | 🔹 P3 | 🟡 Medium | 2.5 h agent + 0.25 h owner | [F-002-T01](#f-002-t01), [F-004-T01](#f-004-t01) | — | ⏳ | — | — |
+| 🔴 Open | 🔹 P3 | 🟡 Medium | 2.5 h agent + 0.25 h owner | [F-002-T01](#f-002-t01), [F-003-T01](#f-003-t01), [F-004-T01](#f-004-t01), [F-004-T02](#f-004-t02) | — | ⏳ | — | — |
 
 💻 **→** Next: F-011-T01 — MCP endpoint in the local service (Planned).
 
@@ -466,7 +466,7 @@ Bugs (B-) and features (F-) in one list, in work-queue order. Steps: `effort` = 
 
 | Effort | Step | Estimate | Actual | Remaining | Status | Depends on | Unlocks | Who |
 |---|---|---|---|---|---|---|---|:---:|
-| 🟡 Medium | <a id="f-011-t01"></a>F-011-T01 — MCP endpoint in the local service | 2.5 h | 0 h | 2.5 h | Planned | [F-002-T01](#f-002-t01), [F-004-T01](#f-004-t01) | [F-011-T02](#f-011-t02) | ⏳ 🤖 |
+| 🟡 Medium | <a id="f-011-t01"></a>F-011-T01 — MCP endpoint in the local service | 2.5 h | 0 h | 2.5 h | Planned | [F-002-T01](#f-002-t01), [F-003-T01](#f-003-t01), [F-004-T01](#f-004-t01), [F-004-T02](#f-004-t02) | [F-011-T02](#f-011-t02) | ⏳ 🤖 |
 | 🟢 Small | <a id="f-011-t02"></a>F-011-T02 — Owner connects Hobo to NERV and checks it from chat | 0 h | 0 h | 0 h agent + 0.25 h owner | Planned | [F-011-T01](#f-011-t01) | — | ⏳ 🧑‍🔧 |
 | 🟡 Medium | **Total** | 2.5 h | 0 h (0 of 2 steps recorded) | 2.5 h agent + 0.25 h owner | 0 of 2 completed | | | |
 
@@ -566,7 +566,7 @@ Bugs (B-) and features (F-) in one list, in work-queue order. Steps: `effort` = 
 ---
 ## Other changes
 
-None yet.
+**Plan revision, 2026-11-25 (fresh review relayed by the coordinator).** Storage is a small Node 24 `server/` with SQLite that the app talks to (IndexedDB only as an optional offline cache later); the OpenRouteService key lives in git-ignored `server/` config, never in `public/`; F-007-T01 now waits on F-002-T01; F-011-T01 also waits on F-003-T01 and F-004-T02; F-008-T04 on F-003-T01 and F-004-T03. Estimates unchanged.
 
 ## How to use this file
 

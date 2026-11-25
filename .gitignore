@@ -64,5 +64,6 @@ test-results/
 .test-report.txt
 
 # Local config: API keys (OpenRouteService and later providers). Never commit it.
-public/config.local.json
+server/config.local.json
+server/data/
 .env

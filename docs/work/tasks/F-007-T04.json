@@ -6,7 +6,7 @@
   "goal": "The app works against the real provider",
   "status": "planned",
   "acceptance": [
-    "Create a free ORS key, put it in `public/config.local.json`",
+    "Create a free ORS key, put it in `server/config.local.json`",
     "Compute a route between two invented points and see km and time"
   ],
   "dependsOn": [

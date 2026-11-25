@@ -5,8 +5,9 @@ The project is **Hobo** 🗺️, the owner's trip planner: places, trips, routes
 ### Architecture
 
 - `src/app/core/` is plain TypeScript with no framework imports (only `signal`, `computed`, `untracked` allowed), so it stays unit-testable (enforced by ESLint `no-restricted-imports` and `npm run check:conventions`). Put logic there (totals, what-if, variants) and keep components thin.
-- Map, routing and geocoding go through one provider adapter (planned `src/app/maps/`, F-007); nothing else calls a provider. Distances in metres and times in whole minutes inside; `km` and `h min` only in the UI.
-- API keys live in local config (`public/config.local.json` or `.env`, both git-ignored), never in git.
+- Map, routing and geocoding go through one provider adapter (planned, F-007): providers run in `server/`, the Leaflet map component in `src/app/maps/`; nothing else calls a provider. Distances in metres and times in whole minutes inside; `km` and `h min` only in the UI.
+- Data lives in a small Node 24 `server/` with SQLite on the owner's machine (planned, F-002-T01); the Angular app talks to it. IndexedDB is at most an optional offline cache later.
+- API keys live only in `server/` config (`server/config.local.json` or `.env`, both git-ignored), never in git and never in `public/` or the browser.
 
 ### Style guide
 
@@ -107,7 +108,7 @@ Before changing an area, read its section in [docs/agents/areas.md](docs/agents/
 
 - Never commit secrets, tokens or personal data. Test data is neutral and invented.
 - The owner's places, trips, home address, photos and routes are personal data: they stay on the owner's machine, never in git, fixtures or issues. Fixtures use invented places and coordinates.
-- API keys (OpenRouteService and later providers) live only in git-ignored local config.
+- API keys (OpenRouteService and later providers) live only in git-ignored `server/` config.
 
 ## Work tracking
 

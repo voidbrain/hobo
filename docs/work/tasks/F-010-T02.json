@@ -6,7 +6,7 @@
   "goal": "Hobo uses bricks for its shared UI",
   "status": "planned",
   "acceptance": [
-    "Waits on coordinator solution:F-012 (bricks repository published)",
+    "Waits on 🧱 bricks (coordinator solution:F-012) being published",
     "Components moved, Hobo imports the bricks package, tests still green"
   ],
   "dependsOn": [

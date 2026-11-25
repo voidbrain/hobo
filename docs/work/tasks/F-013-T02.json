@@ -6,14 +6,14 @@
   "goal": "Place search without a key",
   "status": "planned",
   "acceptance": [
-    "Geocode and autocomplete behind the adapter",
+    "Geocode and autocomplete behind the adapter in `server/`",
     "Recorded-fixture tests"
   ],
   "dependsOn": [
     "F-007-T01"
   ],
   "resources": [
-    "src/app/maps/**",
+    "server/**",
     "docs/work/records/F-013.md"
   ],
   "capabilities": [

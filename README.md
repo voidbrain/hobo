@@ -13,7 +13,7 @@ npm test
 npm run build        # dist/hobo/browser
 ```
 
-Node 24 or later. Map and routing keys go in `public/config.local.json` (git-ignored); see the backlog record for the map provider adapter (F-007).
+Node 24 or later. Data and API keys stay on your machine in a small local Node 24 service with SQLite (`server/`, planned in F-002-T01); the app talks to it. The OpenRouteService key goes in `server/config.local.json` (git-ignored), never in `public/`, so it never reaches the browser (F-007).
 
 ## Where things are
 
