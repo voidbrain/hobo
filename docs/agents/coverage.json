@@ -1,0 +1,14 @@
+{
+ "src/app/": {
+  "lines": 87.5,
+  "statements": 90.7,
+  "branches": 100,
+  "functions": 66.7
+ },
+ "all": {
+  "lines": 84,
+  "statements": 86.7,
+  "branches": 100,
+  "functions": 57.1
+ }
+}

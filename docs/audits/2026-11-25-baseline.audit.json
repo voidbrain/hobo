@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "kind": "scoped",
+  "reviewed": "2026-11-25T21:09:25.000Z",
+  "baseline": "17b2ce3efedf9ca6398c1a792de00ae7f23d0acd",
+  "report": "docs/audits/2026-11-25-baseline.md",
+  "areas": {
+    "code": { "result": "checked", "evidence": "docs/audits/2026-11-25-baseline.md: full read of the scaffold", "limits": "Scaffold only." },
+    "logic": { "result": "checked", "evidence": "docs/audits/2026-11-25-baseline.md: time-spent module and its tests", "limits": "No domain logic beyond time on site yet." },
+    "tests": { "result": "checked", "evidence": "docs/audits/2026-11-25-baseline.md: unit suite listed", "limits": "No browser tests yet." },
+    "documentation": { "result": "checked", "evidence": "docs/audits/2026-11-25-baseline.md: docs written against the code", "limits": "DESIGN.md not yet started (F-002-T01)." },
+    "harness": { "result": "checked", "evidence": "docs/audits/2026-11-25-baseline.md: adoption at v10.21.3", "limits": "CI runs on the first PR." },
+    "security": { "result": "checked", "evidence": "docs/audits/2026-11-25-baseline.md: secrets and private data handling", "limits": "Design review only; no providers or storage exist yet." },
+    "delivery": { "result": "checked", "evidence": "docs/audits/2026-11-25-baseline.md: local build; nothing deployed by design", "limits": "Branch protection pending (F-001-T02)." },
+    "backlog": { "result": "checked", "evidence": "docs/audits/2026-11-25-baseline.md: upfront step plan F-001 to F-014", "limits": "First ledger." }
+  }
+}

@@ -1,0 +1,46 @@
+{
+  "version": 1,
+  "id": "F-004-T03",
+  "parent": "F-004",
+  "title": "Day filter, summary and route on the map",
+  "goal": "The owner sees a day or the whole trip at a glance",
+  "status": "planned",
+  "acceptance": [
+    "Filter by one day, several days or the whole trip",
+    "Summary of km, travel time, time on site and total; the route drawn on the map"
+  ],
+  "dependsOn": [
+    "F-004-T02",
+    "F-007-T02"
+  ],
+  "resources": [
+    "src/app/pages/trips/**",
+    "docs/work/records/F-004.md"
+  ],
+  "capabilities": [
+    "typescript",
+    "angular"
+  ],
+  "privacy": "Neutral, invented test data only; no owner places, home address, photos, routes or API keys in Git.",
+  "validation": [
+    "npm run check:fast",
+    "npm test",
+    "npm run build",
+    "npm run check:work"
+  ],
+  "escalation": [
+    "A material scope or effort increase goes to the owner"
+  ],
+  "effort": {
+    "size": "medium",
+    "estimate": "2 h agent, 1 d",
+    "basis": "Planned 2026-11-25 in the upfront step plan: scoped to one PR, at most 1 focused day(s). Not a measurement.",
+    "reviewed": "2026-11-25",
+    "agentHours": 2,
+    "ownerHours": 0.0,
+    "baselineAgentHours": 2,
+    "estimateAgentHours": 2,
+    "days": 1,
+    "baselineDays": 1
+  }
+}

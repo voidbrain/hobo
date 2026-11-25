@@ -1,0 +1,38 @@
+{
+  "version": 1,
+  "id": "F-008-T03",
+  "parent": "F-008",
+  "title": "Owner decides how a read-only link is served",
+  "goal": "A share mechanism without a hosted multi-user backend",
+  "status": "ready",
+  "acceptance": [
+    "Options: a static snapshot file, the trip encoded in the link, or a read-only view served from the base over Tailscale",
+    "The owner names one; privacy of shared data recorded"
+  ],
+  "dependsOn": [],
+  "resources": [
+    "docs/work/records/F-008.md"
+  ],
+  "capabilities": [
+    "bounded-edit"
+  ],
+  "privacy": "Neutral, invented test data only; no owner places, home address, photos, routes or API keys in Git.",
+  "validation": [
+    "npm run check:work"
+  ],
+  "escalation": [
+    "A material scope or effort increase goes to the owner"
+  ],
+  "ownerLink": "docs/work/records/F-008.md",
+  "effort": {
+    "size": "small",
+    "estimate": "0.5 h owner",
+    "basis": "Planned 2026-11-25 in the upfront step plan: owner time only. Not a measurement.",
+    "reviewed": "2026-11-25",
+    "agentHours": 0.0,
+    "ownerHours": 0.5,
+    "baselineAgentHours": 0.0,
+    "estimateAgentHours": 0.0,
+    "ownerKind": "decision"
+  }
+}

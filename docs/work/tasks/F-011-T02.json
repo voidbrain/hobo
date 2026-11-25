@@ -1,0 +1,40 @@
+{
+  "version": 1,
+  "id": "F-011-T02",
+  "parent": "F-011",
+  "title": "Owner connects Hobo to NERV and checks it from chat",
+  "goal": "The integration works end to end",
+  "status": "planned",
+  "acceptance": [
+    "Register the Hobo MCP server in NERV",
+    "Ask NERV for the totals of an invented trip and get the same numbers as the app"
+  ],
+  "dependsOn": [
+    "F-011-T01"
+  ],
+  "resources": [
+    "docs/work/records/F-011.md"
+  ],
+  "capabilities": [
+    "bounded-edit"
+  ],
+  "privacy": "Neutral, invented test data only; no owner places, home address, photos, routes or API keys in Git.",
+  "validation": [
+    "npm run check:work"
+  ],
+  "escalation": [
+    "A material scope or effort increase goes to the owner"
+  ],
+  "ownerLink": "docs/work/records/F-011.md",
+  "effort": {
+    "size": "small",
+    "estimate": "0.25 h owner",
+    "basis": "Planned 2026-11-25 in the upfront step plan: owner time only. Not a measurement.",
+    "reviewed": "2026-11-25",
+    "agentHours": 0.0,
+    "ownerHours": 0.25,
+    "baselineAgentHours": 0.0,
+    "estimateAgentHours": 0.0,
+    "ownerKind": "procedure"
+  }
+}

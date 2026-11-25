@@ -1,0 +1,50 @@
+{
+  "version": 1,
+  "id": "F-001-T01",
+  "parent": "F-001",
+  "title": "Scaffold the app and apply harness v10.21.3",
+  "goal": "An Angular 22 app with the harness checks green in CI",
+  "status": "implemented",
+  "acceptance": [
+    "Angular 22 app `hobo`: standalone components, signals, strict TypeScript and strict templates, lazy routes, design tokens in src/styles.scss",
+    "Harness v10.21.3 core + angular applied and adapted: AGENTS, areas, style guide, backlog rules, tools, CI",
+    "npm run check:fast, npm test and npm run build pass; CI green on the PR"
+  ],
+  "dependsOn": [],
+  "resources": [
+    "src/**",
+    "docs/**",
+    "tools/**",
+    ".github/**",
+    "package.json",
+    ".harness.json",
+    "angular.json",
+    "docs/work/records/F-001.md"
+  ],
+  "capabilities": [
+    "typescript",
+    "angular"
+  ],
+  "privacy": "Neutral, invented test data only; no owner places, home address, photos, routes or API keys in Git.",
+  "validation": [
+    "npm run check:fast",
+    "npm test",
+    "npm run build",
+    "npm run check:work"
+  ],
+  "escalation": [
+    "A material scope or effort increase goes to the owner"
+  ],
+  "effort": {
+    "size": "small",
+    "estimate": "0 remaining",
+    "basis": "Done 2026-11-25: Angular 22 scaffold (strict TypeScript and templates), harness v10.21.3 core + angular, first unit tests; verification is the PR's CI.",
+    "reviewed": "2026-11-25",
+    "agentHours": 0,
+    "ownerHours": 0.0,
+    "baselineAgentHours": 3,
+    "estimateAgentHours": 3,
+    "days": 0,
+    "baselineDays": 1
+  }
+}
