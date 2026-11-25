@@ -6,13 +6,14 @@
   "goal": "Real routes, matrices and place search",
   "status": "planned",
   "acceptance": [
-    "Directions, matrix, geocoding and autocomplete through ORS",
+    "Directions, matrix, geocoding and autocomplete through ORS, called from `server/` and exposed to the app by the local API",
     "Errors and quota limits reported to the user; tests against recorded fixtures, never live"
   ],
   "dependsOn": [
     "F-007-T01"
   ],
   "resources": [
+    "server/**",
     "src/app/maps/**",
     "docs/work/records/F-007.md"
   ],

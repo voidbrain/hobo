@@ -10,7 +10,9 @@
     "Test that the shared view cannot change data"
   ],
   "dependsOn": [
-    "F-008-T03"
+    "F-008-T03",
+    "F-003-T01",
+    "F-004-T03"
   ],
   "resources": [
     "src/app/pages/share/**",

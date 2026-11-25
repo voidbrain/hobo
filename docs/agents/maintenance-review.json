@@ -1,12 +1,12 @@
 {
   "schemaVersion": 1,
-  "reviewed": "2026-11-25T21:10:04.023Z",
+  "reviewed": "2026-11-25T21:25:09.284Z",
   "policy": "c9570a34ab0c7e4f1274fe37802a6eff8e7edfb8266c98f0cec7119533729b2b",
   "inputs": {
-    "AGENTS.md": "d8229fcbf12b0fca23bf4c92b85405579b96b13a6d92bc6a9a06c67e4e67c488",
+    "AGENTS.md": "59fcad0b74f94ec2189ab7c2b93386a41b98cb78eef14da126251094c5a08b3c",
     "docs/BACKLOG-RULES.md": "fdbc5224f0b74ee809c23b14ec16a0c548b863c8031a58ae93a62da7d754a8be",
     "docs/agents/architecture-review.md": "5d967314854912b1a5f1446aeab309763b14f9856bceb3c82df5c6c25c166526",
-    "docs/agents/areas.md": "1bcbfe87257ae88d2f55a7455d4435de068c4511c18c8ef6f2d1af0251a766fd",
+    "docs/agents/areas.md": "0bd07120e4dcc7d5ebf7ea4ed9fa781a4ffcd4e21f0293b5192790464df8b1f2",
     "docs/agents/audit.md": "e58480c21e8afe9a825df4726fa93b8a7f841557f4267f1fc2c61ac3dac8f642",
     "docs/agents/change-impact.md": "dc1c473e274f76bd70a87ff57bbc53fc75dc75a35d121cf67baf163a2fd2e975",
     "docs/agents/coverage-guide.md": "3d539eb8beedfa101a5e47d9973cdf85dce197436fab2ab096f760e12d208106",
@@ -98,12 +98,13 @@
       "kind": "rule",
       "disposition": "implemented",
       "target": "AGENTS.md",
-      "evidence": "First adoption of harness v10.21.3 (core + angular): AGENTS, areas, style guide and backlog docs adapted to Hobo; check:rules, check:backlog, check:work and check:conventions pass locally."
+      "evidence": "Fresh review relayed by the coordinator 2026-11-25: storage is a local Node 24 server/ with SQLite; provider keys only in git-ignored server/ config. AGENTS and areas aligned; check:rules passes."
     },
     {
-      "kind": "none",
-      "disposition": "no-change",
-      "evidence": "Copied tools and procedures taken byte for byte from the v10.21.3 tag; no project override needed at adoption."
+      "kind": "rule",
+      "disposition": "backlog",
+      "target": "F-002",
+      "evidence": "Storage service planned in F-002-T01; key handling in F-007-T01."
     }
   ]
 }

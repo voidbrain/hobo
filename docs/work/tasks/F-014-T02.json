@@ -6,13 +6,13 @@
   "goal": "Places can be enriched from Google",
   "status": "planned",
   "acceptance": [
-    "Behind the adapter; key in local config; recorded-fixture tests"
+    "Behind the adapter in `server/`; key in `server/config.local.json`; recorded-fixture tests"
   ],
   "dependsOn": [
     "F-014-T01"
   ],
   "resources": [
-    "src/app/maps/**",
+    "server/**",
     "docs/work/records/F-014.md"
   ],
   "capabilities": [

@@ -2,7 +2,7 @@
 
 How the product looks and talks, and how this repository's documents are written. Read it before changing UI (templates, component styles, global styles, user-facing text). The values live in code: CSS custom properties in [`src/styles.scss`](../src/styles.scss) (`:root`, with a dark set under `prefers-color-scheme: dark`). When this guide and the code disagree, the code is what ships: fix whichever is wrong and record the discrepancy in the backlog if it is not fixed in the same change.
 
-Hobo is the owner's own trip planner: collect places, then build trips and compare routes. Calm and practical, like a paper map on a table: warm off-white ground, one teal accent for actions and the route line, everything else neutral. The map carries the colour; the UI stays out of its way. Shared components are written so they can move to 🧱 bricks (voidbrain/bricks, planned) unchanged: inputs and outputs only, tokens only, no app services.
+Hobo is the owner's own trip planner: collect places, then build trips and compare routes. Calm and practical, like a paper map on a table: warm off-white ground, one teal accent for actions and the route line, everything else neutral. The map carries the colour; the UI stays out of its way. Shared components are written so they can move to 🧱 bricks (coordinator solution:F-012) unchanged: inputs and outputs only, tokens only, no app services.
 
 ## Documentation ownership
 
@@ -51,7 +51,7 @@ Scale `--space-1` 0.25rem, `--space-2` 0.5rem, `--space-3` 1rem, `--space-4` 1.5
 
 ## Components
 
-None yet. Each shared component gets an entry here and is built to move to 🧱 bricks (F-010): no app services injected, tokens only.
+None yet. Each shared component gets an entry here and is built to move to 🧱 bricks (coordinator solution:F-012; Hobo's F-010 tracks the move): no app services injected, tokens only.
 
 ## Accessibility
 
@@ -61,7 +61,7 @@ None yet. Each shared component gets an entry here and is built to move to 🧱 
 
 ## Assets
 
-Static assets live in `public/`. Place photos are the owner's data and stay out of git (F-001): they live in local storage with their GPS metadata stripped before any export or share. Map tiles are © OpenStreetMap contributors and the attribution stays visible on every map.
+Static assets live in `public/`. Place photos are the owner's data and stay out of git (F-002-T03): they live in the local server's git-ignored data folder, with GPS metadata stripped on import. Map tiles are © OpenStreetMap contributors and the attribution stays visible on every map.
 
 ## Writing in this repository
 
