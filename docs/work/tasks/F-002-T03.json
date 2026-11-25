@@ -4,7 +4,7 @@
   "parent": "F-002",
   "title": "Place images",
   "goal": "Each place keeps its photos locally",
-  "status": "planned",
+  "status": "implemented",
   "acceptance": [
     "Attach images to a place; thumbnails; files in the git-ignored data folder",
     "GPS and other EXIF metadata stripped on import; tests with an invented image"
@@ -31,16 +31,22 @@
   "escalation": [
     "A material scope or effort increase goes to the owner"
   ],
+  "prs": [
+    {
+      "pr": 7,
+      "note": "content-sniffed place image upload, size limit, EXIF/GPS stripping and thumbnail component"
+    }
+  ],
   "effort": {
     "size": "medium",
-    "estimate": "2 h agent, 1 d",
-    "basis": "Planned 2026-11-25 in the upfront step plan: scoped to one PR, at most 1 focused day(s). Not a measurement.",
+    "estimate": "0 remaining",
+    "basis": "Implemented 2026-11-25 in PR #7; verification is green CI on PR #7 and merge.",
     "reviewed": "2026-11-25",
-    "agentHours": 2,
+    "agentHours": 0,
     "ownerHours": 0.0,
     "baselineAgentHours": 2,
     "estimateAgentHours": 2,
-    "days": 1,
+    "days": 0,
     "baselineDays": 1
   }
 }
