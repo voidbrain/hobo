@@ -186,6 +186,70 @@ describe('route totals (F-004-T01)', () => {
     });
   });
 
+  it('totals a one-stop trip that starts and ends at home, with no stay at home', () => {
+    const result = computeTripTotals(
+      {
+        from: 'maple-home',
+        to: 'maple-home',
+        days: [{ day: '2026-09-01', stops: [{ placeId: 'fern-canyon', timeSpent: '2h' }] }],
+      },
+      [
+        { from: 'maple-home', to: 'fern-canyon', distanceMetres: 45_000, travelMinutes: 40 },
+        { from: 'fern-canyon', to: 'maple-home', distanceMetres: 44_600, travelMinutes: 38 },
+      ],
+    );
+    expect(result.legs.map((l) => [l.from, l.to])).toEqual([
+      ['maple-home', 'fern-canyon'],
+      ['fern-canyon', 'maple-home'],
+    ]);
+    expect(result.total).toEqual({
+      distanceMetres: 89_600,
+      travelMinutes: 78,
+      stayMinutes: 120,
+      totalMinutes: 198,
+    });
+  });
+
+  it('gives an empty middle day zero totals and continues from the previous day end', () => {
+    const result = computeTripTotals(
+      {
+        from: 'maple-home',
+        to: 'maple-home',
+        days: [
+          { day: '2026-09-01', stops: [{ placeId: 'fern-canyon', timeSpent: 'half-day' }] },
+          { day: '2026-09-02', stops: [] },
+          { day: '2026-09-03', stops: [{ placeId: 'cedar-lake', timeSpent: 'full-day' }] },
+        ],
+      },
+      [
+        { from: 'maple-home', to: 'fern-canyon', distanceMetres: 45_000, travelMinutes: 40 },
+        { from: 'fern-canyon', to: 'cedar-lake', distanceMetres: 30_500, travelMinutes: 35 },
+        { from: 'cedar-lake', to: 'maple-home', distanceMetres: 50_000, travelMinutes: 55 },
+      ],
+    );
+    expect(result.missingLegs).toEqual([]);
+    expect(result.days[1]).toEqual({
+      day: '2026-09-02',
+      stopCount: 0,
+      distanceMetres: 0,
+      travelMinutes: 0,
+      stayMinutes: 0,
+      totalMinutes: 0,
+      legs: [],
+    });
+    expect(result.days[2]!.legs.map((l) => l.from)).toEqual(['fern-canyon', 'cedar-lake']);
+    expect(result.total.totalMinutes).toBe(40 + 240 + 35 + 480 + 55);
+  });
+
+  it('keeps the whole-trip total equal to the sum of its legs when the plan has no days', () => {
+    const result = computeTripTotals({ from: 'harbor-start', to: 'summit-end', days: [] }, [
+      { from: 'harbor-start', to: 'summit-end', distanceMetres: 40_000, travelMinutes: 50 },
+    ]);
+    const legDistance = result.legs.reduce((sum, l) => sum + l.distanceMetres, 0);
+    expect(result.total.distanceMetres).toBe(legDistance);
+    expect(result.missingLegs.every((m) => m.day !== '')).toBe(true);
+  });
+
   it('formats distances in km at the UI edge and rejects invalid numbers', () => {
     expect(formatDistanceKm(0)).toBe('0 km');
     expect(formatDistanceKm(12_000)).toBe('12 km');
