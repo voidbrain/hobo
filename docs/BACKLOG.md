@@ -211,7 +211,7 @@ Bugs (B-) and features (F-) in one list, in work-queue order. Steps: `effort` = 
 
 | Field | Value |
 |---|---|
-| PR / evidence | Steps: F-001-T01: [PR #1](https://github.com/voidbrain/hobo/pull/1) scaffold and harness. [#1](https://github.com/voidbrain/hobo/pull/1) |
+| PR / evidence | Steps: F-001-T01: [PR #1](https://github.com/voidbrain/hobo/pull/1) scaffold and harness. [#1](https://github.com/voidbrain/hobo/pull/1); [#3](https://github.com/voidbrain/hobo/pull/3) |
 | Opened | 2026-11-25 |
 | Verification | Pending |
 | Reviewed | 2026-11-25 |
