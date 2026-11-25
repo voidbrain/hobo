@@ -149,10 +149,9 @@ export function computeTripTotals(
     }
     const leg: ComputedLeg = { day: dayName, from, to, distanceMetres, travelMinutes };
     allLegs.push(leg);
-    if (bucketIndex >= 0) dayBuckets[bucketIndex]!.legs.push(leg);
+    dayBuckets[bucketIndex]!.legs.push(leg);
   };
 
-  const totalStops = plan.days.reduce((sum, d) => sum + d.stops.length, 0);
   let cursor = plan.from;
 
   for (let i = 0; i < plan.days.length; i++) {
@@ -165,11 +164,11 @@ export function computeTripTotals(
     }
   }
 
-  // Return/final leg to `plan.to` (no stay at `to`); skipped when 0 stops and `from === to`, or when already at `to`.
-  if (totalStops > 0 ? cursor !== plan.to : plan.from !== plan.to) {
-    const lastIdx = dayBuckets.length - 1;
-    const lastDay = lastIdx >= 0 ? dayBuckets[lastIdx]!.day : '';
-    appendLeg(lastIdx, lastDay, cursor, plan.to);
+  // Final leg to `plan.to` (no stay at `to`) belongs to the last day; skipped when the
+  // cursor is already at `to`, or when the plan has no days to carry it.
+  const lastIdx = dayBuckets.length - 1;
+  if (lastIdx >= 0 && cursor !== plan.to) {
+    appendLeg(lastIdx, dayBuckets[lastIdx]!.day, cursor, plan.to);
   }
 
   const days: DayRouteTotals[] = dayBuckets.map((bucket) => {
