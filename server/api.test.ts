@@ -118,6 +118,7 @@ describe('places API', () => {
     assert.equal((await call('/api/nothing')).status, 404);
     assert.equal((await call('/api/places', { method: 'PUT' })).status, 405);
     assert.equal((await call('/api/places/some-id', { method: 'POST' })).status, 405);
+    assert.equal((await call('/api/places/%E0')).status, 404);
   });
 
   it('refuses a request for another host name (DNS rebinding)', async () => {
