@@ -4,7 +4,7 @@
   "parent": "F-001",
   "title": "Owner sets branch protection and auto-merge",
   "goal": "main requires a PR and the CI check; auto-merge is allowed",
-  "status": "ready",
+  "status": "closed",
   "acceptance": [
     "Branch protection on main: PR required, `check` required, no force-push",
     "Repository setting allow_auto_merge on"
@@ -26,11 +26,11 @@
   "ownerLink": "docs/work/records/F-001.md",
   "effort": {
     "size": "small",
-    "estimate": "0.25 h owner",
-    "basis": "Planned 2026-11-25 in the upfront step plan: owner time only. Not a measurement.",
+    "estimate": "0 remaining",
+    "basis": "Done 2026-11-25: the owner applied the settings; the agent verified them through the GitHub API the same day. No actual: owner time not reported.",
     "reviewed": "2026-11-25",
-    "agentHours": 0.0,
-    "ownerHours": 0.25,
+    "agentHours": 0,
+    "ownerHours": 0,
     "baselineAgentHours": 0.0,
     "estimateAgentHours": 0.0,
     "ownerKind": "procedure"
