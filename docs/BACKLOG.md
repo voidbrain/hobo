@@ -3,7 +3,7 @@
 Current work ledger, reviewed 25 November 2026 against main `17b2ce3`. Generated from [record sources](work/records) and [steps](work/tasks) by `npm run work:build`: edit those, not this file. [Rules](BACKLOG-RULES.md) · [Archive](archive/README.md) · [Reading the records](#how-to-use-this-file).
 
 <!-- totals:start -->
-**Remaining effort:** 53.75 h agent + 2.5 h owner across 35 open steps of 14 features. Generated from the task files.
+**Remaining effort:** 51.75 h agent + 2.5 h owner across 35 open steps of 14 features. Generated from the task files.
 <!-- totals:end -->
 
 ## Work items
@@ -99,9 +99,9 @@ Bugs (B-) and features (F-) in one list, in work-queue order. Steps: `effort` = 
 
 | Status | Priority | Effort | Remaining | Depends on | Unlocks | Agent | Procedures | Decisions |
 |---|---|---|---|---|---|:---:|:---:|:---:|
-| 🔴 Open | 🔶 P2 | 🔴 Large | 7 h | [F-002-T01](#f-002-t01), [F-002-T02](#f-002-t02) | [F-004-T02](#f-004-t02), [F-006-T01](#f-006-t01), [F-008-T04](#f-008-t04), [F-011-T01](#f-011-t01) | ⏳ | — | — |
+| 🔴 Open | 🔶 P2 | 🔴 Large | 5 h | [F-002-T01](#f-002-t01), [F-002-T02](#f-002-t02) | [F-004-T02](#f-004-t02), [F-006-T01](#f-006-t01), [F-008-T04](#f-008-t04), [F-011-T01](#f-011-t01) | 🤖 | — | — |
 
-💻 **→** Next: F-003-T01 — Trip model and API (Planned).
+💻 **→** Next: F-003-T01 — Trip model and API (Implemented; verification pending).
 
 | | |
 |---|---|
@@ -111,12 +111,12 @@ Bugs (B-) and features (F-) in one list, in work-queue order. Steps: `effort` = 
 
 **Feature steps**
 
-| Effort | Step | Estimate | Actual | Remaining | Status | Depends on | Unlocks |
-|---|---|---|---|---|---|---|---|
-| 🟡 Medium | <a id="f-003-t01"></a>F-003-T01 — Trip model and API | 2 h | 0 h | 2 h | Planned | [F-002-T01](#f-002-t01) | [F-003-T02](#f-003-t02), [F-006-T01](#f-006-t01), [F-008-T04](#f-008-t04), [F-011-T01](#f-011-t01) |
-| 🟡 Medium | <a id="f-003-t02"></a>F-003-T02 — Trip editor | 3 h | 0 h | 3 h | Planned | [F-003-T01](#f-003-t01), [F-002-T02](#f-002-t02) | [F-003-T03](#f-003-t03), [F-004-T02](#f-004-t02) |
-| 🟡 Medium | <a id="f-003-t03"></a>F-003-T03 — Reorder stops and move them between days | 2 h | 0 h | 2 h | Planned | [F-003-T02](#f-003-t02) | — |
-| 🔴 Large | **Total** | 7 h | 0 h (0 of 3 steps recorded) | 7 h | 0 of 3 completed | | |
+| Effort | Step | Estimate | Actual | Remaining | Status | Depends on | Unlocks | PRs |
+|---|---|---|---|---|---|---|---|---|
+| 🟢 Small | <a id="f-003-t01"></a>F-003-T01 — Trip model and API | 2 h | 0 h | 0 h | Implemented; verification pending | [F-002-T01](#f-002-t01) | [F-003-T02](#f-003-t02), [F-006-T01](#f-006-t01), [F-008-T04](#f-008-t04), [F-011-T01](#f-011-t01) | [PR #6](https://github.com/voidbrain/hobo/pull/6) trip model, pure helpers, SQLite persistence, home settings and trips API |
+| 🟡 Medium | <a id="f-003-t02"></a>F-003-T02 — Trip editor | 3 h | 0 h | 3 h | Planned | [F-003-T01](#f-003-t01), [F-002-T02](#f-002-t02) | [F-003-T03](#f-003-t03), [F-004-T02](#f-004-t02) | — |
+| 🟡 Medium | <a id="f-003-t03"></a>F-003-T03 — Reorder stops and move them between days | 2 h | 0 h | 2 h | Planned | [F-003-T02](#f-003-t02) | — | — |
+| 🔴 Large | **Total** | 7 h | 0 h (0 of 3 steps recorded) | 5 h | 0 of 3 completed | | | |
 
 <details>
 <summary>Next action, estimates and PR history</summary>
@@ -125,7 +125,7 @@ Bugs (B-) and features (F-) in one list, in work-queue order. Steps: `effort` = 
 
 | Field | Value |
 |---|---|
-| PR / evidence | [#1](https://github.com/voidbrain/hobo/pull/1) |
+| PR / evidence | Steps: F-003-T01: [PR #6](https://github.com/voidbrain/hobo/pull/6) trip model, pure helpers, SQLite persistence, home settings and trips API; step review: 2026-11-26 Claude (Opus, fresh worktree) reviewed PR #6 written by Gemini: no blockers. Added API tests for 400/404/405 answers, unknown home and endpoint places, a single day with no home, time-zone independence across a daylight-saving change, and clearing a deleted place from home and trip endpoints; documented that dates carry no time zone and that shrinking a trip drops stops outside the new range.. [#1](https://github.com/voidbrain/hobo/pull/1); [#6](https://github.com/voidbrain/hobo/pull/6) (F-003-T01); Test: `src/app/core/trip.spec.ts`, `src/app/data/trips-api.spec.ts`, `server/trips.test.ts` (`193bbca`); Review: 2026-11-26 Claude (Opus), no blockers; added API error, time-zone and deleted-place tests |
 | Opened | 2026-11-25 |
 | Verification | Pending |
 | Reviewed | 2026-11-25 |

@@ -4,7 +4,7 @@
   "parent": "F-003",
   "title": "Trip model and API",
   "goal": "Trips persist with their days and stops",
-  "status": "planned",
+  "status": "implemented",
   "acceptance": [
     "Trip: name, start and end dates, from and to (home by default, from a home setting), stops per day referencing places",
     "Validated API and pure helpers in src/app/core with tests"
@@ -32,16 +32,23 @@
   "escalation": [
     "A material scope or effort increase goes to the owner"
   ],
+  "prs": [
+    {
+      "pr": 6,
+      "note": "trip model, pure helpers, SQLite persistence, home settings and trips API"
+    }
+  ],
   "effort": {
     "size": "medium",
-    "estimate": "2 h agent, 1 d",
-    "basis": "Planned 2026-11-25 in the upfront step plan: scoped to one PR, at most 1 focused day(s). Not a measurement.",
+    "estimate": "0 remaining",
+    "basis": "Implemented 2026-11-25 in PR #6; verification is green CI on PR #6 and merge.",
     "reviewed": "2026-11-25",
-    "agentHours": 2,
+    "agentHours": 0,
     "ownerHours": 0.0,
     "baselineAgentHours": 2,
     "estimateAgentHours": 2,
-    "days": 1,
+    "days": 0,
     "baselineDays": 1
-  }
+  },
+  "review": "2026-11-26 Claude (Opus, fresh worktree) reviewed PR #6 written by Gemini: no blockers. Added API tests for 400/404/405 answers, unknown home and endpoint places, a single day with no home, time-zone independence across a daylight-saving change, and clearing a deleted place from home and trip endpoints; documented that dates carry no time zone and that shrinking a trip drops stops outside the new range."
 }
