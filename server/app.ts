@@ -69,6 +69,14 @@ async function readBinaryImage(req: IncomingMessage): Promise<Buffer> {
       'send binary image bytes with content-type image/jpeg, image/png, image/webp or application/octet-stream',
     ]);
   }
+  // A body announced over the limit gets its 413 before any of it is read or kept; the rest is
+  // discarded as it arrives, so the client reads the answer instead of a broken pipe.
+  const declared = Number(req.headers['content-length']);
+  if (Number.isFinite(declared) && declared > MAX_IMAGE_BYTES) {
+    req.resume();
+    throw new HttpError(413, [`image is larger than ${MAX_IMAGE_BYTES} bytes`]);
+  }
+  // A body without a length (chunked) is read to its end, but nothing past the limit is kept.
   const chunks: Buffer[] = [];
   let size = 0;
   for await (const chunk of req as AsyncIterable<Buffer>) {
