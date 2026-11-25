@@ -4,7 +4,7 @@
   "parent": "F-004",
   "title": "Pure totals",
   "goal": "Totals are computed one way, tested",
-  "status": "ready",
+  "status": "implemented",
   "acceptance": [
     "A pure function over legs and stops: per leg, per day, a set of days and the whole trip",
     "A→B + B stay + B→C…; from and to have no stay; tests on invented trips"
@@ -29,15 +29,21 @@
     "A material scope or effort increase goes to the owner"
   ],
   "effort": {
-    "size": "medium",
-    "estimate": "1.5 h agent, 0.5 d",
-    "basis": "Planned 2026-11-25 in the upfront step plan: scoped to one PR, at most 0.5 focused day(s). Not a measurement.",
+    "size": "small",
+    "estimate": "0.25 h agent, 0.25 d",
+    "basis": "Implemented 2026-11-25 in src/app/core/route-totals.ts with failing-first Vitest unit tests; CI and merge remain. Not a measurement.",
     "reviewed": "2026-11-25",
-    "agentHours": 1.5,
+    "agentHours": 0.25,
     "ownerHours": 0.0,
     "baselineAgentHours": 1.5,
     "estimateAgentHours": 1.5,
-    "days": 0.5,
+    "days": 0.25,
     "baselineDays": 0.5
-  }
+  },
+  "prs": [
+    {
+      "pr": 4,
+      "note": "pure route totals in src/app/core/route-totals.ts"
+    }
+  ]
 }
