@@ -6,7 +6,7 @@ The project is **Hobo** 🗺️, the owner's trip planner: places, trips, routes
 
 - `src/app/core/` is plain TypeScript with no framework imports (only `signal`, `computed`, `untracked` allowed), so it stays unit-testable (enforced by ESLint `no-restricted-imports` and `npm run check:conventions`). Put logic there (totals, what-if, variants) and keep components thin.
 - Map, routing and geocoding go through one provider adapter (planned, F-007): providers run in `server/`, the Leaflet map component in `src/app/maps/`; nothing else calls a provider. Distances in metres and times in whole minutes inside; `km` and `h min` only in the UI.
-- Data lives in a small Node 24 `server/` with SQLite on the owner's machine (planned, F-002-T01); the Angular app talks to it. IndexedDB is at most an optional offline cache later.
+- Data lives in a small Node 24 `server/` with SQLite on the owner's machine; the Angular app talks to it only through `src/app/data/` ([design](docs/DESIGN.md)). IndexedDB is at most an optional offline cache later.
 - API keys live only in `server/` config (`server/config.local.json` or `.env`, both git-ignored), never in git and never in `public/` or the browser.
 
 ### Style guide

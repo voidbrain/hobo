@@ -8,17 +8,20 @@ Status: scaffold. The plan, in steps with estimates, is the [backlog](docs/BACKL
 
 ```bash
 npm ci
-npm start            # http://localhost:4200
-npm test
+npm run server       # the local data service on http://127.0.0.1:4310
+npm start            # http://localhost:4200, /api proxied to the service
+npm test             # app unit tests, then the server tests
 npm run build        # dist/hobo/browser
 ```
 
-Node 24 or later. Data and API keys stay on your machine in a small local Node 24 service with SQLite (`server/`, planned in F-002-T01); the app talks to it. The OpenRouteService key goes in `server/config.local.json` (git-ignored), never in `public/`, so it never reaches the browser (F-007).
+Node 24 or later. Data and API keys stay on your machine in a small local Node 24 service with SQLite (`server/`, data in the git-ignored `server/data/`); the app talks to it. Settings go in `server/config.local.json` (git-ignored; see `server/config.example.json`). How it fits together: [design](docs/DESIGN.md). The OpenRouteService key goes in `server/config.local.json` (git-ignored), never in `public/`, so it never reaches the browser (F-007).
 
 ## Where things are
 
 ```
-src/app/core/     framework-free domain code (time on site, totals, what-if), unit-tested
+src/app/core/     framework-free domain code (place model, time on site, totals, what-if), unit-tested
+src/app/data/     the client service that talks to the local server
+server/           local Node 24 service with SQLite: places API, data folder, config
 src/app/pages/    routed pages (lazy)
 src/styles.scss   design tokens (colour, type, spacing)
 docs/             backlog, rules, style guide, audits, archives
