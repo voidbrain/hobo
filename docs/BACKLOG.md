@@ -3,7 +3,7 @@
 Current work ledger, reviewed 25 November 2026 against main `17b2ce3`. Generated from [record sources](work/records) and [steps](work/tasks) by `npm run work:build`: edit those, not this file. [Rules](BACKLOG-RULES.md) · [Archive](archive/README.md) · [Reading the records](#how-to-use-this-file).
 
 <!-- totals:start -->
-**Remaining effort:** 58 h agent + 2.75 h owner across 36 open steps of 14 features. Generated from the task files.
+**Remaining effort:** 56.75 h agent + 2.75 h owner across 36 open steps of 14 features. Generated from the task files.
 <!-- totals:end -->
 
 ## Work items
@@ -139,9 +139,9 @@ Bugs (B-) and features (F-) in one list, in work-queue order. Steps: `effort` = 
 
 | Status | Priority | Effort | Remaining | Depends on | Unlocks | Agent | Procedures | Decisions |
 |---|---|---|---|---|---|:---:|:---:|:---:|
-| 🔴 Open | 🔶 P2 | 🔴 Large | 5.5 h | [F-003-T02](#f-003-t02), [F-007-T03](#f-007-t03), [F-007-T02](#f-007-t02) | [F-005-T01](#f-005-t01), [F-006-T02](#f-006-t02), [F-008-T01](#f-008-t01), [F-008-T02](#f-008-t02), [F-008-T04](#f-008-t04), [F-011-T01](#f-011-t01) | 🤖 | — | — |
+| 🔴 Open | 🔶 P2 | 🔴 Large | 4.25 h | [F-003-T02](#f-003-t02), [F-007-T03](#f-007-t03), [F-007-T02](#f-007-t02) | [F-005-T01](#f-005-t01), [F-006-T02](#f-006-t02), [F-008-T01](#f-008-t01), [F-008-T02](#f-008-t02), [F-008-T04](#f-008-t04), [F-011-T01](#f-011-t01) | 🤖 | — | — |
 
-💻 **→** Next: F-004-T01 — Pure totals (Ready).
+💻 **→** Next: F-004-T01 — Pure totals (Implemented; verification pending).
 
 | | |
 |---|---|
@@ -151,12 +151,12 @@ Bugs (B-) and features (F-) in one list, in work-queue order. Steps: `effort` = 
 
 **Feature steps**
 
-| Effort | Step | Estimate | Actual | Remaining | Status | Depends on | Unlocks |
-|---|---|---|---|---|---|---|---|
-| 🟡 Medium | <a id="f-004-t01"></a>F-004-T01 — Pure totals | 1.5 h | 0 h | 1.5 h | Ready | — | [F-004-T02](#f-004-t02), [F-011-T01](#f-011-t01) |
-| 🟡 Medium | <a id="f-004-t02"></a>F-004-T02 — Legs through the adapter | 2 h | 0 h | 2 h | Planned | [F-004-T01](#f-004-t01), [F-003-T02](#f-003-t02), [F-007-T03](#f-007-t03) | [F-004-T03](#f-004-t03), [F-005-T01](#f-005-t01), [F-008-T01](#f-008-t01), [F-011-T01](#f-011-t01) |
-| 🟡 Medium | <a id="f-004-t03"></a>F-004-T03 — Day filter, summary and route on the map | 2 h | 0 h | 2 h | Planned | [F-004-T02](#f-004-t02), [F-007-T02](#f-007-t02) | [F-006-T02](#f-006-t02), [F-008-T02](#f-008-t02), [F-008-T04](#f-008-t04) |
-| 🔴 Large | **Total** | 5.5 h | 0 h (0 of 3 steps recorded) | 5.5 h | 0 of 3 completed | | |
+| Effort | Step | Estimate | Actual | Remaining | Status | Depends on | Unlocks | PRs |
+|---|---|---|---|---|---|---|---|---|
+| 🟢 Small | <a id="f-004-t01"></a>F-004-T01 — Pure totals | 1.5 h | 0 h | 0.25 h | Implemented; verification pending | — | [F-004-T02](#f-004-t02), [F-011-T01](#f-011-t01) | [PR #4](https://github.com/voidbrain/hobo/pull/4) pure route totals in src/app/core/route-totals.ts |
+| 🟡 Medium | <a id="f-004-t02"></a>F-004-T02 — Legs through the adapter | 2 h | 0 h | 2 h | Planned | [F-004-T01](#f-004-t01), [F-003-T02](#f-003-t02), [F-007-T03](#f-007-t03) | [F-004-T03](#f-004-t03), [F-005-T01](#f-005-t01), [F-008-T01](#f-008-t01), [F-011-T01](#f-011-t01) | — |
+| 🟡 Medium | <a id="f-004-t03"></a>F-004-T03 — Day filter, summary and route on the map | 2 h | 0 h | 2 h | Planned | [F-004-T02](#f-004-t02), [F-007-T02](#f-007-t02) | [F-006-T02](#f-006-t02), [F-008-T02](#f-008-t02), [F-008-T04](#f-008-t04) | — |
+| 🔴 Large | **Total** | 5.5 h | 0 h (0 of 3 steps recorded) | 4.25 h | 0 of 3 completed | | | |
 
 <details>
 <summary>Next action, estimates and PR history</summary>
@@ -165,9 +165,9 @@ Bugs (B-) and features (F-) in one list, in work-queue order. Steps: `effort` = 
 
 | Field | Value |
 |---|---|
-| PR / evidence | [#1](https://github.com/voidbrain/hobo/pull/1) |
+| PR / evidence | Steps: F-004-T01: [PR #4](https://github.com/voidbrain/hobo/pull/4) pure route totals in src/app/core/route-totals.ts. [#1](https://github.com/voidbrain/hobo/pull/1); [#4](https://github.com/voidbrain/hobo/pull/4) |
 | Opened | 2026-11-25 |
-| Verification | Pending |
+| Verification | Unit/integration: 2026-11-25 passed locally (`src/app/core/route-totals.spec.ts`); adapter/UI steps pending. |
 | Reviewed | 2026-11-25 |
 
 </details>
