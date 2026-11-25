@@ -30,4 +30,19 @@ export class PlacesApi {
   remove(id: string): Observable<void> {
     return this.http.delete<void>(`${BASE}/${encodeURIComponent(id)}`);
   }
+
+  imageUrl(placeId: string, imageName: string): string {
+    return `${BASE}/${encodeURIComponent(placeId)}/images/${encodeURIComponent(imageName)}`;
+  }
+
+  uploadImage(placeId: string, data: Blob, contentType?: string): Observable<Place> {
+    const type = contentType || data.type || 'application/octet-stream';
+    return this.http.post<Place>(`${BASE}/${encodeURIComponent(placeId)}/images`, data, {
+      headers: { 'content-type': type },
+    });
+  }
+
+  removeImage(placeId: string, imageName: string): Observable<void> {
+    return this.http.delete<void>(this.imageUrl(placeId, imageName));
+  }
 }

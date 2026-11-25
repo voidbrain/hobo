@@ -1,14 +1,17 @@
-import { mkdirSync } from 'node:fs';
+import { randomUUID } from 'node:crypto';
+import { existsSync, mkdirSync, readFileSync, unlinkSync, writeFileSync } from 'node:fs';
 import { createServer, type IncomingMessage, type ServerResponse } from 'node:http';
 import type { AddressInfo } from 'node:net';
-import { join } from 'node:path';
-import { validateNewPlace, validatePlacePatch } from '../src/app/core/place.ts';
+import { join, resolve, sep } from 'node:path';
+import { PLACE_LIMITS, validateNewPlace, validatePlacePatch } from '../src/app/core/place.ts';
 import type { ServerConfig } from './config.ts';
+import { MAX_IMAGE_BYTES, mimeForImageName, sanitizeImage } from './images.ts';
 import { openPlaceStore, type PlaceStore } from './store.ts';
 
 const MAX_BODY = 1_000_000;
 // The service answers only to local host names, so a web page cannot reach it through DNS rebinding.
 const LOCAL_HOSTS = new Set(['localhost', '127.0.0.1', '[::1]']);
+const SAFE_IMAGE_NAME = /^[A-Za-z0-9_-][A-Za-z0-9._-]{0,127}$/;
 
 class HttpError extends Error {
   readonly status: number;
@@ -53,22 +56,129 @@ async function readJson(req: IncomingMessage): Promise<unknown> {
   }
 }
 
-/** The places API: /api/places (GET, POST) and /api/places/:id (GET, PATCH, DELETE). */
-export function placesHandler(store: PlaceStore) {
+// Only non-CORS-safelisted binary content types are accepted, forcing a CORS preflight on cross-site pages.
+async function readBinaryImage(req: IncomingMessage): Promise<Buffer> {
+  const ct = (req.headers['content-type'] ?? '').split(';')[0]!.trim().toLowerCase();
+  if (
+    ct !== 'image/jpeg' &&
+    ct !== 'image/png' &&
+    ct !== 'image/webp' &&
+    ct !== 'application/octet-stream'
+  ) {
+    throw new HttpError(415, [
+      'send binary image bytes with content-type image/jpeg, image/png, image/webp or application/octet-stream',
+    ]);
+  }
+  const chunks: Buffer[] = [];
+  let size = 0;
+  for await (const chunk of req as AsyncIterable<Buffer>) {
+    size += chunk.length;
+    if (size <= MAX_IMAGE_BYTES) chunks.push(chunk);
+  }
+  if (size > MAX_IMAGE_BYTES) {
+    throw new HttpError(413, [`image is larger than ${MAX_IMAGE_BYTES} bytes`]);
+  }
+  return Buffer.concat(chunks);
+}
+
+function decodeSegment(raw: string | undefined, missingLabel: string): string | undefined {
+  if (!raw) return undefined;
+  try {
+    return decodeURIComponent(raw);
+  } catch {
+    throw new HttpError(404, [missingLabel]);
+  }
+}
+
+function resolveImageFile(imagesDir: string, name: string): string {
+  if (!SAFE_IMAGE_NAME.test(name)) throw new HttpError(404, ['no such image']);
+  const root = resolve(imagesDir);
+  const full = resolve(root, name);
+  if (!full.startsWith(root + sep)) throw new HttpError(404, ['no such image']);
+  return full;
+}
+
+function unlinkIfUnreferenced(store: PlaceStore, imagesDir: string | undefined, names: string[]) {
+  if (!imagesDir || names.length === 0) return;
+  const stillReferenced = new Set(store.list().flatMap((p) => p.images));
+  for (const name of names) {
+    if (stillReferenced.has(name) || !SAFE_IMAGE_NAME.test(name)) continue;
+    const file = resolve(imagesDir, name);
+    if (file.startsWith(resolve(imagesDir) + sep) && existsSync(file)) {
+      try {
+        unlinkSync(file);
+      } catch {
+        // Ignore concurrent removal
+      }
+    }
+  }
+}
+
+/** The places API: /api/places, /api/places/:id, and /api/places/:id/images(/:name). */
+export function placesHandler(store: PlaceStore, imagesDir?: string) {
   return async (req: IncomingMessage, res: ServerResponse) => {
     try {
       const host = (req.headers.host ?? '').replace(/:\d+$/, '').toLowerCase();
       if (!LOCAL_HOSTS.has(host))
         throw new HttpError(421, ['this service answers only on localhost']);
       const path = new URL(req.url ?? '/', 'http://localhost').pathname;
+
+      const imageMatch = /^\/api\/places\/([^/]+)\/images(?:\/([^/]+))?\/?$/.exec(path);
+      if (imageMatch && imagesDir) {
+        const id = decodeSegment(imageMatch[1], 'no such place')!;
+        const imageName = decodeSegment(imageMatch[2], 'no such image');
+        const place = store.get(id);
+        if (!place) throw new HttpError(404, ['no such place']);
+
+        if (!imageName) {
+          if (req.method !== 'POST') throw new HttpError(405, ['use POST']);
+          if (place.images.length >= PLACE_LIMITS.images) {
+            throw new HttpError(400, [`more than ${PLACE_LIMITS.images} images`]);
+          }
+          const raw = await readBinaryImage(req);
+          const sanitized = sanitizeImage(raw);
+          if (!sanitized.ok) throw new HttpError(sanitized.status, [sanitized.error]);
+
+          mkdirSync(imagesDir, { recursive: true });
+          const storedName = `${randomUUID()}.${sanitized.ext}`;
+          writeFileSync(resolveImageFile(imagesDir, storedName), sanitized.data);
+          const updated = store.update(id, { images: [...place.images, storedName] });
+          if (!updated) throw new HttpError(404, ['no such place']);
+          return send(res, 201, updated, {
+            location: `/api/places/${encodeURIComponent(id)}/images/${encodeURIComponent(storedName)}`,
+          });
+        }
+
+        if (!place.images.includes(imageName)) throw new HttpError(404, ['no such image']);
+        const filePath = resolveImageFile(imagesDir, imageName);
+
+        if (req.method === 'GET') {
+          const mime = mimeForImageName(imageName);
+          if (!mime || !existsSync(filePath)) throw new HttpError(404, ['no such image']);
+          const bytes = readFileSync(filePath);
+          res.writeHead(200, {
+            'content-type': mime,
+            'content-length': String(bytes.length),
+            'x-content-type-options': 'nosniff',
+            'content-security-policy': "default-src 'none'",
+            'cache-control': 'private, max-age=31536000, immutable',
+          });
+          res.end(bytes);
+          return;
+        }
+
+        if (req.method === 'DELETE') {
+          store.update(id, { images: place.images.filter((n) => n !== imageName) });
+          unlinkIfUnreferenced(store, imagesDir, [imageName]);
+          return send(res, 204);
+        }
+
+        throw new HttpError(405, ['use GET or DELETE']);
+      }
+
       const match = /^\/api\/places(?:\/([^/]+))?\/?$/.exec(path);
       if (!match) throw new HttpError(404, ['no such path']);
-      let id: string | undefined;
-      try {
-        id = match[1] && decodeURIComponent(match[1]);
-      } catch {
-        throw new HttpError(404, ['no such place']);
-      }
+      const id = decodeSegment(match[1], 'no such place');
       if (!id) {
         if (req.method === 'GET') return send(res, 200, store.list());
         if (req.method !== 'POST') throw new HttpError(405, ['use GET or POST']);
@@ -90,7 +200,9 @@ export function placesHandler(store: PlaceStore) {
         return send(res, 200, place);
       }
       if (req.method === 'DELETE') {
-        if (!store.remove(id)) throw new HttpError(404, ['no such place']);
+        const existing = store.get(id);
+        if (!existing || !store.remove(id)) throw new HttpError(404, ['no such place']);
+        unlinkIfUnreferenced(store, imagesDir, existing.images);
         return send(res, 204);
       }
       throw new HttpError(405, ['use GET, PATCH or DELETE']);
@@ -113,7 +225,7 @@ export interface RunningServer {
 export async function startServer(config: ServerConfig): Promise<RunningServer> {
   mkdirSync(config.dataDir, { recursive: true });
   const store = openPlaceStore(join(config.dataDir, 'hobo.sqlite'));
-  const server = createServer(placesHandler(store));
+  const server = createServer(placesHandler(store, join(config.dataDir, 'images')));
   await new Promise<void>((resolve, reject) => {
     server.once('error', reject);
     server.listen(config.port, config.host, resolve);
