@@ -1,0 +1,47 @@
+{
+  "version": 1,
+  "id": "F-011-T01",
+  "parent": "F-011",
+  "title": "MCP endpoint in the local service",
+  "goal": "NERV can query places, trips and totals",
+  "status": "planned",
+  "acceptance": [
+    "MCP tools: list_places, get_trip, trip_totals (read-only), on the local service",
+    "End-to-end test listing and calling the tools with invented data; tool table in docs/DESIGN.md"
+  ],
+  "dependsOn": [
+    "F-002-T01",
+    "F-004-T01"
+  ],
+  "resources": [
+    "server/**",
+    "docs/DESIGN.md",
+    "docs/work/records/F-011.md"
+  ],
+  "capabilities": [
+    "typescript",
+    "node"
+  ],
+  "privacy": "Neutral, invented test data only; no owner places, home address, photos, routes or API keys in Git.",
+  "validation": [
+    "npm run check:fast",
+    "npm test",
+    "npm run build",
+    "npm run check:work"
+  ],
+  "escalation": [
+    "A material scope or effort increase goes to the owner"
+  ],
+  "effort": {
+    "size": "medium",
+    "estimate": "2.5 h agent, 1.5 d",
+    "basis": "Planned 2026-11-25 in the upfront step plan: scoped to one PR, at most 1.5 focused day(s). Not a measurement.",
+    "reviewed": "2026-11-25",
+    "agentHours": 2.5,
+    "ownerHours": 0.0,
+    "baselineAgentHours": 2.5,
+    "estimateAgentHours": 2.5,
+    "days": 1.5,
+    "baselineDays": 1.5
+  }
+}

@@ -1,0 +1,45 @@
+{
+  "version": 1,
+  "id": "F-007-T03",
+  "parent": "F-007",
+  "title": "OpenRouteService provider",
+  "goal": "Real routes, matrices and place search",
+  "status": "planned",
+  "acceptance": [
+    "Directions, matrix, geocoding and autocomplete through ORS",
+    "Errors and quota limits reported to the user; tests against recorded fixtures, never live"
+  ],
+  "dependsOn": [
+    "F-007-T01"
+  ],
+  "resources": [
+    "src/app/maps/**",
+    "docs/work/records/F-007.md"
+  ],
+  "capabilities": [
+    "typescript",
+    "angular"
+  ],
+  "privacy": "Neutral, invented test data only; no owner places, home address, photos, routes or API keys in Git.",
+  "validation": [
+    "npm run check:fast",
+    "npm test",
+    "npm run build",
+    "npm run check:work"
+  ],
+  "escalation": [
+    "A material scope or effort increase goes to the owner"
+  ],
+  "effort": {
+    "size": "medium",
+    "estimate": "3 h agent, 1.5 d",
+    "basis": "Planned 2026-11-25 in the upfront step plan: scoped to one PR, at most 1.5 focused day(s). Not a measurement.",
+    "reviewed": "2026-11-25",
+    "agentHours": 3,
+    "ownerHours": 0.0,
+    "baselineAgentHours": 3,
+    "estimateAgentHours": 3,
+    "days": 1.5,
+    "baselineDays": 1.5
+  }
+}

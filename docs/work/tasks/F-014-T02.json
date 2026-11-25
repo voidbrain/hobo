@@ -1,0 +1,44 @@
+{
+  "version": 1,
+  "id": "F-014-T02",
+  "parent": "F-014",
+  "title": "Google place-details provider",
+  "goal": "Places can be enriched from Google",
+  "status": "planned",
+  "acceptance": [
+    "Behind the adapter; key in local config; recorded-fixture tests"
+  ],
+  "dependsOn": [
+    "F-014-T01"
+  ],
+  "resources": [
+    "src/app/maps/**",
+    "docs/work/records/F-014.md"
+  ],
+  "capabilities": [
+    "typescript",
+    "angular"
+  ],
+  "privacy": "Neutral, invented test data only; no owner places, home address, photos, routes or API keys in Git.",
+  "validation": [
+    "npm run check:fast",
+    "npm test",
+    "npm run build",
+    "npm run check:work"
+  ],
+  "escalation": [
+    "A material scope or effort increase goes to the owner"
+  ],
+  "effort": {
+    "size": "medium",
+    "estimate": "2 h agent, 1 d",
+    "basis": "Planned 2026-11-25 in the upfront step plan: scoped to one PR, at most 1 focused day(s). Not a measurement.",
+    "reviewed": "2026-11-25",
+    "agentHours": 2,
+    "ownerHours": 0.0,
+    "baselineAgentHours": 2,
+    "estimateAgentHours": 2,
+    "days": 1,
+    "baselineDays": 1
+  }
+}

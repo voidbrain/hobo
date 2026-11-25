@@ -1,0 +1,46 @@
+{
+  "version": 1,
+  "id": "F-007-T01",
+  "parent": "F-007",
+  "title": "Adapter interface, local config and leg cache",
+  "goal": "Providers are swappable and legs are fetched once",
+  "status": "ready",
+  "acceptance": [
+    "`MapProvider` interface: route, matrix, geocode, autocomplete",
+    "Key and provider choice from git-ignored `public/config.local.json`, with a committed example file without keys",
+    "Pure leg cache keyed by provider, profile, from and to, with tests"
+  ],
+  "dependsOn": [],
+  "resources": [
+    "src/app/maps/**",
+    "public/config.example.json",
+    ".gitignore",
+    "docs/work/records/F-007.md"
+  ],
+  "capabilities": [
+    "typescript",
+    "angular"
+  ],
+  "privacy": "Neutral, invented test data only; no owner places, home address, photos, routes or API keys in Git.",
+  "validation": [
+    "npm run check:fast",
+    "npm test",
+    "npm run build",
+    "npm run check:work"
+  ],
+  "escalation": [
+    "A material scope or effort increase goes to the owner"
+  ],
+  "effort": {
+    "size": "medium",
+    "estimate": "2 h agent, 1 d",
+    "basis": "Planned 2026-11-25 in the upfront step plan: scoped to one PR, at most 1 focused day(s). Not a measurement.",
+    "reviewed": "2026-11-25",
+    "agentHours": 2,
+    "ownerHours": 0.0,
+    "baselineAgentHours": 2,
+    "estimateAgentHours": 2,
+    "days": 1,
+    "baselineDays": 1
+  }
+}

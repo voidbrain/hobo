@@ -1,0 +1,45 @@
+{
+  "version": 1,
+  "id": "F-010-T01",
+  "parent": "F-010",
+  "title": "Bricks-ready contract and check",
+  "goal": "Shared components can move without edits",
+  "status": "ready",
+  "acceptance": [
+    "`src/app/shared/`: inputs/outputs only, tokens only, no imports from pages, core services or storage",
+    "ESLint `no-restricted-imports` for the folder; style-guide Components section"
+  ],
+  "dependsOn": [],
+  "resources": [
+    "src/app/shared/**",
+    "eslint.config.mjs",
+    "docs/STYLE-GUIDE.md",
+    "docs/work/records/F-010.md"
+  ],
+  "capabilities": [
+    "typescript",
+    "angular"
+  ],
+  "privacy": "Neutral, invented test data only; no owner places, home address, photos, routes or API keys in Git.",
+  "validation": [
+    "npm run check:fast",
+    "npm test",
+    "npm run build",
+    "npm run check:work"
+  ],
+  "escalation": [
+    "A material scope or effort increase goes to the owner"
+  ],
+  "effort": {
+    "size": "medium",
+    "estimate": "1.5 h agent, 0.5 d",
+    "basis": "Planned 2026-11-25 in the upfront step plan: scoped to one PR, at most 0.5 focused day(s). Not a measurement.",
+    "reviewed": "2026-11-25",
+    "agentHours": 1.5,
+    "ownerHours": 0.0,
+    "baselineAgentHours": 1.5,
+    "estimateAgentHours": 1.5,
+    "days": 0.5,
+    "baselineDays": 0.5
+  }
+}

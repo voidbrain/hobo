@@ -1,0 +1,46 @@
+{
+  "version": 1,
+  "id": "F-005-T01",
+  "parent": "F-005",
+  "title": "Pure what-if evaluation",
+  "goal": "Any order or subset can be scored cheaply",
+  "status": "planned",
+  "acceptance": [
+    "Evaluate an order or subset from cached legs; collect missing pairs for one matrix request",
+    "Tests show the saved plan is never mutated"
+  ],
+  "dependsOn": [
+    "F-004-T02"
+  ],
+  "resources": [
+    "src/app/core/**",
+    "src/app/maps/**",
+    "docs/work/records/F-005.md"
+  ],
+  "capabilities": [
+    "typescript",
+    "angular"
+  ],
+  "privacy": "Neutral, invented test data only; no owner places, home address, photos, routes or API keys in Git.",
+  "validation": [
+    "npm run check:fast",
+    "npm test",
+    "npm run build",
+    "npm run check:work"
+  ],
+  "escalation": [
+    "A material scope or effort increase goes to the owner"
+  ],
+  "effort": {
+    "size": "medium",
+    "estimate": "1.5 h agent, 1 d",
+    "basis": "Planned 2026-11-25 in the upfront step plan: scoped to one PR, at most 1 focused day(s). Not a measurement.",
+    "reviewed": "2026-11-25",
+    "agentHours": 1.5,
+    "ownerHours": 0.0,
+    "baselineAgentHours": 1.5,
+    "estimateAgentHours": 1.5,
+    "days": 1,
+    "baselineDays": 1
+  }
+}

@@ -1,0 +1,48 @@
+{
+  "version": 1,
+  "id": "F-004-T02",
+  "parent": "F-004",
+  "title": "Legs through the adapter",
+  "goal": "Each leg has real km and time",
+  "status": "planned",
+  "acceptance": [
+    "Legs of a trip fetched through the adapter and its cache",
+    "Per-leg km and time in the trip view; a changed stop refetches only its legs"
+  ],
+  "dependsOn": [
+    "F-004-T01",
+    "F-003-T02",
+    "F-007-T03"
+  ],
+  "resources": [
+    "src/app/pages/trips/**",
+    "src/app/maps/**",
+    "docs/work/records/F-004.md"
+  ],
+  "capabilities": [
+    "typescript",
+    "angular"
+  ],
+  "privacy": "Neutral, invented test data only; no owner places, home address, photos, routes or API keys in Git.",
+  "validation": [
+    "npm run check:fast",
+    "npm test",
+    "npm run build",
+    "npm run check:work"
+  ],
+  "escalation": [
+    "A material scope or effort increase goes to the owner"
+  ],
+  "effort": {
+    "size": "medium",
+    "estimate": "2 h agent, 1 d",
+    "basis": "Planned 2026-11-25 in the upfront step plan: scoped to one PR, at most 1 focused day(s). Not a measurement.",
+    "reviewed": "2026-11-25",
+    "agentHours": 2,
+    "ownerHours": 0.0,
+    "baselineAgentHours": 2,
+    "estimateAgentHours": 2,
+    "days": 1,
+    "baselineDays": 1
+  }
+}

@@ -1,0 +1,46 @@
+{
+  "version": 1,
+  "id": "F-006-T01",
+  "parent": "F-006",
+  "title": "Variant model",
+  "goal": "A trip holds several plans",
+  "status": "planned",
+  "acceptance": [
+    "Variants per trip: duplicate, rename, delete, the active one",
+    "API and pure helpers with tests"
+  ],
+  "dependsOn": [
+    "F-003-T01"
+  ],
+  "resources": [
+    "server/**",
+    "src/app/core/**",
+    "docs/work/records/F-006.md"
+  ],
+  "capabilities": [
+    "typescript",
+    "angular"
+  ],
+  "privacy": "Neutral, invented test data only; no owner places, home address, photos, routes or API keys in Git.",
+  "validation": [
+    "npm run check:fast",
+    "npm test",
+    "npm run build",
+    "npm run check:work"
+  ],
+  "escalation": [
+    "A material scope or effort increase goes to the owner"
+  ],
+  "effort": {
+    "size": "medium",
+    "estimate": "1.5 h agent, 1 d",
+    "basis": "Planned 2026-11-25 in the upfront step plan: scoped to one PR, at most 1 focused day(s). Not a measurement.",
+    "reviewed": "2026-11-25",
+    "agentHours": 1.5,
+    "ownerHours": 0.0,
+    "baselineAgentHours": 1.5,
+    "estimateAgentHours": 1.5,
+    "days": 1,
+    "baselineDays": 1
+  }
+}
