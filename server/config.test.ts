@@ -11,12 +11,23 @@ describe('server config', () => {
   afterEach(() => rmSync(dir, { recursive: true, force: true }));
 
   it('uses local defaults without a config file', () => {
-    assert.deepEqual(loadConfig(dir, {}), { host: '127.0.0.1', port: 4310, dataDir: join(dir, 'data') });
+    assert.deepEqual(loadConfig(dir, {}), {
+      host: '127.0.0.1',
+      port: 4310,
+      dataDir: join(dir, 'data'),
+    });
   });
 
   it('reads config.local.json, then the environment', () => {
-    writeFileSync(join(dir, 'config.local.json'), JSON.stringify({ port: 5000, dataDir: 'elsewhere' }));
-    assert.deepEqual(loadConfig(dir, {}), { host: '127.0.0.1', port: 5000, dataDir: join(dir, 'elsewhere') });
+    writeFileSync(
+      join(dir, 'config.local.json'),
+      JSON.stringify({ port: 5000, dataDir: 'elsewhere' }),
+    );
+    assert.deepEqual(loadConfig(dir, {}), {
+      host: '127.0.0.1',
+      port: 5000,
+      dataDir: join(dir, 'elsewhere'),
+    });
     assert.deepEqual(loadConfig(dir, { HOBO_PORT: '6000', HOBO_DATA_DIR: '/tmp/hobo-x' }), {
       host: '127.0.0.1',
       port: 6000,

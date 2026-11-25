@@ -27,7 +27,10 @@ describe('places API', () => {
 
   it('creates the data folder and a place with a name only', async () => {
     assert.ok(existsSync(join(dataDir, 'hobo.sqlite')));
-    const res = await call('/api/places', { method: 'POST', body: JSON.stringify({ name: 'Lantern Hill' }) });
+    const res = await call('/api/places', {
+      method: 'POST',
+      body: JSON.stringify({ name: 'Lantern Hill' }),
+    });
     assert.equal(res.status, 201);
     const place = (await res.json()) as Place;
     assert.equal(res.headers.get('location'), `/api/places/${place.id}`);
@@ -38,7 +41,10 @@ describe('places API', () => {
 
   it('reads, lists, updates and deletes', async () => {
     const created = (await (
-      await call('/api/places', { method: 'POST', body: JSON.stringify({ name: 'Old Mill Museum' }) })
+      await call('/api/places', {
+        method: 'POST',
+        body: JSON.stringify({ name: 'Old Mill Museum' }),
+      })
     ).json()) as Place;
 
     const got = await call(`/api/places/${created.id}`);
@@ -47,7 +53,11 @@ describe('places API', () => {
 
     const patched = await call(`/api/places/${created.id}`, {
       method: 'PATCH',
-      body: JSON.stringify({ category: 'Museum', notes: 'Closed on Mondays', timeSpent: 'half-day' }),
+      body: JSON.stringify({
+        category: 'Museum',
+        notes: 'Closed on Mondays',
+        timeSpent: 'half-day',
+      }),
     });
     assert.equal(patched.status, 200);
     const updated = (await patched.json()) as Place;
@@ -61,7 +71,12 @@ describe('places API', () => {
     assert.equal((await call(`/api/places/${created.id}`)).status, 404);
     assert.equal((await call(`/api/places/${created.id}`, { method: 'DELETE' })).status, 404);
     assert.equal(
-      (await call(`/api/places/${created.id}`, { method: 'PATCH', body: JSON.stringify({ notes: 'x' }) })).status,
+      (
+        await call(`/api/places/${created.id}`, {
+          method: 'PATCH',
+          body: JSON.stringify({ notes: 'x' }),
+        })
+      ).status,
       404,
     );
   });
@@ -108,10 +123,14 @@ describe('places API', () => {
   it('refuses a request for another host name (DNS rebinding)', async () => {
     const { request } = await import('node:http');
     const status = await new Promise<number>((resolve, reject) => {
-      const req = request(server.url + '/api/places', { headers: { host: 'evil.example' } }, (res) => {
-        res.resume();
-        resolve(res.statusCode ?? 0);
-      });
+      const req = request(
+        server.url + '/api/places',
+        { headers: { host: 'evil.example' } },
+        (res) => {
+          res.resume();
+          resolve(res.statusCode ?? 0);
+        },
+      );
       req.on('error', reject);
       req.end();
     });
@@ -122,7 +141,11 @@ describe('places API', () => {
     const created = (await (
       await call('/api/places', {
         method: 'POST',
-        body: JSON.stringify({ name: 'Quiet Bay', location: { lat: -33.5, lng: 151.25 }, tags: ['swim'] }),
+        body: JSON.stringify({
+          name: 'Quiet Bay',
+          location: { lat: -33.5, lng: 151.25 },
+          tags: ['swim'],
+        }),
       })
     ).json()) as Place;
     await server.close();

@@ -116,5 +116,11 @@ describe('validatePlacePatch', () => {
     expect(validatePlacePatch({ tags }).ok).toBe(false);
     expect(validatePlacePatch({ tags: 'kids' }).ok).toBe(false);
     expect(validatePlacePatch({ description: 5 }).ok).toBe(false);
+    expect(validatePlacePatch({ category: 'x'.repeat(PLACE_LIMITS.category + 1) }).ok).toBe(false);
+    const images = Array.from({ length: PLACE_LIMITS.images + 1 }, (_, i) => `img-${i}.jpg`);
+    expect(validatePlacePatch({ images }).ok).toBe(false);
+    expect(validatePlacePatch({ images: 'a.jpg' }).ok).toBe(false);
+    expect(validatePlacePatch({ location: 'here' }).ok).toBe(false);
+    expect(validatePlacePatch({ timeSpent: 120 }).ok).toBe(false);
   });
 });

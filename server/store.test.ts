@@ -20,7 +20,10 @@ describe('place store', () => {
 
   it('creates, reads, updates and deletes a place', () => {
     let tick = 0;
-    const store = openPlaceStore(join(dir, 'hobo.sqlite'), () => `2026-01-01T00:00:0${tick++}.000Z`);
+    const store = openPlaceStore(
+      join(dir, 'hobo.sqlite'),
+      () => `2026-01-01T00:00:0${tick++}.000Z`,
+    );
     const created = store.create(newPlace({ name: 'Lantern Hill' }));
     assert.match(created.id, /^[0-9a-f-]{36}$/);
     assert.equal(created.name, 'Lantern Hill');
@@ -54,7 +57,8 @@ describe('place store', () => {
 
   it('lists places in the order they were added', () => {
     const store = openPlaceStore(join(dir, 'hobo.sqlite'));
-    for (const name of ['Old Mill Museum', 'Lantern Hill', 'Quiet Bay']) store.create(newPlace({ name }));
+    for (const name of ['Old Mill Museum', 'Lantern Hill', 'Quiet Bay'])
+      store.create(newPlace({ name }));
     assert.deepEqual(
       store.list().map((p) => p.name),
       ['Old Mill Museum', 'Lantern Hill', 'Quiet Bay'],
@@ -65,7 +69,9 @@ describe('place store', () => {
   it('keeps places after the store is closed and opened again', () => {
     const file = join(dir, 'hobo.sqlite');
     const first = openPlaceStore(file);
-    const place = first.create(newPlace({ name: 'Quiet Bay', tags: ['swim'], timeSpent: 'full-day' }));
+    const place = first.create(
+      newPlace({ name: 'Quiet Bay', tags: ['swim'], timeSpent: 'full-day' }),
+    );
     first.close();
     const second = openPlaceStore(file);
     assert.deepEqual(second.list(), [place]);
