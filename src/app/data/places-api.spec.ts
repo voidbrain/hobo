@@ -55,6 +55,27 @@ describe('PlacesApi', () => {
       .expectOne({ method: 'DELETE', url: '/api/places/p-1' })
       .flush(null, { status: 204, statusText: 'No Content' });
 
-    expect(seen).toEqual([[place], place, place, { ...place, timeSpent: '2h' }, 'removed']);
+    expect(api.imageUrl('p 1', 'img.png')).toBe('/api/places/p%201/images/img.png');
+
+    const blob = new Blob([new Uint8Array([1, 2])], { type: 'image/png' });
+    api.uploadImage('p-1', blob).subscribe((v) => seen.push(v));
+    const upload = http.expectOne({ method: 'POST', url: '/api/places/p-1/images' });
+    expect(upload.request.headers.get('content-type')).toBe('image/png');
+    upload.flush({ ...place, images: ['img.png'] });
+
+    api.removeImage('p-1', 'img.png').subscribe(() => seen.push('img-removed'));
+    http
+      .expectOne({ method: 'DELETE', url: '/api/places/p-1/images/img.png' })
+      .flush(null, { status: 204, statusText: 'No Content' });
+
+    expect(seen).toEqual([
+      [place],
+      place,
+      place,
+      { ...place, timeSpent: '2h' },
+      'removed',
+      { ...place, images: ['img.png'] },
+      'img-removed',
+    ]);
   });
 });

@@ -3,7 +3,7 @@
 Current work ledger, reviewed 25 November 2026 against main `17b2ce3`. Generated from [record sources](work/records) and [steps](work/tasks) by `npm run work:build`: edit those, not this file. [Rules](BACKLOG-RULES.md) · [Archive](archive/README.md) · [Reading the records](#how-to-use-this-file).
 
 <!-- totals:start -->
-**Remaining effort:** 51.75 h agent + 2.5 h owner across 35 open steps of 14 features. Generated from the task files.
+**Remaining effort:** 49.75 h agent + 2.5 h owner across 35 open steps of 14 features. Generated from the task files.
 <!-- totals:end -->
 
 ## Work items
@@ -57,7 +57,7 @@ Bugs (B-) and features (F-) in one list, in work-queue order. Steps: `effort` = 
 
 | Status | Priority | Effort | Remaining | Depends on | Unlocks | Agent | Procedures | Decisions |
 |---|---|---|---|---|---|:---:|:---:|:---:|
-| 🔴 Open | 🔶 P2 | 🟣 Very large | 8.5 h | [F-007-T02](#f-007-t02), [F-007-T03](#f-007-t03) | [F-003-T01](#f-003-t01), [F-003-T02](#f-003-t02), [F-007-T01](#f-007-t01), [F-011-T01](#f-011-t01) | 🤖 | — | — |
+| 🔴 Open | 🔶 P2 | 🔴 Large | 6.5 h | [F-007-T02](#f-007-t02), [F-007-T03](#f-007-t03) | [F-003-T01](#f-003-t01), [F-003-T02](#f-003-t02), [F-007-T01](#f-007-t01), [F-011-T01](#f-011-t01) | 🤖 | — | — |
 
 💻 **→** Next: F-002-T01 — Local store service and place model (Implemented; verification pending).
 
@@ -69,14 +69,14 @@ Bugs (B-) and features (F-) in one list, in work-queue order. Steps: `effort` = 
 
 **Feature steps**
 
-| Effort | Step | Estimate | Actual | Remaining | Status | Depends on | Unlocks |
-|---|---|---|---|---|---|---|---|
-| 🟢 Small | <a id="f-002-t01"></a>F-002-T01 — Local store service and place model | 3 h | 0 h | 0 h | Implemented; verification pending | — | [F-002-T02](#f-002-t02), [F-002-T03](#f-002-t03), [F-003-T01](#f-003-t01), [F-007-T01](#f-007-t01), [F-011-T01](#f-011-t01) |
-| 🟡 Medium | <a id="f-002-t02"></a>F-002-T02 — Place list and form | 2.5 h | 0 h | 2.5 h | Planned | [F-002-T01](#f-002-t01) | [F-002-T04](#f-002-t04), [F-002-T05](#f-002-t05), [F-003-T02](#f-003-t02) |
-| 🟡 Medium | <a id="f-002-t03"></a>F-002-T03 — Place images | 2 h | 0 h | 2 h | Planned | [F-002-T01](#f-002-t01) | — |
-| 🟡 Medium | <a id="f-002-t04"></a>F-002-T04 — Place location | 2 h | 0 h | 2 h | Planned | [F-002-T02](#f-002-t02), [F-007-T02](#f-007-t02), [F-007-T03](#f-007-t03) | — |
-| 🟡 Medium | <a id="f-002-t05"></a>F-002-T05 — Categories and tags | 2 h | 0 h | 2 h | Planned | [F-002-T02](#f-002-t02) | — |
-| 🟣 Very large | **Total** | 11.5 h | 0 h (0 of 5 steps recorded) | 8.5 h | 0 of 5 completed | | |
+| Effort | Step | Estimate | Actual | Remaining | Status | Depends on | Unlocks | PRs |
+|---|---|---|---|---|---|---|---|---|
+| 🟢 Small | <a id="f-002-t01"></a>F-002-T01 — Local store service and place model | 3 h | 0 h | 0 h | Implemented; verification pending | — | [F-002-T02](#f-002-t02), [F-002-T03](#f-002-t03), [F-003-T01](#f-003-t01), [F-007-T01](#f-007-t01), [F-011-T01](#f-011-t01) | — |
+| 🟢 Small | <a id="f-002-t03"></a>F-002-T03 — Place images | 2 h | 0 h | 0 h | Implemented; verification pending | [F-002-T01](#f-002-t01) | — | [PR #7](https://github.com/voidbrain/hobo/pull/7) content-sniffed place image upload, size limit, EXIF/GPS stripping and thumbnail component |
+| 🟡 Medium | <a id="f-002-t02"></a>F-002-T02 — Place list and form | 2.5 h | 0 h | 2.5 h | Planned | [F-002-T01](#f-002-t01) | [F-002-T04](#f-002-t04), [F-002-T05](#f-002-t05), [F-003-T02](#f-003-t02) | — |
+| 🟡 Medium | <a id="f-002-t04"></a>F-002-T04 — Place location | 2 h | 0 h | 2 h | Planned | [F-002-T02](#f-002-t02), [F-007-T02](#f-007-t02), [F-007-T03](#f-007-t03) | — | — |
+| 🟡 Medium | <a id="f-002-t05"></a>F-002-T05 — Categories and tags | 2 h | 0 h | 2 h | Planned | [F-002-T02](#f-002-t02) | — | — |
+| 🔴 Large | **Total** | 11.5 h | 0 h (0 of 5 steps recorded) | 6.5 h | 0 of 5 completed | | | |
 
 <details>
 <summary>Next action, estimates and PR history</summary>
@@ -85,7 +85,7 @@ Bugs (B-) and features (F-) in one list, in work-queue order. Steps: `effort` = 
 
 | Field | Value |
 |---|---|
-| PR / evidence | Steps: F-002-T01: step review: 2026-11-25 design-reviewer (fresh context, Opus): no blockers; fixed a 500 on a malformed id escape (test first) and added a rollback to a failed migration. Project-only harness edits: package.json (type module, server scripts; npm test also runs the server tests) and a marked CI step.. [#1](https://github.com/voidbrain/hobo/pull/1); [#2](https://github.com/voidbrain/hobo/pull/2) (review fixes); [#5](https://github.com/voidbrain/hobo/pull/5) |
+| PR / evidence | Steps: F-002-T01: step review: 2026-11-25 design-reviewer (fresh context, Opus): no blockers; fixed a 500 on a malformed id escape (test first) and added a rollback to a failed migration. Project-only harness edits: package.json (type module, server scripts; npm test also runs the server tests) and a marked CI step. · F-002-T03: [PR #7](https://github.com/voidbrain/hobo/pull/7) content-sniffed place image upload, size limit, EXIF/GPS stripping and thumbnail component; step review: 2026-11-26 Claude (Opus, fresh worktree) reviewed PR #7 written by Gemini. Fixed (test first): an upload announcing a Content-Length over 5 MB is now refused with 413 before its body is read. Added tests: a real decodable JPEG with a well-formed GPS EXIF IFD (stripped, scan data kept; also checked with macOS ImageIO: GPS present before, absent after, image still decodes), deleting a place unlinks its files, and image names that would leave the folder answer 404.. [#1](https://github.com/voidbrain/hobo/pull/1); [#2](https://github.com/voidbrain/hobo/pull/2) (review fixes); [#5](https://github.com/voidbrain/hobo/pull/5); [#7](https://github.com/voidbrain/hobo/pull/7) (F-002-T03); Test: `server/images.test.ts`, `src/app/pages/places/place-images.spec.ts`, `src/app/data/places-api.spec.ts` (`4dbecd4`); Review: 2026-11-26 Claude (Opus), fixed an announced oversized upload being read before its 413; added real GPS EXIF, place deletion and path tests |
 | Opened | 2026-11-25 |
 | Verification | Pending |
 | Reviewed | 2026-11-25 |
