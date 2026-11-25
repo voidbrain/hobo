@@ -4,7 +4,7 @@
   "parent": "F-002",
   "title": "Local store service and place model",
   "goal": "Places persist on the owner's machine through a validated API",
-  "status": "ready",
+  "status": "implemented",
   "acceptance": [
     "`server/`: Node 24 native TypeScript service with `node:sqlite` on the owner's machine, data folder and `server/config.local.json` git-ignored; the Angular app talks only to it (no IndexedDB store)",
     "Place schema (name, description, category, tags, notes, location, time spent) with validated create/read/update/delete",
@@ -35,14 +35,15 @@
   ],
   "effort": {
     "size": "medium",
-    "estimate": "3 h agent, 1.5 d",
-    "basis": "Planned 2026-11-25 in the upfront step plan: scoped to one PR, at most 1.5 focused day(s). Not a measurement.",
+    "estimate": "0 remaining",
+    "basis": "Done 2026-11-25: server/ (node:sqlite store, places API, local config), shared place model and validation in src/app/core/place.ts, PlacesApi client, docs/DESIGN.md; tests written first. No actual: start time not recorded.",
     "reviewed": "2026-11-25",
-    "agentHours": 3,
+    "agentHours": 0,
     "ownerHours": 0.0,
     "baselineAgentHours": 3,
     "estimateAgentHours": 3,
-    "days": 1.5,
+    "days": 0,
     "baselineDays": 1.5
-  }
+  },
+  "review": "2026-11-25 design-reviewer (fresh context, Opus): no blockers; fixed a 500 on a malformed id escape (test first) and added a rollback to a failed migration. Project-only harness edits: package.json (type module, server scripts; npm test also runs the server tests) and a marked CI step."
 }

@@ -1,12 +1,12 @@
 {
   "schemaVersion": 1,
-  "reviewed": "2026-11-25T21:25:09.284Z",
+  "reviewed": "2026-11-25T22:22:07.172Z",
   "policy": "c9570a34ab0c7e4f1274fe37802a6eff8e7edfb8266c98f0cec7119533729b2b",
   "inputs": {
-    "AGENTS.md": "59fcad0b74f94ec2189ab7c2b93386a41b98cb78eef14da126251094c5a08b3c",
+    "AGENTS.md": "df1778baa0f6a1d9c27cb9cb3a5af58134d953cd9461c092da2d52ff00fcac9a",
     "docs/BACKLOG-RULES.md": "fdbc5224f0b74ee809c23b14ec16a0c548b863c8031a58ae93a62da7d754a8be",
     "docs/agents/architecture-review.md": "5d967314854912b1a5f1446aeab309763b14f9856bceb3c82df5c6c25c166526",
-    "docs/agents/areas.md": "0bd07120e4dcc7d5ebf7ea4ed9fa781a4ffcd4e21f0293b5192790464df8b1f2",
+    "docs/agents/areas.md": "b92cc248925492349fe2ba602dfe5cbe12fa51902c0c1d8ab03563b9a099c620",
     "docs/agents/audit.md": "e58480c21e8afe9a825df4726fa93b8a7f841557f4267f1fc2c61ac3dac8f642",
     "docs/agents/change-impact.md": "dc1c473e274f76bd70a87ff57bbc53fc75dc75a35d121cf67baf163a2fd2e975",
     "docs/agents/coverage-guide.md": "3d539eb8beedfa101a5e47d9973cdf85dce197436fab2ab096f760e12d208106",
@@ -98,13 +98,13 @@
       "kind": "rule",
       "disposition": "implemented",
       "target": "AGENTS.md",
-      "evidence": "Fresh review relayed by the coordinator 2026-11-25: storage is a local Node 24 server/ with SQLite; provider keys only in git-ignored server/ config. AGENTS and areas aligned; check:rules passes."
+      "evidence": "F-002-T01 2026-11-25: the local server/ exists, so AGENTS Architecture and the Storage area note drop 'planned' and name the client service and the type-only import rule for the shared model; check:rules passes."
     },
     {
       "kind": "rule",
       "disposition": "backlog",
       "target": "F-002",
-      "evidence": "Storage service planned in F-002-T01; key handling in F-007-T01."
+      "evidence": "Images (F-002-T03) and categories and tags (F-002-T05) stay planned on F-002; key handling in F-007-T01."
     }
   ]
 }

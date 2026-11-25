@@ -106,6 +106,10 @@ jobs:
         # every source file is included, so a file no test runs shows at 0 % instead of being left out
         run: npx ng test --watch=false --coverage --coverage-reporters=json-summary --coverage-include='src/**/*.ts' --coverage-exclude='**/*.spec.ts'
 
+      # project: the local service's tests (node --test), F-002-T01
+      - name: Server tests
+        run: npm run test:server
+
       - name: Code coverage table (optional enforcement)
         run: node tools/coverage-table.mjs --check --github
 

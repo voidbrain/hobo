@@ -25,7 +25,7 @@ Detailed rules and lessons for each part of the project, kept out of AGENTS.md s
 
 ## Storage
 
-- Code: `server/` (planned, F-002-T01): a small Node 24 service with SQLite (`node:sqlite`) on the owner's machine; the Angular app talks to it through one client service. It also hosts the NERV MCP server (F-011), share links (F-008) and the provider keys. IndexedDB only as an optional offline cache later. No hosted multi-user backend at first.
+- Code: `server/`: a small Node 24 service with SQLite (`node:sqlite`) on the owner's machine, run by Node's type stripping (`npm run server`); the Angular app talks to it through one client service (`src/app/data/places-api.ts`). Tests: `npm run test:server` (`node --test`), each over a temporary data folder. The shared model in `src/app/core/` imports other files only with `import type`, or Node cannot load it. It also hosts the NERV MCP server (F-011), share links (F-008) and the provider keys. IndexedDB only as an optional offline cache later. No hosted multi-user backend at first.
 - Place images live in the git-ignored server data folder, never in git; GPS metadata is stripped on import (F-002-T03).
 
 ## NERV integration
