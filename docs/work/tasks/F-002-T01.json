@@ -44,5 +44,6 @@
     "estimateAgentHours": 3,
     "days": 0,
     "baselineDays": 1.5
-  }
+  },
+  "review": "2026-11-25 design-reviewer (fresh context, Opus): no blockers; fixed a 500 on a malformed id escape (test first) and added a rollback to a failed migration. Project-only harness edits: package.json (type module, server scripts; npm test also runs the server tests) and a marked CI step."
 }

@@ -83,9 +83,15 @@ export function openPlaceStore(file: string, now = () => new Date().toISOString(
   for (const [index, sql] of MIGRATIONS.entries()) {
     if (index < version) continue;
     db.exec('BEGIN');
-    db.exec(sql);
-    db.exec(`PRAGMA user_version = ${index + 1}`);
-    db.exec('COMMIT');
+    try {
+      db.exec(sql);
+      db.exec(`PRAGMA user_version = ${index + 1}`);
+      db.exec('COMMIT');
+    } catch (error) {
+      db.exec('ROLLBACK');
+      db.close();
+      throw error;
+    }
   }
   const columns =
     'id, name, description, images, category, tags, notes, lat, lng, time_spent, created_at, updated_at';

@@ -63,7 +63,12 @@ export function placesHandler(store: PlaceStore) {
       const path = new URL(req.url ?? '/', 'http://localhost').pathname;
       const match = /^\/api\/places(?:\/([^/]+))?\/?$/.exec(path);
       if (!match) throw new HttpError(404, ['no such path']);
-      const id = match[1] && decodeURIComponent(match[1]);
+      let id: string | undefined;
+      try {
+        id = match[1] && decodeURIComponent(match[1]);
+      } catch {
+        throw new HttpError(404, ['no such place']);
+      }
       if (!id) {
         if (req.method === 'GET') return send(res, 200, store.list());
         if (req.method !== 'POST') throw new HttpError(405, ['use GET or POST']);
