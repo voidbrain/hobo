@@ -3,7 +3,7 @@
 Current work ledger, reviewed 26 November 2026 against main `8eff54d`. Generated from [record sources](work/records) and [steps](work/tasks) by `npm run work:build`: edit those, not this file. [Rules](BACKLOG-RULES.md) · [Archive](archive/README.md) · [Reading the records](#how-to-use-this-file).
 
 <!-- totals:start -->
-**Remaining effort:** 44.25 h agent + 2.5 h owner across 34 open steps of 15 features. Generated from the task files.
+**Remaining effort:** 45.75 h agent + 2.5 h owner across 39 open steps of 16 features. Generated from the task files.
 <!-- totals:end -->
 
 ## Work items
@@ -578,6 +578,48 @@ Bugs (B-) and features (F-) in one list, in work-queue order. Steps: `effort` = 
 | Field | Value |
 |---|---|
 | PR / evidence | [#13](https://github.com/voidbrain/hobo/pull/13) |
+| Opened | 2026-11-26 |
+| Verification | Pending |
+| Reviewed | 2026-11-26 |
+
+</details>
+
+---
+### <a id="f-016"></a>[✨ F-016](#top)
+
+**Turn on the dormant procedure settings and prove the maintenance workflow runs**
+
+| Status | Priority | Effort | Remaining | Depends on | Unlocks | Agent | Procedures | Decisions |
+|---|---|---|---|---|---|:---:|:---:|:---:|
+| 🔴 Open | 🔹 P3 | 🟡 Medium | 1.5 h | — | — | 🤖 | — | — |
+
+💻 **→** Next: F-016-T01 — Reviews, coverage enforcement, work usage and behaviour runner settings (Implemented; verification pending).
+
+| | |
+|---|---|
+| **Issue** | The 2026-11-26 dormant-checks sweep (coordinator `docs/audits/2026-11-26-dormant-checks.md`, rows S1, S2, S3, S5, W1) found no periodic reviews (`reviews` unset), coverage regressions that only warn (`coverage.enforce` unset), work-usage measurement off, no `behaviour.runner`, and a daily maintenance workflow that had never run (the repository was created on 2026-11-25). |
+| **Reproduce** | `.harness.json` on `main` `fc67aa3`: no `reviews`, no `coverage.enforce`, `workUsage.enabled: false`, `behaviour` `{times: 3}`; `gh run list --workflow maintenance.yml`: no runs. |
+| **Check** | `.harness.json` sets `reviews` (token, architecture, skills at 30 days), `coverage.enforce: true` (switched on by F-016-T05 once a current baseline is on `main`: under enforce the check reads the baseline from `origin/main`, so the PR that refreshes it cannot enforce it), `workUsage.enabled: true` and `behaviour.runner`; the first architecture review with its outside-landscape comparison is `docs/reviews/architecture/2026-11-26.md`; CI passes with enforcement on (or a real drop is fixed or recorded); a manual maintenance run passed (run 45798434567, 2026-11-26) and a scheduled one runs on 2026-11-27 (F-016-T04). First token and skills reviews: F-016-T03. |
+
+**Feature steps**
+
+| Effort | Step | Estimate | Actual | Remaining | Status | Depends on | Unlocks | PRs |
+|---|---|---|---|---|---|---|---|---|
+| 🟢 Small | <a id="f-016-t01"></a>F-016-T01 — Reviews, coverage enforcement, work usage and behaviour runner settings | 0.25 h | 0 h | 0 h | Implemented; verification pending | — | [F-016-T05](#f-016-t05) | [PR #14](https://github.com/voidbrain/hobo/pull/14) settings on |
+| 🟢 Small | <a id="f-016-t02"></a>F-016-T02 — First architecture review with outside-landscape comparison | 0.5 h | 0 h | 0 h | Implemented; verification pending | — | — | [PR #14](https://github.com/voidbrain/hobo/pull/14) first architecture review |
+| 🟢 Small | <a id="f-016-t03"></a>F-016-T03 — First token and skills reviews | 1 h | 0 h | 1 h | Planned | — | — | — |
+| 🟢 Small | <a id="f-016-t04"></a>F-016-T04 — Confirm the scheduled maintenance run | 0.25 h | 0 h | 0.25 h | Planned | — | — | — |
+| 🟢 Small | <a id="f-016-t05"></a>F-016-T05 — Turn coverage.enforce on | 0.25 h | 0 h | 0.25 h | Planned | [F-016-T01](#f-016-t01) | — | — |
+| 🟡 Medium | **Total** | 2.25 h | 0 h (0 of 5 steps recorded) | 1.5 h | 0 of 5 completed | | | |
+
+<details>
+<summary>Next action, estimates and PR history</summary>
+
+[Full notes & evidence](work/records/F-016.md)
+
+| Field | Value |
+|---|---|
+| PR / evidence | Steps: F-016-T01: [PR #14](https://github.com/voidbrain/hobo/pull/14) settings on · F-016-T02: [PR #14](https://github.com/voidbrain/hobo/pull/14) first architecture review. [#14](https://github.com/voidbrain/hobo/pull/14) |
 | Opened | 2026-11-26 |
 | Verification | Pending |
 | Reviewed | 2026-11-26 |
