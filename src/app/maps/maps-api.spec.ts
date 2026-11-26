@@ -1,7 +1,13 @@
 import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
-import type { GeocodeCandidate, MapPoint, MatrixResult, RouteResult } from './map-provider';
+import {
+  parseGeocodeSearchParams,
+  type GeocodeCandidate,
+  type MapPoint,
+  type MatrixResult,
+  type RouteResult,
+} from './map-provider';
 import { MapsApi, MapsApiError } from './maps-api';
 
 // Invented places and coordinates only.
@@ -72,6 +78,27 @@ describe('MapsApi (F-007-T03)', () => {
     http.expectOne({ method: 'GET', url: '/api/maps/autocomplete?q=Port' }).flush([candidate]);
 
     expect(seen).toEqual([sampleRoute, sampleMatrix, [candidate], [candidate]]);
+  });
+
+  it('sends geocode and autocomplete parameters that the server reader accepts unchanged', () => {
+    const serverReads = (url: string) =>
+      parseGeocodeSearchParams(new URL(url, 'http://localhost').searchParams);
+
+    api.geocode('Portwind & Harbour?', 4).subscribe();
+    const geo = http.expectOne((req) => req.url === '/api/maps/geocode');
+    expect(serverReads(geo.request.urlWithParams)).toEqual({
+      ok: true,
+      value: { query: 'Portwind & Harbour?', limit: 4 },
+    });
+    geo.flush([]);
+
+    api.autocomplete('Port').subscribe();
+    const auto = http.expectOne((req) => req.url === '/api/maps/autocomplete');
+    expect(serverReads(auto.request.urlWithParams)).toEqual({
+      ok: true,
+      value: { query: 'Port', limit: 5 },
+    });
+    auto.flush([]);
   });
 
   it('maps quota limits and missing-key errors into user-facing MapsApiError instances', () => {

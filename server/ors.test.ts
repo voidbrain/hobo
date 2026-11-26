@@ -346,6 +346,10 @@ describe('local /api/maps endpoints and SQLite leg cache join (F-007-T03)', () =
     // 2. Geocode & autocomplete
     const geoRes = await fetch(`${server.url}/api/maps/geocode?q=Portwind&limit=5`);
     assert.equal(geoRes.status, 200);
+    // The handler passes the client's q and limit through to ORS (text, size).
+    const geoCall = new URL(calls.at(-1)?.url ?? '');
+    assert.equal(geoCall.searchParams.get('text'), 'Portwind');
+    assert.equal(geoCall.searchParams.get('size'), '5');
     const geo = (await geoRes.json()) as GeocodeCandidate[];
     assert.equal(geo.length, 2);
     assert.equal(geo[0]?.label, 'Harbour Quay, Portwind, Inventedland');

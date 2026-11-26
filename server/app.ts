@@ -12,7 +12,7 @@ import {
 } from '../src/app/core/trip.ts';
 import {
   DEFAULT_LEG_CACHE_MAX_AGE_DAYS,
-  validateGeocodeRequest,
+  parseGeocodeSearchParams,
   validateMatrixRequest,
   validateRouteRequest,
   type MapProvider,
@@ -153,13 +153,6 @@ function assertPlacesExist(store: PlaceStore, ids: readonly string[]) {
   }
 }
 
-function parseGeocodeQuery(url: URL) {
-  const query = url.searchParams.get('q') ?? url.searchParams.get('query') ?? '';
-  const rawLimit = url.searchParams.get('limit');
-  const limit = rawLimit === null ? undefined : Number(rawLimit);
-  return validateGeocodeRequest(limit === undefined ? { query } : { query, limit });
-}
-
 /** The local API: /api/places (with /:id/images), /api/settings, /api/trips and /api/maps. */
 export function placesHandler(store: PlaceStore, imagesDir?: string, maps?: MapProvider) {
   return async (req: IncomingMessage, res: ServerResponse) => {
@@ -189,13 +182,13 @@ export function placesHandler(store: PlaceStore, imagesDir?: string, maps?: MapP
         }
         if (/^\/api\/maps\/geocode\/?$/.test(path)) {
           if (req.method !== 'GET') throw new HttpError(405, ['use GET']);
-          const checked = parseGeocodeQuery(url);
+          const checked = parseGeocodeSearchParams(url.searchParams);
           if (!checked.ok) throw new HttpError(400, checked.errors, 'bad_request');
           return send(res, 200, await maps.geocode(checked.value));
         }
         if (/^\/api\/maps\/autocomplete\/?$/.test(path)) {
           if (req.method !== 'GET') throw new HttpError(405, ['use GET']);
-          const checked = parseGeocodeQuery(url);
+          const checked = parseGeocodeSearchParams(url.searchParams);
           if (!checked.ok) throw new HttpError(400, checked.errors, 'bad_request');
           return send(res, 200, await maps.autocomplete(checked.value));
         }

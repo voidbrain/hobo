@@ -545,3 +545,15 @@ export function validateGeocodeRequest(
   }
   return { ok: true, value: { query, limit } };
 }
+
+/**
+ * Reads `GET /api/maps/geocode|autocomplete` query parameters (`q`, `limit`) the way the
+ * server does; `MapsApi` sends exactly these, and its spec checks them with this reader.
+ */
+export function parseGeocodeSearchParams(
+  params: URLSearchParams,
+): MapValidation<{ query: string; limit: number }> {
+  const query = params.get('q') ?? params.get('query') ?? '';
+  const rawLimit = params.get('limit');
+  return validateGeocodeRequest(rawLimit === null ? { query } : { query, limit: Number(rawLimit) });
+}
