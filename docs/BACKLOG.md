@@ -645,11 +645,11 @@ Bugs (B-) and features (F-) in one list, in work-queue order. Steps: `effort` = 
 
 **Feature steps**
 
-| Effort | Step | Estimate | Actual | Remaining | Status | Depends on | Unlocks |
-|---|---|---|---|---|---|---|---|
-| 🟡 Medium | <a id="f-017-t01"></a>F-017-T01 — Axe pass per main route with a seeded-violation fixture | 2.5 h | 0 h | 2.5 h | Planned | — | [F-017-T02](#f-017-t02) |
-| 🟢 Small | <a id="f-017-t02"></a>F-017-T02 — Run the axe pass in CI | 1 h | 0 h | 1 h | Planned | [F-017-T01](#f-017-t01) | — |
-| 🟡 Medium | **Total** | 3.5 h | 0 h (0 of 2 steps recorded) | 3.5 h | 0 of 2 completed | | |
+| Effort | Step | Estimate | Actual | Remaining | Status | Depends on | Unlocks | PRs |
+|---|---|---|---|---|---|---|---|---|
+| 🟡 Medium | <a id="f-017-t01"></a>F-017-T01 — Axe pass per main route with a seeded-violation fixture | 2.5 h | 0 h | 2.5 h | Planned | — | [F-017-T02](#f-017-t02) | [PR #16](https://github.com/voidbrain/hobo/pull/16) plan |
+| 🟢 Small | <a id="f-017-t02"></a>F-017-T02 — Run the axe pass in CI | 1 h | 0 h | 1 h | Planned | [F-017-T01](#f-017-t01) | — | [PR #16](https://github.com/voidbrain/hobo/pull/16) plan |
+| 🟡 Medium | **Total** | 3.5 h | 0 h (0 of 2 steps recorded) | 3.5 h | 0 of 2 completed | | | |
 
 <details>
 <summary>Next action, estimates and evidence</summary>
@@ -658,7 +658,7 @@ Bugs (B-) and features (F-) in one list, in work-queue order. Steps: `effort` = 
 
 | Field | Value |
 |---|---|
-| PR / evidence | [report](https://github.com/voidbrain/coordinator/blob/main/docs/reviews/2026-11-26-nerv-practices-transfer.md); owner decision 2026-11-26 |
+| PR / evidence | Steps: F-017-T01: [PR #16](https://github.com/voidbrain/hobo/pull/16) plan · F-017-T02: [PR #16](https://github.com/voidbrain/hobo/pull/16) plan. [#16](https://github.com/voidbrain/Hobo/pull/16) (plan); [report](https://github.com/voidbrain/coordinator/blob/main/docs/reviews/2026-11-26-nerv-practices-transfer.md); owner decision 2026-11-26 |
 | Opened | 2026-11-26 |
 | Verification | Pending |
 | Reviewed | 2026-11-26 |
