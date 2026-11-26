@@ -6,7 +6,7 @@
   "goal": "A model's choice of Hobo tool, scope and answer is measured",
   "status": "planned",
   "acceptance": [
-    "Owner decision 2026-11-26 in chat: \"ok to all\" (accepts proposals of the shared-asset review, solution:F-016-T06 and T08); same message: \"nerv and all modules will need to work with Italian\".",
+    "Owner decision 2026-11-26 in chat: \"ok to all\" (accepts proposals of the shared-asset review, coordinator:F-016-T06 and T08); same message: \"nerv and all modules will need to work with Italian\".",
     "evals/gauntlet/hobo-v1.json: model layer, regression and holdout splits, exact-json, invented places and trips; tool choice and scope (a day, selected days, the whole trip) for list_places, get_trip and trip_totals; answers from a trip_totals payload (km and minutes of a day or a leg, exactly as returned); arrival times from a start time (the trip's own numbers in the prompt; date arithmetic is scheduling-time-v1, gauntlet-protocol:F-023)",
     "Italian and English requests for each capability, e.g. \"quali posti ho salvato?\", \"quanti km sono nel trip di agosto?\", \"quanto dura il secondo giorno?\", \"partendo alle 8:30, quando arriviamo alla terza tappa?\", and the owner's phrase \"aggiungi Rocca Calascio al trip di agosto\": Hobo's MCP tools are read-only, so the case expects no tool call and a reply saying Hobo cannot add a place from chat (or a question), never an invented write tool; the owner wants write tools (\"yes to both\", 2026-11-26): F-018 adds them, and F-018-T05 turns this decline case into a write case once they land",
     "`gauntlet validate` in CI from a pinned devDependency; a test that every tool a case names is registered by the F-011-T01 endpoint; skips recorded in docs/DESIGN.md (route totals, what-if, providers, leg cache, Google place data F-014, self-hosted routing F-013: deterministic or no model); the pack is tagged so NERV runs it (nerv:F-120-T11)"
@@ -37,7 +37,7 @@
   "effort": {
     "size": "medium",
     "estimate": "1.75 h agent",
-    "basis": "About 12 to 16 cases over three tools, half Italian; waits on the F-011-T01 endpoint. Estimated 2026-11-26 at agent speed from the solution:F-016 shared-asset review. Not a measurement.",
+    "basis": "About 12 to 16 cases over three tools, half Italian; waits on the F-011-T01 endpoint. Estimated 2026-11-26 at agent speed from the coordinator:F-016 shared-asset review. Not a measurement.",
     "reviewed": "2026-11-26",
     "agentHours": 1.75,
     "baselineAgentHours": 1.75,

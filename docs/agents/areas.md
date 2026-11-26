@@ -21,7 +21,7 @@ Detailed rules and lessons for each part of the project, kept out of AGENTS.md s
 
 - Code: `src/app/` components and pages, `src/styles.scss` tokens. Read [docs/agents/angular.md](angular.md) and the [style guide](../STYLE-GUIDE.md) first.
 - Components stay thin: state and derivations in signals over `core/` functions.
-- Shared components are written for 🧱 bricks (coordinator solution:F-012; Hobo's F-010 tracks the move): inputs and outputs only, tokens only, no app services.
+- Shared components are written for 🧱 bricks (coordinator coordinator:F-012; Hobo's F-010 tracks the move): inputs and outputs only, tokens only, no app services.
 
 ## Storage
 
