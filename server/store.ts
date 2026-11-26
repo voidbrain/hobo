@@ -9,9 +9,16 @@ import type {
   TripFields,
   TripPatch,
 } from '../src/app/core/trip.ts';
+import {
+  toLegCacheColumns,
+  type CachedLeg,
+  type LegCache,
+  type MapPoint,
+  type TravelProfile,
+} from '../src/app/maps/map-provider.ts';
 
-/** Places, trips and settings on the owner's machine. Input is validated by the caller. */
-export interface PlaceStore {
+/** Places, trips, settings and leg cache on the owner's machine. Input is validated by the caller. */
+export interface PlaceStore extends LegCache {
   list(): Place[];
   get(id: string): Place | undefined;
   create(fields: PlaceFields): Place;
@@ -59,6 +66,21 @@ const MIGRATIONS = [
     created_at TEXT NOT NULL,
     updated_at TEXT NOT NULL
   ) STRICT`,
+  `CREATE TABLE leg_cache (
+    provider TEXT NOT NULL,
+    profile TEXT NOT NULL,
+    from_key TEXT NOT NULL,
+    to_key TEXT NOT NULL,
+    from_lat REAL NOT NULL,
+    from_lng REAL NOT NULL,
+    to_lat REAL NOT NULL,
+    to_lng REAL NOT NULL,
+    distance_metres INTEGER NOT NULL,
+    travel_minutes INTEGER NOT NULL,
+    geometry TEXT NOT NULL,
+    updated_at TEXT NOT NULL,
+    PRIMARY KEY (provider, profile, from_key, to_key)
+  ) STRICT`,
 ];
 
 interface PlaceRow {
@@ -85,6 +107,21 @@ interface TripRow {
   to_point: string | null;
   days: string;
   created_at: string;
+  updated_at: string;
+}
+
+interface LegCacheRow {
+  provider: string;
+  profile: string;
+  from_key: string;
+  to_key: string;
+  from_lat: number;
+  from_lng: number;
+  to_lat: number;
+  to_lng: number;
+  distance_metres: number;
+  travel_minutes: number;
+  geometry: string;
   updated_at: string;
 }
 
@@ -140,6 +177,26 @@ const toTripParams = (t: Trip) => ({
   created_at: t.createdAt,
   updated_at: t.updatedAt,
 });
+
+const toCachedLeg = (row: LegCacheRow): CachedLeg => ({
+  provider: row.provider,
+  profile: row.profile as TravelProfile,
+  fromKey: row.from_key,
+  toKey: row.to_key,
+  from: { lat: row.from_lat, lng: row.from_lng },
+  to: { lat: row.to_lat, lng: row.to_lng },
+  distanceMetres: row.distance_metres,
+  travelMinutes: row.travel_minutes,
+  geometry: JSON.parse(row.geometry) as MapPoint[],
+  updatedAt: row.updated_at,
+});
+
+function nonNegativeWhole(value: number, label: string): number {
+  if (!Number.isFinite(value) || value < 0) {
+    throw new RangeError(`${label} must be a non-negative number`);
+  }
+  return Math.round(value);
+}
 
 function stripPlaceFromEndpoint(ep: TripEndpoint | null, placeId: string): TripEndpoint | null {
   if (!ep || ep.placeId !== placeId) return ep;
@@ -199,6 +256,25 @@ export function openPlaceStore(file: string, now = () => new Date().toISOString(
   );
   const deleteOneTrip = db.prepare('DELETE FROM trips WHERE id = ?');
 
+  const legColumns =
+    'provider, profile, from_key, to_key, from_lat, from_lng, to_lat, to_lng, distance_metres, travel_minutes, geometry, updated_at';
+  const getOneLeg = db.prepare(
+    `SELECT ${legColumns} FROM leg_cache WHERE provider = ? AND profile = ? AND from_key = ? AND to_key = ?`,
+  );
+  const upsertLeg = db.prepare(
+    `INSERT INTO leg_cache (${legColumns})
+     VALUES (:provider, :profile, :from_key, :to_key, :from_lat, :from_lng, :to_lat, :to_lng, :distance_metres, :travel_minutes, :geometry, :updated_at)
+     ON CONFLICT(provider, profile, from_key, to_key) DO UPDATE SET
+       from_lat = excluded.from_lat,
+       from_lng = excluded.from_lng,
+       to_lat = excluded.to_lat,
+       to_lng = excluded.to_lng,
+       distance_metres = excluded.distance_metres,
+       travel_minutes = excluded.travel_minutes,
+       geometry = CASE WHEN excluded.geometry = '[]' THEN leg_cache.geometry ELSE excluded.geometry END,
+       updated_at = excluded.updated_at`,
+  );
+
   const get = (id: string) => {
     const row = getOnePlace.get(id) as PlaceRow | undefined;
     return row && toPlace(row);
@@ -212,6 +288,13 @@ export function openPlaceStore(file: string, now = () => new Date().toISOString(
   const getTrip = (id: string) => {
     const row = getOneTrip.get(id) as TripRow | undefined;
     return row && toTrip(row);
+  };
+
+  const getLeg: LegCache['getLeg'] = (provider, profile, from, to) => {
+    const cols = toLegCacheColumns(provider, profile, from, to);
+    const row = getOneLeg.get(cols.provider, cols.profile, cols.fromKey, cols.toKey) as
+      LegCacheRow | undefined;
+    return row && toCachedLeg(row);
   };
 
   return {
@@ -291,6 +374,27 @@ export function openPlaceStore(file: string, now = () => new Date().toISOString(
     },
     removeTrip: (id) => deleteOneTrip.run(id).changes > 0,
     unknownPlaceIds: (ids) => ids.filter((id) => !hasPlace.get(id)),
+    getLeg,
+    putLeg(entry) {
+      const cols = toLegCacheColumns(entry.provider, entry.profile, entry.from, entry.to);
+      const stamp = now();
+      const geometry = entry.geometry ? [...entry.geometry] : [];
+      upsertLeg.run({
+        provider: cols.provider,
+        profile: cols.profile,
+        from_key: cols.fromKey,
+        to_key: cols.toKey,
+        from_lat: entry.from.lat,
+        from_lng: entry.from.lng,
+        to_lat: entry.to.lat,
+        to_lng: entry.to.lng,
+        distance_metres: nonNegativeWhole(entry.distanceMetres, 'distanceMetres'),
+        travel_minutes: nonNegativeWhole(entry.travelMinutes, 'travelMinutes'),
+        geometry: JSON.stringify(geometry),
+        updated_at: stamp,
+      });
+      return getLeg(cols.provider, cols.profile, entry.from, entry.to)!;
+    },
     close: () => db.close(),
   };
 }

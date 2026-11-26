@@ -297,8 +297,11 @@ export interface RunningServer {
   close(): Promise<void>;
 }
 
+export type StartServerConfig = Pick<ServerConfig, 'host' | 'port' | 'dataDir'> &
+  Partial<Omit<ServerConfig, 'host' | 'port' | 'dataDir'>>;
+
 /** Opens the store in the data folder (created if missing) and listens. */
-export async function startServer(config: ServerConfig): Promise<RunningServer> {
+export async function startServer(config: StartServerConfig): Promise<RunningServer> {
   mkdirSync(config.dataDir, { recursive: true });
   const store = openPlaceStore(join(config.dataDir, 'hobo.sqlite'));
   const server = createServer(placesHandler(store, join(config.dataDir, 'images')));

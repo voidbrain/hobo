@@ -15,5 +15,10 @@
     "skipLibCheck": true,
     "types": ["node"]
   },
-  "include": ["./**/*.ts", "../src/app/core/place.ts", "../src/app/core/trip.ts"]
+  "include": [
+    "./**/*.ts",
+    "../src/app/core/place.ts",
+    "../src/app/core/trip.ts",
+    "../src/app/maps/map-provider.ts"
+  ]
 }

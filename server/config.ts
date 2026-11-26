@@ -1,18 +1,57 @@
 import { existsSync, readFileSync } from 'node:fs';
 import { isAbsolute, join } from 'node:path';
 
-/** Where the local service listens and keeps its data. Provider keys join this in F-007. */
+export const SUPPORTED_MAP_PROVIDERS = ['openrouteservice'] as const;
+export type ConfiguredMapProvider = (typeof SUPPORTED_MAP_PROVIDERS)[number];
+
+const DEFAULT_ORS_BASE_URL = 'https://api.openrouteservice.org';
+
+/** Where the local service listens, keeps its data, and reads map provider settings (F-007). */
 export interface ServerConfig {
   host: string;
   port: number;
   dataDir: string;
+  mapProvider: ConfiguredMapProvider;
+  openRouteServiceApiKey: string | null;
+  openRouteServiceBaseUrl: string;
 }
 
-const KEYS = ['host', 'port', 'dataDir'] as const;
+const KEYS = [
+  'host',
+  'port',
+  'dataDir',
+  'mapProvider',
+  'openRouteServiceApiKey',
+  'openRouteServiceBaseUrl',
+] as const;
+
+function parseOptionalSecret(raw: unknown, name: string): string | null {
+  if (raw === undefined || raw === null) return null;
+  if (typeof raw !== 'string') throw new Error(`${name} must be text or null`);
+  const trimmed = raw.trim();
+  return trimmed.length > 0 ? trimmed : null;
+}
+
+function parseHttpUrl(raw: unknown, name: string): string {
+  if (typeof raw !== 'string' || !raw.trim()) {
+    throw new Error(`${name} must be an http or https URL`);
+  }
+  let parsed: URL;
+  try {
+    parsed = new URL(raw.trim());
+  } catch {
+    throw new Error(`${name} must be an http or https URL`);
+  }
+  if (parsed.protocol !== 'http:' && parsed.protocol !== 'https:') {
+    throw new Error(`${name} must be an http or https URL`);
+  }
+  return raw.trim().replace(/\/+$/, '');
+}
 
 /**
- * Defaults, then `config.local.json` in `dir` (git-ignored), then HOBO_HOST, HOBO_PORT and HOBO_DATA_DIR.
- * A relative dataDir is relative to `dir`. The default host keeps the service on this machine.
+ * Defaults, then `config.local.json` in `dir` (git-ignored), then HOBO_HOST, HOBO_PORT,
+ * HOBO_DATA_DIR, HOBO_MAP_PROVIDER, HOBO_ORS_API_KEY and HOBO_ORS_BASE_URL.
+ * A relative dataDir is relative to `dir`. API keys never leave `server/`.
  */
 export function loadConfig(dir: string, env: NodeJS.ProcessEnv = process.env): ServerConfig {
   const file = join(dir, 'config.local.json');
@@ -32,9 +71,35 @@ export function loadConfig(dir: string, env: NodeJS.ProcessEnv = process.env): S
   const host = env['HOBO_HOST'] ?? local['host'] ?? '127.0.0.1';
   const port = Number(env['HOBO_PORT'] ?? local['port'] ?? 4310);
   const dataDir = env['HOBO_DATA_DIR'] ?? local['dataDir'] ?? 'data';
+  const rawProvider = env['HOBO_MAP_PROVIDER'] ?? local['mapProvider'] ?? 'openrouteservice';
+  const openRouteServiceApiKey = parseOptionalSecret(
+    env['HOBO_ORS_API_KEY'] !== undefined
+      ? env['HOBO_ORS_API_KEY']
+      : local['openRouteServiceApiKey'],
+    'openRouteServiceApiKey',
+  );
+  const openRouteServiceBaseUrl = parseHttpUrl(
+    env['HOBO_ORS_BASE_URL'] ?? local['openRouteServiceBaseUrl'] ?? DEFAULT_ORS_BASE_URL,
+    'openRouteServiceBaseUrl',
+  );
+
   if (typeof host !== 'string' || !host) throw new Error('host must be a host name');
   if (!Number.isInteger(port) || port < 0 || port > 65535)
     throw new Error('port must be 0 to 65535');
   if (typeof dataDir !== 'string' || !dataDir) throw new Error('dataDir must be a folder');
-  return { host, port, dataDir: isAbsolute(dataDir) ? dataDir : join(dir, dataDir) };
+  if (
+    typeof rawProvider !== 'string' ||
+    !(SUPPORTED_MAP_PROVIDERS as readonly string[]).includes(rawProvider)
+  ) {
+    throw new Error(`mapProvider must be one of ${SUPPORTED_MAP_PROVIDERS.join(', ')}`);
+  }
+
+  return {
+    host,
+    port,
+    dataDir: isAbsolute(dataDir) ? dataDir : join(dir, dataDir),
+    mapProvider: rawProvider as ConfiguredMapProvider,
+    openRouteServiceApiKey,
+    openRouteServiceBaseUrl,
+  };
 }
