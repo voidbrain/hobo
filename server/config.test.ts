@@ -22,6 +22,8 @@ describe('server config', () => {
       openRouteServiceApiKey: null,
       openRouteServiceBaseUrl: 'https://api.openrouteservice.org',
       openRouteServiceTimeoutMs: 10_000,
+      osrmBaseUrl: null,
+      osrmTimeoutMs: 10_000,
       legCacheMaxAgeDays: 30,
     });
   });
@@ -45,6 +47,8 @@ describe('server config', () => {
       openRouteServiceApiKey: 'test-ors-local-key',
       openRouteServiceBaseUrl: 'https://ors.example.test',
       openRouteServiceTimeoutMs: 10_000,
+      osrmBaseUrl: null,
+      osrmTimeoutMs: 10_000,
       legCacheMaxAgeDays: 30,
     });
     assert.deepEqual(
@@ -64,6 +68,8 @@ describe('server config', () => {
         openRouteServiceApiKey: 'env-override-key',
         openRouteServiceBaseUrl: 'http://127.0.0.1:8080',
         openRouteServiceTimeoutMs: 2_500,
+        osrmBaseUrl: null,
+        osrmTimeoutMs: 10_000,
         legCacheMaxAgeDays: 7,
       },
     );
@@ -102,5 +108,35 @@ describe('server config', () => {
     assert.throws(() => loadConfig(dir, {}), /colour/);
     writeFileSync(join(dir, 'config.local.json'), '{nope');
     assert.throws(() => loadConfig(dir, {}), /config.local.json/);
+  });
+
+  it('reads the OSRM base URL from config only and refuses one with credentials or a query (F-013-T01)', () => {
+    writeFileSync(
+      join(dir, 'config.local.json'),
+      JSON.stringify({
+        mapProvider: 'osrm',
+        osrmBaseUrl: 'http://192.0.2.10:5000/',
+        osrmTimeoutMs: 4000,
+      }),
+    );
+    const loaded = loadConfig(dir, {});
+    assert.equal(loaded.mapProvider, 'osrm');
+    assert.equal(loaded.osrmBaseUrl, 'http://192.0.2.10:5000');
+    assert.equal(loaded.osrmTimeoutMs, 4000);
+    assert.equal(
+      loadConfig(dir, { HOBO_OSRM_BASE_URL: 'https://osrm.example.test' }).osrmBaseUrl,
+      'https://osrm.example.test',
+    );
+    assert.equal(loadConfig(dir, { HOBO_OSRM_BASE_URL: '  ' }).osrmBaseUrl, null);
+    for (const bad of [
+      'file:///etc/passwd',
+      'http://user:secret@osrm.example.test',
+      'http://osrm.example.test/?next=http://elsewhere.test',
+      'http://osrm.example.test/#frag',
+      'not a url',
+    ]) {
+      assert.throws(() => loadConfig(dir, { HOBO_OSRM_BASE_URL: bad }), /osrmBaseUrl/, bad);
+    }
+    assert.throws(() => loadConfig(dir, { HOBO_OSRM_TIMEOUT_MS: '0' }), /osrmTimeoutMs/);
   });
 });

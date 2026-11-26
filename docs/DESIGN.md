@@ -12,7 +12,7 @@ browser (Angular app) ──/api──▶ server/ (Node 24, node:sqlite) ──�
 
 - The app reaches data and map operations only through the local service (`src/app/data/places-api.ts`, `src/app/data/trips-api.ts`, `src/app/maps/maps-api.ts`); `ng serve` proxies `/api` to it (`proxy.conf.json`). No IndexedDB store.
 - The service listens on `127.0.0.1:4310` by default and answers only to local host names. It accepts JSON bodies only (`content-type: application/json`, at most 1 MB), so a cross-site page cannot post to it without a preflight it never allows.
-- Settings: defaults, then `server/config.local.json` (git-ignored; see `server/config.example.json`), then `HOBO_HOST`, `HOBO_PORT`, `HOBO_DATA_DIR`, `HOBO_MAP_PROVIDER`, `HOBO_ORS_API_KEY`, `HOBO_ORS_BASE_URL`, `HOBO_ORS_TIMEOUT_MS` (default 10000), `HOBO_LEG_CACHE_MAX_AGE_DAYS`. API keys never leave `server/`. The data folder (`server/data/` by default) is git-ignored.
+- Settings: defaults, then `server/config.local.json` (git-ignored; see `server/config.example.json`), then `HOBO_HOST`, `HOBO_PORT`, `HOBO_DATA_DIR`, `HOBO_MAP_PROVIDER`, `HOBO_ORS_API_KEY`, `HOBO_ORS_BASE_URL`, `HOBO_ORS_TIMEOUT_MS` (default 10000), `HOBO_OSRM_BASE_URL`, `HOBO_OSRM_TIMEOUT_MS` (default 10000), `HOBO_LEG_CACHE_MAX_AGE_DAYS`. API keys never leave `server/`. The data folder (`server/data/` by default) is git-ignored.
 - The server runs its TypeScript directly with Node's type stripping, so the shared model under `src/app/core/` imports other files only with `import type`.
 
 ## Place
@@ -78,14 +78,16 @@ Deleting a place removes its `id` from stored trip stops and clears `placeId` on
 
 `src/app/maps/map-provider.ts` defines the swappable `MapProvider` contract (`route`, `matrix`, `geocode`, `autocomplete`, and tile layer defaults), request validators, canonical 6-decimal coordinate keys, and `cachedMapProvider`. Distances inside the adapter and cache are whole metres and travel times are whole minutes.
 
-Provider implementations run in `server/` (`server/map-adapter.ts`, `server/ors-provider.ts`), reading `mapProvider` and `openRouteServiceApiKey` from `server/config.local.json` (or `HOBO_MAP_PROVIDER` / `HOBO_ORS_API_KEY`) and sending the OpenRouteService key only in the `Authorization` header. Cached legs live in the `leg_cache` table keyed by `(provider, profile, from_key, to_key)` so trip edits and what-if comparisons reuse known legs without re-querying the upstream provider, and matrix updates preserve previously cached route polylines. A matrix-only leg has no polyline, so `route` still fetches the line once. A leg older than `legCacheMaxAgeDays` (default 30) is a miss and is fetched again.
+Provider implementations run in `server/` (`server/map-adapter.ts`, `server/ors-provider.ts`, `server/osrm-provider.ts`), reading `mapProvider` and `openRouteServiceApiKey` from `server/config.local.json` (or `HOBO_MAP_PROVIDER` / `HOBO_ORS_API_KEY`) and sending the OpenRouteService key only in the `Authorization` header. Cached legs live in the `leg_cache` table keyed by `(provider, profile, from_key, to_key)` so trip edits and what-if comparisons reuse known legs without re-querying the upstream provider, and matrix updates preserve previously cached route polylines. A matrix-only leg has no polyline, so `route` still fetches the line once. A leg older than `legCacheMaxAgeDays` (default 30) is a miss and is fetched again.
+
+With `mapProvider: "osrm"` (F-013) routes and matrices come from a self-hosted OSRM at `osrmBaseUrl` (no key; unset gives `missing_key`, 503). The base URL comes only from local config, must be plain http or https (no credentials, query or fragment), and the server refuses redirects, so no request can steer it to another host. OSRM's `NoRoute` and `NoSegment` give `unreachable_route` (as ORS 2009 and 2010 do), a 429 gives `quota_exceeded`, other refusals `upstream_error` with the OSRM text in the server log only. Hobo profiles map to OSRM's `car`, `bike` and `foot`; one `osrm-routed` serves the one profile it was built with. OSRM has no place search: geocode and autocomplete answer 501 `upstream_error` until a geocoding provider exists (F-013-T02). Legs are cached under provider `osrm`, apart from ORS legs.
 
 | Method and path | Body / query | Answer |
 |---|---|---|
 | `POST /api/maps/route` | `{ from, to, profile? }` | 200 with `RouteResult` (`distanceMetres`, `travelMinutes`, `geometry`, `cached`); 400, 422, 429, 502 or 503 |
 | `POST /api/maps/matrix` | `{ points, profile? }` (2–50 points) | 200 with `MatrixResult`; 400, 422, 429, 502 or 503 |
-| `GET /api/maps/geocode` | `?q=<text>&limit=<1..20>` | 200 with `GeocodeCandidate[]`; 400, 429, 502 or 503 |
-| `GET /api/maps/autocomplete` | `?q=<text>&limit=<1..20>` | 200 with `GeocodeCandidate[]`; 400, 429, 502 or 503 |
+| `GET /api/maps/geocode` | `?q=<text>&limit=<1..20>` | 200 with `GeocodeCandidate[]`; 400, 429, 501, 502 or 503 |
+| `GET /api/maps/autocomplete` | `?q=<text>&limit=<1..20>` | 200 with `GeocodeCandidate[]`; 400, 429, 501, 502 or 503 |
 
 Map errors include `{ code, errors }` (`missing_key`, `invalid_key`, `quota_exceeded`, `unreachable_route`, `upstream_error`, `bad_request`) and never echo provider secrets or raw provider text (other provider refusals are logged on the server). A `/api/maps` request whose `Sec-Fetch-Site` is present and not `same-origin` or `none` gets 403, so a cross-site page cannot spend the quota. Geocode and autocomplete answers are reused for 10 minutes. `MapsApi` maps them into user-facing `MapsApiError` instances.
 

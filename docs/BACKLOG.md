@@ -1,9 +1,9 @@
 # <a id="top"></a>Hobo backlog
 
-Current work ledger, reviewed 26 November 2026 against main `975baa8`. Generated from [record sources](work/records) and [steps](work/tasks) by `npm run work:build`: edit those, not this file. [Rules](BACKLOG-RULES.md) · [Archive](archive/README.md) · [Reading the records](#how-to-use-this-file).
+Current work ledger, reviewed 26 November 2026 against main `dd9e52f`. Generated from [record sources](work/records) and [steps](work/tasks) by `npm run work:build`: edit those, not this file. [Rules](BACKLOG-RULES.md) · [Archive](archive/README.md) · [Reading the records](#how-to-use-this-file).
 
 <!-- totals:start -->
-**Remaining effort:** 44.75 h agent + 2.5 h owner across 33 open steps of 14 features. Generated from the task files.
+**Remaining effort:** 42.75 h agent + 2.5 h owner across 33 open steps of 14 features. Generated from the task files.
 <!-- totals:end -->
 
 ## Work items
@@ -505,9 +505,9 @@ Bugs (B-) and features (F-) in one list, in work-queue order. Steps: `effort` = 
 
 | Status | Priority | Effort | Remaining | Depends on | Unlocks | Agent | Procedures | Decisions |
 |---|---|---|---|---|---|:---:|:---:|:---:|
-| 🔴 Open | 🔹 P3 | 🟡 Medium | 4 h agent + 1 h owner | — | — | 🤖 | — | — |
+| 🔴 Open | 🔹 P3 | 🟡 Medium | 2 h agent + 1 h owner | — | — | 🤖 | — | — |
 
-💻 **→** Next: F-013-T01 — OSRM provider (Planned).
+💻 **→** Next: F-013-T01 — OSRM provider (Implemented; verification pending).
 
 | | |
 |---|---|
@@ -519,10 +519,10 @@ Bugs (B-) and features (F-) in one list, in work-queue order. Steps: `effort` = 
 
 | Effort | Step | Estimate | Actual | Remaining | Status | Depends on | Unlocks | Who |
 |---|---|---|---|---|---|---|---|:---:|
-| 🟡 Medium | <a id="f-013-t01"></a>F-013-T01 — OSRM provider | 2 h | 0 h | 2 h | Planned | — | [F-013-T03](#f-013-t03) | 🤖 |
+| 🟢 Small | <a id="f-013-t01"></a>F-013-T01 — OSRM provider | 2 h | 0 h | 0 h | Implemented; verification pending | — | [F-013-T03](#f-013-t03) | 🤖 |
 | 🟡 Medium | <a id="f-013-t02"></a>F-013-T02 — Nominatim or Photon geocoding provider | 2 h | 0 h | 2 h | Planned | — | [F-013-T03](#f-013-t03) | 🤖 |
 | 🟢 Small | <a id="f-013-t03"></a>F-013-T03 — Owner runs OSRM and Photon on the base | 0 h | 0 h | 0 h agent + 1 h owner | Planned | [F-013-T01](#f-013-t01), [F-013-T02](#f-013-t02) | — | ⏳ 🧑‍🔧 |
-| 🟡 Medium | **Total** | 4 h | 0 h (0 of 3 steps recorded) | 4 h agent + 1 h owner | 0 of 3 completed | | | |
+| 🟡 Medium | **Total** | 4 h | 0 h (0 of 3 steps recorded) | 2 h agent + 1 h owner | 0 of 3 completed | | | |
 
 <details>
 <summary>Next action, estimates and PR history</summary>
@@ -531,10 +531,10 @@ Bugs (B-) and features (F-) in one list, in work-queue order. Steps: `effort` = 
 
 | Field | Value |
 |---|---|
-| PR / evidence | [#1](https://github.com/voidbrain/hobo/pull/1) |
+| PR / evidence | [#1](https://github.com/voidbrain/hobo/pull/1); Test: `server/osrm.test.ts`, `server/config.test.ts` |
 | Opened | 2026-11-25 |
 | Verification | Pending |
-| Reviewed | 2026-11-25 |
+| Reviewed | 2026-11-26 |
 
 </details>
 

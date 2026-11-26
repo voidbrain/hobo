@@ -4,7 +4,7 @@
   "parent": "F-013",
   "title": "OSRM provider",
   "goal": "Routing and matrix without a key",
-  "status": "planned",
+  "status": "implemented",
   "acceptance": [
     "OSRM route and table calls behind the adapter in `server/`",
     "Same recorded-fixture tests as ORS"
@@ -32,14 +32,14 @@
   ],
   "effort": {
     "size": "medium",
-    "estimate": "2 h agent, 1 d",
-    "basis": "Planned 2026-11-25 in the upfront step plan: scoped to one PR, at most 1 focused day(s). Not a measurement.",
-    "reviewed": "2026-11-25",
-    "agentHours": 2,
+    "estimate": "0 remaining",
+    "basis": "Done 2026-11-26: server/osrm-provider.ts (route and table behind the MapProvider adapter, config-only base URL, timeouts, error mapping), recorded OSRM fixtures and a provider contract test shared with ORS. No actual: start time not recorded.",
+    "reviewed": "2026-11-26",
+    "agentHours": 0,
     "ownerHours": 0.0,
     "baselineAgentHours": 2,
     "estimateAgentHours": 2,
-    "days": 1,
+    "days": 0,
     "baselineDays": 1
   }
 }

@@ -3,7 +3,6 @@ import {
   DEFAULT_TRAVEL_PROFILE,
   type GeocodeCandidate,
   type GeocodeRequest,
-  type MapErrorCode,
   type MapPoint,
   type MapProvider,
   type MatrixCell,
@@ -12,25 +11,11 @@ import {
   type RouteRequest,
   type RouteResult,
 } from '../src/app/maps/map-provider.ts';
+import { MapProviderError } from './map-adapter.ts';
 
 const DEFAULT_BASE_URL = 'https://api.openrouteservice.org';
 /** How long one OpenRouteService call may take before it counts as an upstream error. */
 export const DEFAULT_ORS_TIMEOUT_MS = 10_000;
-
-/** Structured upstream or configuration error from a server-side map provider (F-007-T03). */
-export class MapProviderError extends Error {
-  readonly status: number;
-  readonly code: MapErrorCode;
-  readonly userMessage: string;
-
-  constructor(status: number, code: MapErrorCode, userMessage: string) {
-    super(userMessage);
-    this.name = 'MapProviderError';
-    this.status = status;
-    this.code = code;
-    this.userMessage = userMessage;
-  }
-}
 
 export interface OrsProviderOptions {
   readonly apiKey: string | null;
