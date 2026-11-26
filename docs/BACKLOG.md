@@ -3,7 +3,7 @@
 Current work ledger, reviewed 26 November 2026 against main `8eff54d`. Generated from [record sources](work/records) and [steps](work/tasks) by `npm run work:build`: edit those, not this file. [Rules](BACKLOG-RULES.md) · [Archive](archive/README.md) · [Reading the records](#how-to-use-this-file).
 
 <!-- totals:start -->
-**Remaining effort:** 45.75 h agent + 2.5 h owner across 39 open steps of 16 features. Generated from the task files.
+**Remaining effort:** 45.5 h agent + 2.5 h owner across 39 open steps of 16 features. Generated from the task files.
 <!-- totals:end -->
 
 ## Work items
@@ -591,7 +591,7 @@ Bugs (B-) and features (F-) in one list, in work-queue order. Steps: `effort` = 
 
 | Status | Priority | Effort | Remaining | Depends on | Unlocks | Agent | Procedures | Decisions |
 |---|---|---|---|---|---|:---:|:---:|:---:|
-| 🔴 Open | 🔹 P3 | 🟡 Medium | 1.5 h | — | — | 🤖 | — | — |
+| 🔴 Open | 🔹 P3 | 🟡 Medium | 1.25 h | — | — | 🤖 | — | — |
 
 💻 **→** Next: F-016-T01 — Reviews, coverage enforcement, work usage and behaviour runner settings (Implemented; verification pending).
 
@@ -609,8 +609,8 @@ Bugs (B-) and features (F-) in one list, in work-queue order. Steps: `effort` = 
 | 🟢 Small | <a id="f-016-t02"></a>F-016-T02 — First architecture review with outside-landscape comparison | 0.5 h | 0 h | 0 h | Implemented; verification pending | — | — | [PR #14](https://github.com/voidbrain/hobo/pull/14) first architecture review |
 | 🟢 Small | <a id="f-016-t03"></a>F-016-T03 — First token and skills reviews | 1 h | 0 h | 1 h | Planned | — | — | — |
 | 🟢 Small | <a id="f-016-t04"></a>F-016-T04 — Confirm the scheduled maintenance run | 0.25 h | 0 h | 0.25 h | Planned | — | — | — |
-| 🟢 Small | <a id="f-016-t05"></a>F-016-T05 — Turn coverage.enforce on | 0.25 h | 0 h | 0.25 h | Planned | [F-016-T01](#f-016-t01) | — | — |
-| 🟡 Medium | **Total** | 2.25 h | 0 h (0 of 5 steps recorded) | 1.5 h | 0 of 5 completed | | | |
+| 🟢 Small | <a id="f-016-t05"></a>F-016-T05 — Turn coverage.enforce on | 0.25 h | 0 h | 0 h | Implemented; verification pending | [F-016-T01](#f-016-t01) | — | [PR #15](https://github.com/voidbrain/hobo/pull/15) coverage.enforce on |
+| 🟡 Medium | **Total** | 2.25 h | 0 h (0 of 5 steps recorded) | 1.25 h | 0 of 5 completed | | | |
 
 <details>
 <summary>Next action, estimates and PR history</summary>
@@ -619,7 +619,7 @@ Bugs (B-) and features (F-) in one list, in work-queue order. Steps: `effort` = 
 
 | Field | Value |
 |---|---|
-| PR / evidence | Steps: F-016-T01: [PR #14](https://github.com/voidbrain/hobo/pull/14) settings on · F-016-T02: [PR #14](https://github.com/voidbrain/hobo/pull/14) first architecture review. [#14](https://github.com/voidbrain/hobo/pull/14) |
+| PR / evidence | Steps: F-016-T01: [PR #14](https://github.com/voidbrain/hobo/pull/14) settings on · F-016-T02: [PR #14](https://github.com/voidbrain/hobo/pull/14) first architecture review · F-016-T05: [PR #15](https://github.com/voidbrain/hobo/pull/15) coverage.enforce on. [#14](https://github.com/voidbrain/hobo/pull/14); [#15](https://github.com/voidbrain/hobo/pull/15) |
 | Opened | 2026-11-26 |
 | Verification | Pending |
 | Reviewed | 2026-11-26 |

@@ -277,7 +277,7 @@
       "src/app/"
     ],
     "drop": 2,
-    "enforce": false
+    "enforce": true
   },
   "reviews": {
     "token": {
