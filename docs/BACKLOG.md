@@ -3,7 +3,7 @@
 Current work ledger, reviewed 26 November 2026 against main `8eff54d`. Generated from [record sources](work/records) and [steps](work/tasks) by `npm run work:build`: edit those, not this file. [Rules](BACKLOG-RULES.md) · [Archive](archive/README.md) · [Reading the records](#how-to-use-this-file).
 
 <!-- totals:start -->
-**Remaining effort:** 49 h agent + 2.5 h owner across 41 open steps of 17 features. Generated from the task files.
+**Remaining effort:** 50.25 h agent + 2.5 h owner across 42 open steps of 16 features. Generated from the task files.
 <!-- totals:end -->
 
 ## Work items
@@ -16,7 +16,7 @@ Bugs (B-) and features (F-) in one list, in work-queue order. Steps: `effort` = 
 
 | Status | Priority | Effort | Remaining | Depends on | Unlocks | Agent | Procedures | Decisions |
 |---|---|---|---|---|---|:---:|:---:|:---:|
-| 🔴 Open | 🔶 P2 | 🟢 Small | 0.25 h owner | — | [F-002-T04](#f-002-t04), [F-004-T03](#f-004-t03), [F-012-T01](#f-012-t01) | 🤖 | 🧑‍🔧 | — |
+| 🔴 Open | 🔶 P2 | 🟢 Small | 0.5 h agent + 0.25 h owner | — | [F-002-T04](#f-002-t04), [F-004-T03](#f-004-t03) | 🤖 | 🧑‍🔧 | — |
 
 💻 **→** Next: F-007-T02 — Leaflet map component (Implemented; verification pending).
 
@@ -30,9 +30,10 @@ Bugs (B-) and features (F-) in one list, in work-queue order. Steps: `effort` = 
 
 | Effort | Step | Estimate | Actual | Remaining | Status | Depends on | Unlocks | Who | PRs |
 |---|---|---|---|---|---|---|---|:---:|---|
-| 🟢 Small | <a id="f-007-t02"></a>F-007-T02 — Leaflet map component | 2 h | 0 h | 0 h | Implemented; verification pending | — | [F-002-T04](#f-002-t04), [F-004-T03](#f-004-t03), [F-012-T01](#f-012-t01) | 🤖 | [PR #12](https://github.com/voidbrain/hobo/pull/12) MapView: Leaflet, OSM tiles and attribution, markers and route lines from inputs, token classes |
+| 🟢 Small | <a id="f-007-t02"></a>F-007-T02 — Leaflet map component | 2 h | 0 h | 0 h | Implemented; verification pending | — | [F-002-T04](#f-002-t04), [F-004-T03](#f-004-t03), [F-007-T05](#f-007-t05) | 🤖 | [PR #12](https://github.com/voidbrain/hobo/pull/12) MapView: Leaflet, OSM tiles and attribution, markers and route lines from inputs, token classes |
 | 🟢 Small | <a id="f-007-t04"></a>F-007-T04 — Owner adds an OpenRouteService key and checks a live route | 0 h | 0 h | 0 h agent + 0.25 h owner | Planned | — | — | [🧑‍🔧](work/records/F-007.md) | — |
-| 🟢 Small | **Total** | 7 h | 0 h (0 of 4 steps recorded) | 0.25 h owner | 2 of 4 completed | | | | |
+| 🟢 Small | <a id="f-007-t05"></a>F-007-T05 — One &#91;lng, lat&#93; pair parser and one point type for both routing providers | 0.5 h | 0 h | 0.5 h | Planned | [F-007-T02](#f-007-t02) | — | ⏳ 🤖 | [PR #17](https://github.com/voidbrain/hobo/pull/17) plan |
+| 🟢 Small | **Total** | 7.5 h | 0 h (0 of 5 steps recorded) | 0.5 h agent + 0.25 h owner | 2 of 5 completed | | | | |
 
 <details><summary>Done steps (2)</summary>
 
@@ -50,7 +51,7 @@ Bugs (B-) and features (F-) in one list, in work-queue order. Steps: `effort` = 
 
 | Field | Value |
 |---|---|
-| PR / evidence | Steps: F-007-T01: [PR #8](https://github.com/voidbrain/hobo/pull/8) MapProvider adapter interface, local config without committed keys, and SQLite leg cache · F-007-T02: [PR #12](https://github.com/voidbrain/hobo/pull/12) MapView: Leaflet, OSM tiles and attribution, markers and route lines from inputs, token classes · F-007-T03: [PR #9](https://github.com/voidbrain/hobo/pull/9) OpenRouteService directions, matrix, geocode and autocomplete via server /api/maps, MapsApi client and recorded fixtures. [#1](https://github.com/voidbrain/hobo/pull/1); [#2](https://github.com/voidbrain/hobo/pull/2) (review fixes); [#8](https://github.com/voidbrain/hobo/pull/8) (F-007-T01); [#9](https://github.com/voidbrain/hobo/pull/9) (F-007-T03); [#12](https://github.com/voidbrain/hobo/pull/12) (F-007-T02); Test: `src/app/maps/map-provider.spec.ts`, `server/config.test.ts`, `server/leg-cache.test.ts` (`47d4b46`), `server/ors.test.ts`, `src/app/maps/maps-api.spec.ts` (`bde43bb`), `src/app/maps/map-view.spec.ts` |
+| PR / evidence | Steps: F-007-T01: [PR #8](https://github.com/voidbrain/hobo/pull/8) MapProvider adapter interface, local config without committed keys, and SQLite leg cache · F-007-T02: [PR #12](https://github.com/voidbrain/hobo/pull/12) MapView: Leaflet, OSM tiles and attribution, markers and route lines from inputs, token classes · F-007-T03: [PR #9](https://github.com/voidbrain/hobo/pull/9) OpenRouteService directions, matrix, geocode and autocomplete via server /api/maps, MapsApi client and recorded fixtures · F-007-T05: [PR #17](https://github.com/voidbrain/hobo/pull/17) plan. [#1](https://github.com/voidbrain/hobo/pull/1); [#2](https://github.com/voidbrain/hobo/pull/2) (review fixes); [#8](https://github.com/voidbrain/hobo/pull/8) (F-007-T01); [#9](https://github.com/voidbrain/hobo/pull/9) (F-007-T03); [#12](https://github.com/voidbrain/hobo/pull/12) (F-007-T02); Test: `src/app/maps/map-provider.spec.ts`, `server/config.test.ts`, `server/leg-cache.test.ts` (`47d4b46`), `server/ors.test.ts`, `src/app/maps/maps-api.spec.ts` (`bde43bb`), `src/app/maps/map-view.spec.ts`; [#17](https://github.com/voidbrain/hobo/pull/17) (plan) |
 | Opened | 2026-11-25 |
 | Verification | Pending |
 | Reviewed | 2026-11-26 |
@@ -305,44 +306,6 @@ Bugs (B-) and features (F-) in one list, in work-queue order. Steps: `effort` = 
 </details>
 
 ---
-### <a id="f-012"></a>[✨ F-012](#top)
-
-**Shared maps/geo package with openbando (candidate)**
-
-| Status | Priority | Effort | Remaining | Depends on | Unlocks | Agent | Procedures | Decisions |
-|---|---|---|---|---|---|:---:|:---:|:---:|
-| 🔴 Open | 🔹 P3 | 🟢 Small | 1 h | [F-007-T02](#f-007-t02) | — | ⏳ | — | — |
-
-💻 **→** Next: F-012-T01 — Compare and propose (Planned).
-
-| | |
-|---|---|
-| **Issue** | The maps and geo domain is shared with openbando, which uses Leaflet and its own geo maths in `src/app/core/geo.ts`. A shared package could serve both. This is a candidate, not a decision. |
-| **Reproduce** | — |
-| **Check** | A dated comparison of Hobo's `src/app/maps/` and openbando's geo code lists the shared functions and proposes, for a function both projects would import, a package in blocks (through a coordination record); or the record closes with the reason not to share. |
-
-**Feature steps**
-
-| Effort | Step | Estimate | Actual | Remaining | Status | Depends on | Unlocks |
-|---|---|---|---|---|---|---|---|
-| 🟢 Small | <a id="f-012-t01"></a>F-012-T01 — Compare and propose | 1 h | 0 h | 1 h | Planned | [F-007-T02](#f-007-t02) | — |
-| 🟢 Small | **Total** | 1 h | 0 h (0 of 1 steps recorded) | 1 h | 0 of 1 completed | | |
-
-<details>
-<summary>Next action, estimates and PR history</summary>
-
-[Full notes & evidence](work/records/F-012.md)
-
-| Field | Value |
-|---|---|
-| PR / evidence | [#1](https://github.com/voidbrain/hobo/pull/1) |
-| Opened | 2026-11-25 |
-| Verification | Pending |
-| Reviewed | 2026-11-25 |
-
-</details>
-
----
 ### <a id="f-005"></a>[✨ F-005](#top)
 
 **What-if: compare another order or set of stops**
@@ -460,45 +423,6 @@ Bugs (B-) and features (F-) in one list, in work-queue order. Steps: `effort` = 
 </details>
 
 ---
-### <a id="f-011"></a>[✨ F-011](#top)
-
-**NERV integration: MCP server for places, trips and totals**
-
-| Status | Priority | Effort | Remaining | Depends on | Unlocks | Agent | Procedures | Decisions |
-|---|---|---|---|---|---|:---:|:---:|:---:|
-| 🔴 Open | 🔹 P3 | 🟡 Medium | 2.5 h agent + 0.25 h owner | [F-002-T01](#f-002-t01), [F-003-T01](#f-003-t01), [F-004-T01](#f-004-t01), [F-004-T02](#f-004-t02) | — | ⏳ | — | — |
-
-💻 **→** Next: F-011-T01 — MCP endpoint in the local service (Planned).
-
-| | |
-|---|---|
-| **Issue** | NERV should read Hobo the way it reads Grover's hub: an MCP server exposing places, trips and route totals. |
-| **Reproduce** | NERV cannot see Hobo. |
-| **Check** | The local service exposes an MCP endpoint with read tools (list places, get a trip, route totals for a trip, a day or the whole trip); an end-to-end test lists and calls the tools; NERV answers a question about a trip from chat. |
-
-**Feature steps**
-
-| Effort | Step | Estimate | Actual | Remaining | Status | Depends on | Unlocks | Who |
-|---|---|---|---|---|---|---|---|:---:|
-| 🟡 Medium | <a id="f-011-t01"></a>F-011-T01 — MCP endpoint in the local service | 2.5 h | 0 h | 2.5 h | Planned | [F-002-T01](#f-002-t01), [F-003-T01](#f-003-t01), [F-004-T01](#f-004-t01), [F-004-T02](#f-004-t02) | [F-011-T02](#f-011-t02) | ⏳ 🤖 |
-| 🟢 Small | <a id="f-011-t02"></a>F-011-T02 — Owner connects Hobo to NERV and checks it from chat | 0 h | 0 h | 0 h agent + 0.25 h owner | Planned | [F-011-T01](#f-011-t01) | — | ⏳ 🧑‍🔧 |
-| 🟡 Medium | **Total** | 2.5 h | 0 h (0 of 2 steps recorded) | 2.5 h agent + 0.25 h owner | 0 of 2 completed | | | |
-
-<details>
-<summary>Next action, estimates and PR history</summary>
-
-[Full notes & evidence](work/records/F-011.md)
-
-| Field | Value |
-|---|---|
-| PR / evidence | [#1](https://github.com/voidbrain/hobo/pull/1); [#2](https://github.com/voidbrain/hobo/pull/2) (review fixes) |
-| Opened | 2026-11-25 |
-| Verification | Pending |
-| Reviewed | 2026-11-25 |
-
-</details>
-
----
 ### <a id="f-013"></a>[✨ F-013](#top)
 
 **Self-hosted routing and geocoding (later)**
@@ -513,7 +437,7 @@ Bugs (B-) and features (F-) in one list, in work-queue order. Steps: `effort` = 
 |---|---|
 | **Issue** | Later, routing and the matrix come from a self-hosted OSRM, and geocoding from Nominatim or Photon, on the owner's base, to drop the API key and quota. |
 | **Reproduce** | — |
-| **Check** | OSRM and Nominatim or Photon providers implement the adapter, pass the same fixture tests as OpenRouteService, and the owner's base serves them. |
+| **Check** | OSRM and Nominatim or Photon providers implement the adapter, pass the same fixture tests as OpenRouteService, and the owner's base serves them. When F-013-T02 adds the Nominatim or Photon geocoder, compare it with openbando's `src/app/services/geo.service.ts` geocode and `coarserQueries` (`core/geo.ts:170`): if both would import the same client, propose a first `geo` package in blocks (the Nominatim client with its rate policy, query coarsening, `parseLatLon` and one point type with `lng`/`lon` settled) through a coordination record; otherwise record the reason (trigger from the F-012 verdict, owner "ok to all" 2026-11-26). |
 
 **Feature steps**
 
@@ -538,7 +462,7 @@ Bugs (B-) and features (F-) in one list, in work-queue order. Steps: `effort` = 
 
 | Field | Value |
 |---|---|
-| PR / evidence | Steps: F-013-T01: [PR #11](https://github.com/voidbrain/hobo/pull/11) OSRM route and matrix behind the MapProvider adapter, config-only base URL, recorded-fixture contract shared with ORS. [#1](https://github.com/voidbrain/hobo/pull/1); [#11](https://github.com/voidbrain/hobo/pull/11) (F-013-T01); Test: `server/osrm.test.ts`, `server/config.test.ts` |
+| PR / evidence | Steps: F-013-T01: [PR #11](https://github.com/voidbrain/hobo/pull/11) OSRM route and matrix behind the MapProvider adapter, config-only base URL, recorded-fixture contract shared with ORS. [#1](https://github.com/voidbrain/hobo/pull/1); [#11](https://github.com/voidbrain/hobo/pull/11) (F-013-T01); Test: `server/osrm.test.ts`, `server/config.test.ts`; [#17](https://github.com/voidbrain/hobo/pull/17) (plan) |
 | Opened | 2026-11-25 |
 | Verification | Pending |
 | Reviewed | 2026-11-26 |
@@ -662,6 +586,46 @@ Bugs (B-) and features (F-) in one list, in work-queue order. Steps: `effort` = 
 | Opened | 2026-11-26 |
 | Verification | Pending |
 | Reviewed | 2026-11-26 |
+
+</details>
+
+---
+### <a id="f-011"></a>[✨ F-011](#top)
+
+**NERV integration: MCP server for places, trips and totals**
+
+| Status | Priority | Effort | Remaining | Depends on | Unlocks | Agent | Procedures | Decisions |
+|---|---|---|---|---|---|:---:|:---:|:---:|
+| 🔴 Open | 🔹 P3 | 🔴 Large | 4.25 h agent + 0.25 h owner | [F-002-T01](#f-002-t01), [F-003-T01](#f-003-t01), [F-004-T01](#f-004-t01), [F-004-T02](#f-004-t02) | — | ⏳ | — | — |
+
+💻 **→** Next: F-011-T01 — MCP endpoint in the local service (Planned).
+
+| | |
+|---|---|
+| **Issue** | NERV should read Hobo the way it reads Grover's hub: an MCP server exposing places, trips and route totals. |
+| **Reproduce** | NERV cannot see Hobo. |
+| **Check** | The local service exposes an MCP endpoint with read tools (list places, get a trip, route totals for a trip, a day or the whole trip); an end-to-end test lists and calls the tools; NERV answers a question about a trip from chat. |
+
+**Feature steps**
+
+| Effort | Step | Estimate | Actual | Remaining | Status | Depends on | Unlocks | Who | PRs |
+|---|---|---|---|---|---|---|---|:---:|---|
+| 🟡 Medium | <a id="f-011-t01"></a>F-011-T01 — MCP endpoint in the local service | 2.5 h | 0 h | 2.5 h | Planned | [F-002-T01](#f-002-t01), [F-003-T01](#f-003-t01), [F-004-T01](#f-004-t01), [F-004-T02](#f-004-t02) | [F-011-T02](#f-011-t02), [F-011-T03](#f-011-t03) | ⏳ 🤖 | — |
+| 🟢 Small | <a id="f-011-t02"></a>F-011-T02 — Owner connects Hobo to NERV and checks it from chat | 0 h | 0 h | 0 h agent + 0.25 h owner | Planned | [F-011-T01](#f-011-t01) | — | ⏳ 🧑‍🔧 | — |
+| 🟡 Medium | <a id="f-011-t03"></a>F-011-T03 — Gauntlet cases for the MCP tools (hobo-v1), Italian and English | 1.75 h | 0 h | 1.75 h | Planned | [F-011-T01](#f-011-t01) | — | ⏳ 🤖 | [PR #17](https://github.com/voidbrain/hobo/pull/17) plan |
+| 🔴 Large | **Total** | 4.25 h | 0 h (0 of 3 steps recorded) | 4.25 h agent + 0.25 h owner | 0 of 3 completed | | | | |
+
+<details>
+<summary>Next action, estimates and PR history</summary>
+
+[Full notes & evidence](work/records/F-011.md)
+
+| Field | Value |
+|---|---|
+| PR / evidence | Steps: F-011-T03: [PR #17](https://github.com/voidbrain/hobo/pull/17) plan. [#1](https://github.com/voidbrain/hobo/pull/1); [#2](https://github.com/voidbrain/hobo/pull/2) (review fixes); [#17](https://github.com/voidbrain/hobo/pull/17) (plan) |
+| Opened | 2026-11-25 |
+| Verification | Pending |
+| Reviewed | 2026-11-25 |
 
 </details>
 
