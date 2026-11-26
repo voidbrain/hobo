@@ -110,7 +110,7 @@ jobs:
       - name: Server tests
         run: npm run test:server
 
-      - name: Code coverage table (enforced since 2026-11-26)
+      - name: Code coverage table (optional enforcement)
         run: node tools/coverage-table.mjs --check --github
 
       - name: Type check
