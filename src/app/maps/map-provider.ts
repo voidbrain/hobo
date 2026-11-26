@@ -135,7 +135,8 @@ function normalizeCoord(value: number, label: string, min: number, max: number):
   return zeroSafe.toFixed(6);
 }
 
-function nonNegativeWhole(value: number, label: string): number {
+/** Rounds a provider distance or time to a whole, non-negative number (shared with `server/`). */
+export function nonNegativeWhole(value: number, label: string): number {
   if (typeof value !== 'number' || !Number.isFinite(value) || value < 0) {
     throw new RangeError(`${label} must be a non-negative number`);
   }
