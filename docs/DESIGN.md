@@ -1,18 +1,18 @@
 # Hobo design
 
-How Hobo is built: the domain model and the local service. Routing maths, the map provider adapter and the NERV MCP surface join this page as they are built.
+How Hobo is built: the domain model, the map provider adapter and the local service.
 
 ## Shape
 
 ```
 browser (Angular app) ──/api──▶ server/ (Node 24, node:sqlite) ──▶ server/data/hobo.sqlite
                                     ▲
-         src/app/core/place.ts, src/app/core/trip.ts (shared models and validation)
+         src/app/core/*, src/app/maps/map-provider.ts (shared models, validation and leg-cache keys)
 ```
 
 - The app reaches data only through the local service (`src/app/data/places-api.ts`, `src/app/data/trips-api.ts`); `ng serve` proxies `/api` to it (`proxy.conf.json`). No IndexedDB store.
 - The service listens on `127.0.0.1:4310` by default and answers only to local host names. It accepts JSON bodies only (`content-type: application/json`, at most 1 MB), so a cross-site page cannot post to it without a preflight it never allows.
-- Settings: defaults, then `server/config.local.json` (git-ignored; see `server/config.example.json`), then `HOBO_HOST`, `HOBO_PORT`, `HOBO_DATA_DIR`. The data folder (`server/data/` by default) is git-ignored.
+- Settings: defaults, then `server/config.local.json` (git-ignored; see `server/config.example.json`), then `HOBO_HOST`, `HOBO_PORT`, `HOBO_DATA_DIR`, `HOBO_MAP_PROVIDER`, `HOBO_ORS_API_KEY`, `HOBO_ORS_BASE_URL`, `HOBO_LEG_CACHE_MAX_AGE_DAYS`. API keys never leave `server/`. The data folder (`server/data/` by default) is git-ignored.
 - The server runs its TypeScript directly with Node's type stripping, so the shared model under `src/app/core/` imports other files only with `import type`.
 
 ## Place
@@ -74,6 +74,12 @@ Pure helpers in `src/app/core/trip.ts` (`datesBetween`, `reconcileTripDays`, `ad
 
 Deleting a place removes its `id` from stored trip stops and clears `placeId` on `from`, `to` and `settings.home` in the same SQLite transaction.
 
+## Map provider adapter and leg cache
+
+`src/app/maps/map-provider.ts` defines the swappable `MapProvider` contract (`route`, `matrix`, `geocode`, `autocomplete`, and tile layer defaults), request validators, canonical 6-decimal coordinate keys, and `cachedMapProvider`. Distances inside the adapter and cache are whole metres and travel times are whole minutes.
+
+Provider implementations run in `server/` (`server/map-adapter.ts`), reading `mapProvider` and `openRouteServiceApiKey` from `server/config.local.json` (or `HOBO_MAP_PROVIDER` / `HOBO_ORS_API_KEY`). Cached legs live in the `leg_cache` table keyed by `(provider, profile, from_key, to_key)` so trip edits and what-if comparisons reuse known legs without re-querying the upstream provider, and matrix updates preserve previously cached route polylines. A matrix-only leg has no polyline, so `route` still fetches the line once. A leg older than `legCacheMaxAgeDays` (default 30) is a miss and is fetched again.
+
 ## Storage
 
-One SQLite file, `hobo.sqlite`, in WAL mode. The `places`, `settings` and `trips` tables are `STRICT`; list/object fields (`tags`, `images`, `from_point`, `to_point`, `days`) are JSON text. Schema changes are numbered migrations recorded in `PRAGMA user_version`: append one, never edit one.
+One SQLite file, `hobo.sqlite`, in WAL mode. The `places`, `settings`, `trips` and `leg_cache` tables are `STRICT`; list/object fields (`tags`, `images`, `from_point`, `to_point`, `days`, `geometry`) are JSON text. Schema changes are numbered migrations recorded in `PRAGMA user_version`: append one, never edit one.
