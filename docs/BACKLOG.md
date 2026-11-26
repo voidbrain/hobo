@@ -673,7 +673,7 @@ Bugs (B-) and features (F-) in one list, in work-queue order. Steps: `effort` = 
 
 **Plan revision, 2026-11-25 (fresh review relayed by the coordinator).** Storage is a small Node 24 `server/` with SQLite that the app talks to (IndexedDB only as an optional offline cache later); the OpenRouteService key lives in git-ignored `server/` config, never in `public/`; F-007-T01 now waits on F-002-T01; F-011-T01 also waits on F-003-T01 and F-004-T02; F-008-T04 on F-003-T01 and F-004-T03. Estimates unchanged.
 
-**Reconciliation, 2026-11-26 (main `975baa8`).** PRs #1-#9 merged on green PR CI and green main runs; F-007-T01 (#8) and F-007-T03 (#9) closed. Harness reconciled from v10.21.3 to v10.21.4 (#10). F-013-T01 (#11) closed on green CI.
+**Reconciliation, 2026-11-26 (main `975baa8`).** PRs #1-#9 merged on green PR CI and green main runs; F-007-T01 (#8) and F-007-T03 (#9) closed. Harness reconciled from v10.21.3 to v10.21.4 (#10) and to v10.24.1 (#18, 2026-11-26; the owner authorised it in chat, "ok to all", although the template backlog is not empty). F-013-T01 (#11) closed on green CI.
 
 ## How to use this file
 
