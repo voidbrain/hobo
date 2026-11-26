@@ -121,6 +121,14 @@ export interface LegCache {
   putLeg(entry: LegCacheInput): CachedLeg;
 }
 
+export type MapErrorCode =
+  | 'missing_key'
+  | 'invalid_key'
+  | 'quota_exceeded'
+  | 'unreachable_route'
+  | 'upstream_error'
+  | 'bad_request';
+
 export type MapValidation<T> = { ok: true; value: T } | { ok: false; errors: string[] };
 
 const MATRIX_LIMITS = { minPoints: 2, maxPoints: 50 } as const;
