@@ -246,7 +246,8 @@ export function cachedMapProvider(provider: MapProvider, cache: LegCache): MapPr
         };
       }
       const hit = cache.getLeg(providerId, profile, request.from, request.to);
-      if (hit) {
+      // A matrix-only leg has no geometry: route still asks the provider for the line.
+      if (hit && hit.geometry.length > 0) {
         return {
           provider: hit.provider,
           profile: hit.profile,
