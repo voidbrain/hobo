@@ -1,0 +1,122 @@
+import { provideHttpClient } from '@angular/common/http';
+import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
+import { TestBed, type ComponentFixture } from '@angular/core/testing';
+import { firstValueFrom } from 'rxjs';
+import { DEFAULT_OSM_TILES, type MapPoint, type RouteResult } from './map-provider';
+import { MapsApi } from './maps-api';
+import { MapView, type MapMarker } from './map-view';
+
+// Invented places and coordinates only.
+const PORTWIND: MapPoint = { lat: 45.1, lng: 9.1 };
+const MILLHAVEN: MapPoint = { lat: 45.22, lng: 9.25 };
+const GREYFELL: MapPoint = { lat: 45.3, lng: 9.4 };
+
+// jsdom lays nothing out; give elements a size so Leaflet projects and draws the layers.
+const SIZE_PROPS = ['clientWidth', 'clientHeight'] as const;
+beforeAll(() => {
+  for (const prop of SIZE_PROPS) {
+    Object.defineProperty(HTMLElement.prototype, prop, { configurable: true, get: () => 400 });
+  }
+});
+afterAll(() => {
+  for (const prop of SIZE_PROPS) delete (HTMLElement.prototype as Partial<HTMLElement>)[prop];
+});
+
+async function render(inputs: {
+  markers?: readonly MapMarker[];
+  routes?: readonly (readonly MapPoint[])[];
+}): Promise<{ fixture: ComponentFixture<MapView>; el: HTMLElement }> {
+  const fixture = TestBed.createComponent(MapView);
+  if (inputs.markers) fixture.componentRef.setInput('markers', inputs.markers);
+  if (inputs.routes) fixture.componentRef.setInput('routes', inputs.routes);
+  await fixture.whenStable();
+  return { fixture, el: fixture.nativeElement as HTMLElement };
+}
+
+describe('MapView (F-007-T02)', () => {
+  beforeEach(() => {
+    TestBed.configureTestingModule({});
+  });
+
+  it('shows OpenStreetMap tiles with visible attribution and no key in any tile URL', async () => {
+    const { el } = await render({});
+    const attribution = el.querySelector('.leaflet-control-attribution');
+    expect(attribution?.textContent).toContain('OpenStreetMap contributors');
+    const tiles = [...el.querySelectorAll<HTMLImageElement>('img.leaflet-tile')];
+    expect(tiles.length).toBeGreaterThan(0);
+    for (const tile of tiles) {
+      expect(tile.src).toMatch(/^https:\/\/[abc]\.tile\.openstreetmap\.org\/\d+\/\d+\/\d+\.png$/);
+    }
+    expect(DEFAULT_OSM_TILES.urlTemplate).not.toMatch(/key|token/i);
+    expect(el.querySelector('[role="region"]')?.getAttribute('aria-label')).toBe('Map');
+  });
+
+  it('draws markers and route lines from its inputs, styled by token classes', async () => {
+    const { fixture, el } = await render({
+      markers: [
+        { location: PORTWIND, label: 'Harbour Quay' },
+        { location: GREYFELL, label: 'Fell Road' },
+      ],
+      routes: [[PORTWIND, MILLHAVEN, GREYFELL]],
+    });
+    expect(el.querySelectorAll('path.hobo-map-marker').length).toBe(2);
+    expect(el.querySelectorAll('path.hobo-map-route').length).toBe(1);
+    const places = [...el.querySelectorAll('.hobo-map-view__places li')].map((li) =>
+      li.textContent?.trim(),
+    );
+    expect(places).toEqual(['Harbour Quay', 'Fell Road']);
+
+    fixture.componentRef.setInput('routes', []);
+    fixture.componentRef.setInput('markers', [{ location: MILLHAVEN, label: 'Mill Lane' }]);
+    await fixture.whenStable();
+    expect(el.querySelectorAll('path.hobo-map-route').length).toBe(0);
+    expect(el.querySelectorAll('path.hobo-map-marker').length).toBe(1);
+  });
+
+  it('removes the Leaflet map when destroyed', async () => {
+    const { fixture, el } = await render({
+      markers: [{ location: PORTWIND, label: 'Harbour Quay' }],
+    });
+    const container = el.querySelector('.hobo-map-view__map')!;
+    expect(container.querySelector('.leaflet-map-pane')).not.toBeNull();
+    fixture.destroy();
+    expect(container.querySelector('.leaflet-map-pane')).toBeNull();
+  });
+});
+
+describe('MapsApi route into MapView (F-007-T02 join)', () => {
+  it('draws the geometry of a cached leg answered by /api/maps/route', async () => {
+    TestBed.configureTestingModule({
+      providers: [provideHttpClient(), provideHttpClientTesting()],
+    });
+    const api = TestBed.inject(MapsApi);
+    const http = TestBed.inject(HttpTestingController);
+
+    const answer = firstValueFrom(api.route({ from: PORTWIND, to: GREYFELL }));
+    const cachedLeg: RouteResult = {
+      provider: 'openrouteservice',
+      profile: 'driving-car',
+      from: PORTWIND,
+      to: GREYFELL,
+      distanceMetres: 38_900,
+      travelMinutes: 48,
+      geometry: [PORTWIND, MILLHAVEN, GREYFELL],
+      cached: true,
+    };
+    http.expectOne({ method: 'POST', url: '/api/maps/route' }).flush(cachedLeg);
+    const leg = await answer;
+    http.verify();
+
+    const { el } = await render({
+      markers: [
+        { location: leg.from, label: 'Harbour Quay' },
+        { location: leg.to, label: 'Fell Road' },
+      ],
+      routes: [leg.geometry],
+    });
+    const line = el.querySelector('path.hobo-map-route');
+    expect(line).not.toBeNull();
+    // Three points of the leg: one move and two line segments in the SVG path.
+    expect(line?.getAttribute('d')?.match(/L/g)?.length).toBe(2);
+  });
+});
