@@ -239,6 +239,24 @@ describe('cachedMapProvider and memory leg cache (F-007-T01)', () => {
     expect(spies.route).toHaveBeenCalledTimes(1);
   });
 
+  it('fetches route geometry once for a leg that only the matrix has cached', async () => {
+    const cache = createMemoryLegCache();
+    const { provider, spies } = makeStubProvider();
+    const cached = cachedMapProvider(provider, cache);
+
+    await cached.matrix({ points: [NORTHGATE, RIVERFORD] });
+    expect(spies.matrix).toHaveBeenCalledTimes(1);
+
+    const first = await cached.route({ from: NORTHGATE, to: RIVERFORD });
+    expect(spies.route).toHaveBeenCalledTimes(1);
+    expect(first.geometry.length).toBeGreaterThan(0);
+
+    const again = await cached.route({ from: NORTHGATE, to: RIVERFORD });
+    expect(spies.route).toHaveBeenCalledTimes(1);
+    expect(again.cached).toBe(true);
+    expect(again.geometry.length).toBeGreaterThan(0);
+  });
+
   it('forwards geocode and autocomplete calls through the adapter', async () => {
     const cache = createMemoryLegCache();
     const { provider, spies } = makeStubProvider();
