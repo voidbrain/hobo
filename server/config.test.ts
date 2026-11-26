@@ -21,6 +21,7 @@ describe('server config', () => {
       mapProvider: 'openrouteservice',
       openRouteServiceApiKey: null,
       openRouteServiceBaseUrl: 'https://api.openrouteservice.org',
+      openRouteServiceTimeoutMs: 10_000,
       legCacheMaxAgeDays: 30,
     });
   });
@@ -43,6 +44,7 @@ describe('server config', () => {
       mapProvider: 'openrouteservice',
       openRouteServiceApiKey: 'test-ors-local-key',
       openRouteServiceBaseUrl: 'https://ors.example.test',
+      openRouteServiceTimeoutMs: 10_000,
       legCacheMaxAgeDays: 30,
     });
     assert.deepEqual(
@@ -52,6 +54,7 @@ describe('server config', () => {
         HOBO_ORS_API_KEY: 'env-override-key',
         HOBO_ORS_BASE_URL: 'http://127.0.0.1:8080/',
         HOBO_LEG_CACHE_MAX_AGE_DAYS: '7',
+        HOBO_ORS_TIMEOUT_MS: '2500',
       }),
       {
         host: '127.0.0.1',
@@ -60,6 +63,7 @@ describe('server config', () => {
         mapProvider: 'openrouteservice',
         openRouteServiceApiKey: 'env-override-key',
         openRouteServiceBaseUrl: 'http://127.0.0.1:8080',
+        openRouteServiceTimeoutMs: 2_500,
         legCacheMaxAgeDays: 7,
       },
     );
@@ -80,6 +84,10 @@ describe('server config', () => {
   it('refuses invalid settings and unknown providers', () => {
     assert.throws(() => loadConfig(dir, { HOBO_PORT: 'eighty' }), /port/);
     assert.throws(() => loadConfig(dir, { HOBO_MAP_PROVIDER: 'mapbox' }), /mapProvider/);
+    assert.throws(
+      () => loadConfig(dir, { HOBO_ORS_TIMEOUT_MS: 'soon' }),
+      /openRouteServiceTimeoutMs/,
+    );
     assert.throws(
       () => loadConfig(dir, { HOBO_LEG_CACHE_MAX_AGE_DAYS: '0' }),
       /legCacheMaxAgeDays/,

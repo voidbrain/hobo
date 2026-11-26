@@ -12,7 +12,7 @@ browser (Angular app) ──/api──▶ server/ (Node 24, node:sqlite) ──�
 
 - The app reaches data and map operations only through the local service (`src/app/data/places-api.ts`, `src/app/data/trips-api.ts`, `src/app/maps/maps-api.ts`); `ng serve` proxies `/api` to it (`proxy.conf.json`). No IndexedDB store.
 - The service listens on `127.0.0.1:4310` by default and answers only to local host names. It accepts JSON bodies only (`content-type: application/json`, at most 1 MB), so a cross-site page cannot post to it without a preflight it never allows.
-- Settings: defaults, then `server/config.local.json` (git-ignored; see `server/config.example.json`), then `HOBO_HOST`, `HOBO_PORT`, `HOBO_DATA_DIR`, `HOBO_MAP_PROVIDER`, `HOBO_ORS_API_KEY`, `HOBO_ORS_BASE_URL`, `HOBO_LEG_CACHE_MAX_AGE_DAYS`. API keys never leave `server/`. The data folder (`server/data/` by default) is git-ignored.
+- Settings: defaults, then `server/config.local.json` (git-ignored; see `server/config.example.json`), then `HOBO_HOST`, `HOBO_PORT`, `HOBO_DATA_DIR`, `HOBO_MAP_PROVIDER`, `HOBO_ORS_API_KEY`, `HOBO_ORS_BASE_URL`, `HOBO_ORS_TIMEOUT_MS` (default 10000), `HOBO_LEG_CACHE_MAX_AGE_DAYS`. API keys never leave `server/`. The data folder (`server/data/` by default) is git-ignored.
 - The server runs its TypeScript directly with Node's type stripping, so the shared model under `src/app/core/` imports other files only with `import type`.
 
 ## Place

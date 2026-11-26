@@ -223,6 +223,28 @@ describe('OpenRouteService provider against recorded fixtures (F-007-T03)', () =
   });
 });
 
+describe('OpenRouteService call limits (F-007-T03 review)', () => {
+  it('gives up on a call that outlasts timeoutMs and reports upstream_error', async () => {
+    const hanging: typeof fetch = (_input, init) =>
+      new Promise((_resolve, reject) => {
+        init?.signal?.addEventListener('abort', () => reject(init.signal?.reason));
+      });
+    const ors = createOpenRouteServiceProvider({
+      apiKey: 'fixture-key',
+      fetchImpl: hanging,
+      timeoutMs: 20,
+    });
+    await assert.rejects(
+      () => ors.route({ from: PORTWIND, to: MILLHAVEN }),
+      (err: unknown) =>
+        err instanceof MapProviderError &&
+        err.status === 502 &&
+        err.code === 'upstream_error' &&
+        /did not answer/.test(err.userMessage),
+    );
+  });
+});
+
 describe('local /api/maps endpoints and SQLite leg cache join (F-007-T03)', () => {
   let dataDir: string;
   let server: RunningServer | undefined;

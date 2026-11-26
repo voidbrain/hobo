@@ -14,6 +14,8 @@ import {
 } from '../src/app/maps/map-provider.ts';
 
 const DEFAULT_BASE_URL = 'https://api.openrouteservice.org';
+/** How long one OpenRouteService call may take before it counts as an upstream error. */
+export const DEFAULT_ORS_TIMEOUT_MS = 10_000;
 
 /** Structured upstream or configuration error from a server-side map provider (F-007-T03). */
 export class MapProviderError extends Error {
@@ -34,6 +36,8 @@ export interface OrsProviderOptions {
   readonly apiKey: string | null;
   readonly baseUrl?: string;
   readonly fetchImpl?: typeof fetch;
+  /** Milliseconds per call; defaults to `DEFAULT_ORS_TIMEOUT_MS`. */
+  readonly timeoutMs?: number;
 }
 
 function scrubSecret(message: string, secret: string): string {
@@ -101,16 +105,30 @@ function extractOrsErrorDetail(
   return {};
 }
 
+function isTimeout(error: unknown): boolean {
+  return error instanceof Error && (error.name === 'TimeoutError' || error.name === 'AbortError');
+}
+
+function timeoutError(timeoutMs: number): MapProviderError {
+  return new MapProviderError(
+    502,
+    'upstream_error',
+    `OpenRouteService did not answer within ${Math.ceil(timeoutMs / 1000)} s. Try again.`,
+  );
+}
+
 async function callOrsJson(
   fetchImpl: typeof fetch,
   url: string,
   init: RequestInit,
   apiKey: string,
+  timeoutMs: number,
 ): Promise<unknown> {
   let response: Response;
   try {
-    response = await fetchImpl(url, init);
-  } catch {
+    response = await fetchImpl(url, { ...init, signal: AbortSignal.timeout(timeoutMs) });
+  } catch (error) {
+    if (isTimeout(error)) throw timeoutError(timeoutMs);
     throw new MapProviderError(
       502,
       'upstream_error',
@@ -121,7 +139,8 @@ async function callOrsJson(
   let parsed: unknown = null;
   try {
     parsed = await response.json();
-  } catch {
+  } catch (error) {
+    if (isTimeout(error)) throw timeoutError(timeoutMs);
     if (response.ok) {
       throw new MapProviderError(
         502,
@@ -210,6 +229,7 @@ function parsePeliasFeatures(payload: unknown): GeocodeCandidate[] {
 export function createOpenRouteServiceProvider(options: OrsProviderOptions): MapProvider {
   const baseUrl = (options.baseUrl ?? DEFAULT_BASE_URL).replace(/\/+$/, '');
   const fetchImpl = options.fetchImpl ?? globalThis.fetch;
+  const timeoutMs = options.timeoutMs ?? DEFAULT_ORS_TIMEOUT_MS;
 
   function requireKey(): string {
     const key = options.apiKey?.trim() ?? '';
@@ -241,6 +261,7 @@ export function createOpenRouteServiceProvider(options: OrsProviderOptions): Map
         },
       },
       apiKey,
+      timeoutMs,
     );
     return parsePeliasFeatures(payload);
   }
@@ -270,6 +291,7 @@ export function createOpenRouteServiceProvider(options: OrsProviderOptions): Map
           }),
         },
         apiKey,
+        timeoutMs,
       );
 
       if (typeof payload !== 'object' || payload === null) {
@@ -345,6 +367,7 @@ export function createOpenRouteServiceProvider(options: OrsProviderOptions): Map
           }),
         },
         apiKey,
+        timeoutMs,
       );
 
       if (typeof payload !== 'object' || payload === null) {

@@ -20,7 +20,11 @@ import {
 import type { ServerConfig } from './config.ts';
 import { MAX_IMAGE_BYTES, mimeForImageName, sanitizeImage } from './images.ts';
 import { createServerMapProvider } from './map-adapter.ts';
-import { createOpenRouteServiceProvider, MapProviderError } from './ors-provider.ts';
+import {
+  createOpenRouteServiceProvider,
+  DEFAULT_ORS_TIMEOUT_MS,
+  MapProviderError,
+} from './ors-provider.ts';
 import { openPlaceStore, type PlaceStore } from './store.ts';
 
 const MAX_BODY = 1_000_000;
@@ -367,6 +371,7 @@ export async function startServer(config: StartServerConfig): Promise<RunningSer
     mapProvider: config.mapProvider ?? 'openrouteservice',
     openRouteServiceApiKey: config.openRouteServiceApiKey ?? null,
     openRouteServiceBaseUrl: config.openRouteServiceBaseUrl ?? 'https://api.openrouteservice.org',
+    openRouteServiceTimeoutMs: config.openRouteServiceTimeoutMs ?? DEFAULT_ORS_TIMEOUT_MS,
     legCacheMaxAgeDays: config.legCacheMaxAgeDays ?? DEFAULT_LEG_CACHE_MAX_AGE_DAYS,
   };
   const mapProvider = createServerMapProvider(resolvedConfig, store, {
@@ -375,6 +380,7 @@ export async function startServer(config: StartServerConfig): Promise<RunningSer
         apiKey: cfg.openRouteServiceApiKey,
         baseUrl: cfg.openRouteServiceBaseUrl,
         fetchImpl: config.fetchImpl,
+        timeoutMs: cfg.openRouteServiceTimeoutMs,
       }),
   });
   const server = createServer(placesHandler(store, join(config.dataDir, 'images'), mapProvider));
