@@ -171,6 +171,10 @@ export function placesHandler(store: PlaceStore, imagesDir?: string, maps?: MapP
       const path = url.pathname;
 
       if (maps && path.startsWith('/api/maps/')) {
+        // A GET needs no preflight, so a cross-site page could spend the provider quota.
+        const site = req.headers['sec-fetch-site'];
+        if (site !== undefined && site !== 'same-origin' && site !== 'none')
+          throw new HttpError(403, ['map requests come only from the Hobo app']);
         if (/^\/api\/maps\/route\/?$/.test(path)) {
           if (req.method !== 'POST') throw new HttpError(405, ['use POST']);
           const checked = validateRouteRequest(await readJson(req));

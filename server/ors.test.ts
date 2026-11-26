@@ -411,6 +411,22 @@ describe('local /api/maps endpoints and SQLite leg cache join (F-007-T03)', () =
     const partlyNew = (await partlyNewRes.json()) as { code: string; errors: string[] };
     assert.match(partlyNew.errors[0] ?? '', /all cached still work; anything with a new leg waits/);
 
+    // Cross-site pages cannot spend the quota; the app (same-origin) and direct calls (none) can.
+    const callsBeforeSites = calls.length;
+    for (const site of ['cross-site', 'same-site']) {
+      const res = await fetch(`${server.url}/api/maps/geocode?q=Portwind`, {
+        headers: { 'sec-fetch-site': site },
+      });
+      assert.equal(res.status, 403, site);
+    }
+    assert.equal(calls.length, callsBeforeSites);
+    for (const site of ['same-origin', 'none']) {
+      const res = await fetch(`${server.url}/api/maps/geocode?q=Portwind`, {
+        headers: { 'sec-fetch-site': site },
+      });
+      assert.equal(res.status, 200, site);
+    }
+
     // 5. Validation errors return 400
     const badGeo = await fetch(`${server.url}/api/maps/geocode?q=`);
     assert.equal(badGeo.status, 400);

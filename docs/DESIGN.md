@@ -87,7 +87,7 @@ Provider implementations run in `server/` (`server/map-adapter.ts`, `server/ors-
 | `GET /api/maps/geocode` | `?q=<text>&limit=<1..20>` | 200 with `GeocodeCandidate[]`; 400, 429, 502 or 503 |
 | `GET /api/maps/autocomplete` | `?q=<text>&limit=<1..20>` | 200 with `GeocodeCandidate[]`; 400, 429, 502 or 503 |
 
-Map errors include `{ code, errors }` (`missing_key`, `invalid_key`, `quota_exceeded`, `unreachable_route`, `upstream_error`, `bad_request`) and never echo provider secrets; `MapsApi` maps them into user-facing `MapsApiError` instances.
+Map errors include `{ code, errors }` (`missing_key`, `invalid_key`, `quota_exceeded`, `unreachable_route`, `upstream_error`, `bad_request`) and never echo provider secrets or raw provider text (other provider refusals are logged on the server). A `/api/maps` request whose `Sec-Fetch-Site` is present and not `same-origin` or `none` gets 403, so a cross-site page cannot spend the quota. Geocode and autocomplete answers are reused for 10 minutes. `MapsApi` maps them into user-facing `MapsApiError` instances.
 
 ## Storage
 
