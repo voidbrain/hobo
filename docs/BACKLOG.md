@@ -577,7 +577,7 @@ Bugs (B-) and features (F-) in one list, in work-queue order. Steps: `effort` = 
 
 | Field | Value |
 |---|---|
-| PR / evidence | PRNUM |
+| PR / evidence | [#13](https://github.com/voidbrain/hobo/pull/13) |
 | Opened | 2026-11-26 |
 | Verification | Pending |
 | Reviewed | 2026-11-26 |
