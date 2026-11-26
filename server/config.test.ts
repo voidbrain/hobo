@@ -1,9 +1,12 @@
 import { strict as assert } from 'node:assert';
-import { mkdtempSync, rmSync, writeFileSync } from 'node:fs';
+import { mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
-import { join } from 'node:path';
+import { dirname, join } from 'node:path';
 import { afterEach, beforeEach, describe, it } from 'node:test';
+import { fileURLToPath } from 'node:url';
 import { loadConfig } from './config.ts';
+
+const SERVER_DIR = dirname(fileURLToPath(import.meta.url));
 
 describe('server config', () => {
   let dir: string;
@@ -15,28 +18,70 @@ describe('server config', () => {
       host: '127.0.0.1',
       port: 4310,
       dataDir: join(dir, 'data'),
+      mapProvider: 'openrouteservice',
+      openRouteServiceApiKey: null,
+      openRouteServiceBaseUrl: 'https://api.openrouteservice.org',
     });
   });
 
-  it('reads config.local.json, then the environment', () => {
+  it('reads config.local.json (including provider and key), then the environment', () => {
     writeFileSync(
       join(dir, 'config.local.json'),
-      JSON.stringify({ port: 5000, dataDir: 'elsewhere' }),
+      JSON.stringify({
+        port: 5000,
+        dataDir: 'elsewhere',
+        mapProvider: 'openrouteservice',
+        openRouteServiceApiKey: '  test-ors-local-key  ',
+        openRouteServiceBaseUrl: 'https://ors.example.test/',
+      }),
     );
     assert.deepEqual(loadConfig(dir, {}), {
       host: '127.0.0.1',
       port: 5000,
       dataDir: join(dir, 'elsewhere'),
+      mapProvider: 'openrouteservice',
+      openRouteServiceApiKey: 'test-ors-local-key',
+      openRouteServiceBaseUrl: 'https://ors.example.test',
     });
-    assert.deepEqual(loadConfig(dir, { HOBO_PORT: '6000', HOBO_DATA_DIR: '/tmp/hobo-x' }), {
-      host: '127.0.0.1',
-      port: 6000,
-      dataDir: '/tmp/hobo-x',
-    });
+    assert.deepEqual(
+      loadConfig(dir, {
+        HOBO_PORT: '6000',
+        HOBO_DATA_DIR: '/tmp/hobo-x',
+        HOBO_ORS_API_KEY: 'env-override-key',
+        HOBO_ORS_BASE_URL: 'http://127.0.0.1:8080/',
+      }),
+      {
+        host: '127.0.0.1',
+        port: 6000,
+        dataDir: '/tmp/hobo-x',
+        mapProvider: 'openrouteservice',
+        openRouteServiceApiKey: 'env-override-key',
+        openRouteServiceBaseUrl: 'http://127.0.0.1:8080',
+      },
+    );
   });
 
-  it('refuses invalid settings', () => {
+  it('treats blank keys as null and ships config.example.json without keys', () => {
+    const exampleText = readFileSync(join(SERVER_DIR, 'config.example.json'), 'utf8');
+    const example = JSON.parse(exampleText) as Record<string, unknown>;
+    assert.equal(example['mapProvider'], 'openrouteservice');
+    assert.equal(example['openRouteServiceApiKey'], '');
+
+    writeFileSync(join(dir, 'config.local.json'), exampleText);
+    const loaded = loadConfig(dir, {});
+    assert.equal(loaded.mapProvider, 'openrouteservice');
+    assert.equal(loaded.openRouteServiceApiKey, null);
+  });
+
+  it('refuses invalid settings and unknown providers', () => {
     assert.throws(() => loadConfig(dir, { HOBO_PORT: 'eighty' }), /port/);
+    assert.throws(() => loadConfig(dir, { HOBO_MAP_PROVIDER: 'mapbox' }), /mapProvider/);
+    assert.throws(
+      () => loadConfig(dir, { HOBO_ORS_BASE_URL: 'ftp://ors.example.test' }),
+      /openRouteServiceBaseUrl/,
+    );
+    writeFileSync(join(dir, 'config.local.json'), JSON.stringify({ openRouteServiceApiKey: 123 }));
+    assert.throws(() => loadConfig(dir, {}), /openRouteServiceApiKey/);
     writeFileSync(join(dir, 'config.local.json'), JSON.stringify({ colour: 'red' }));
     assert.throws(() => loadConfig(dir, {}), /colour/);
     writeFileSync(join(dir, 'config.local.json'), '{nope');
