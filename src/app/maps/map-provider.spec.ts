@@ -277,6 +277,29 @@ describe('cachedMapProvider and memory leg cache (F-007-T01)', () => {
     expect(spies.matrix).toHaveBeenCalledTimes(2);
   });
 
+  it('reuses geocode and autocomplete answers for geocodeMaxAgeMs, then asks again', async () => {
+    const { provider, spies } = makeStubProvider();
+    let nowMs = 1_000_000;
+    const cached = cachedMapProvider(provider, createMemoryLegCache(), {
+      geocodeMaxAgeMs: 60_000,
+      now: () => nowMs,
+    });
+
+    await cached.geocode({ query: 'Northgate', limit: 5 });
+    await cached.geocode({ query: ' northgate ', limit: 5 });
+    await cached.autocomplete({ query: 'North' });
+    await cached.autocomplete({ query: 'North' });
+    expect(spies.geocode).toHaveBeenCalledTimes(1);
+    expect(spies.autocomplete).toHaveBeenCalledTimes(1);
+
+    await cached.geocode({ query: 'Northgate', limit: 3 });
+    expect(spies.geocode).toHaveBeenCalledTimes(2);
+
+    nowMs += 60_001;
+    await cached.geocode({ query: 'Northgate', limit: 5 });
+    expect(spies.geocode).toHaveBeenCalledTimes(3);
+  });
+
   it('forwards geocode and autocomplete calls through the adapter', async () => {
     const cache = createMemoryLegCache();
     const { provider, spies } = makeStubProvider();
