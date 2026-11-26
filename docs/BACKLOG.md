@@ -30,7 +30,7 @@ Bugs (B-) and features (F-) in one list, in work-queue order. Steps: `effort` = 
 
 | Effort | Step | Estimate | Actual | Remaining | Status | Depends on | Unlocks | Who | PRs |
 |---|---|---|---|---|---|---|---|:---:|---|
-| 🟢 Small | <a id="f-007-t02"></a>F-007-T02 — Leaflet map component | 2 h | 0 h | 0 h | Implemented; verification pending | — | [F-002-T04](#f-002-t04), [F-004-T03](#f-004-t03), [F-012-T01](#f-012-t01) | 🤖 | — |
+| 🟢 Small | <a id="f-007-t02"></a>F-007-T02 — Leaflet map component | 2 h | 0 h | 0 h | Implemented; verification pending | — | [F-002-T04](#f-002-t04), [F-004-T03](#f-004-t03), [F-012-T01](#f-012-t01) | 🤖 | [PR #12](https://github.com/voidbrain/hobo/pull/12) MapView: Leaflet, OSM tiles and attribution, markers and route lines from inputs, token classes |
 | 🟢 Small | <a id="f-007-t04"></a>F-007-T04 — Owner adds an OpenRouteService key and checks a live route | 0 h | 0 h | 0 h agent + 0.25 h owner | Planned | — | — | [🧑‍🔧](work/records/F-007.md) | — |
 | 🟢 Small | **Total** | 7 h | 0 h (0 of 4 steps recorded) | 0.25 h owner | 2 of 4 completed | | | | |
 
@@ -50,7 +50,7 @@ Bugs (B-) and features (F-) in one list, in work-queue order. Steps: `effort` = 
 
 | Field | Value |
 |---|---|
-| PR / evidence | Steps: F-007-T01: [PR #8](https://github.com/voidbrain/hobo/pull/8) MapProvider adapter interface, local config without committed keys, and SQLite leg cache · F-007-T03: [PR #9](https://github.com/voidbrain/hobo/pull/9) OpenRouteService directions, matrix, geocode and autocomplete via server /api/maps, MapsApi client and recorded fixtures. [#1](https://github.com/voidbrain/hobo/pull/1); [#2](https://github.com/voidbrain/hobo/pull/2) (review fixes); [#8](https://github.com/voidbrain/hobo/pull/8) (F-007-T01); [#9](https://github.com/voidbrain/hobo/pull/9) (F-007-T03); Test: `src/app/maps/map-provider.spec.ts`, `server/config.test.ts`, `server/leg-cache.test.ts` (`47d4b46`), `server/ors.test.ts`, `src/app/maps/maps-api.spec.ts` (`bde43bb`), `src/app/maps/map-view.spec.ts` |
+| PR / evidence | Steps: F-007-T01: [PR #8](https://github.com/voidbrain/hobo/pull/8) MapProvider adapter interface, local config without committed keys, and SQLite leg cache · F-007-T02: [PR #12](https://github.com/voidbrain/hobo/pull/12) MapView: Leaflet, OSM tiles and attribution, markers and route lines from inputs, token classes · F-007-T03: [PR #9](https://github.com/voidbrain/hobo/pull/9) OpenRouteService directions, matrix, geocode and autocomplete via server /api/maps, MapsApi client and recorded fixtures. [#1](https://github.com/voidbrain/hobo/pull/1); [#2](https://github.com/voidbrain/hobo/pull/2) (review fixes); [#8](https://github.com/voidbrain/hobo/pull/8) (F-007-T01); [#9](https://github.com/voidbrain/hobo/pull/9) (F-007-T03); [#12](https://github.com/voidbrain/hobo/pull/12) (F-007-T02); Test: `src/app/maps/map-provider.spec.ts`, `server/config.test.ts`, `server/leg-cache.test.ts` (`47d4b46`), `server/ors.test.ts`, `src/app/maps/maps-api.spec.ts` (`bde43bb`), `src/app/maps/map-view.spec.ts` |
 | Opened | 2026-11-25 |
 | Verification | Pending |
 | Reviewed | 2026-11-26 |

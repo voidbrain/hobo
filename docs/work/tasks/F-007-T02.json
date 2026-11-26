@@ -32,6 +32,12 @@
   "escalation": [
     "A material scope or effort increase goes to the owner"
   ],
+  "prs": [
+    {
+      "pr": 12,
+      "note": "MapView: Leaflet, OSM tiles and attribution, markers and route lines from inputs, token classes"
+    }
+  ],
   "effort": {
     "size": "medium",
     "estimate": "0 remaining",
