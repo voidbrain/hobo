@@ -10,8 +10,21 @@ import {
   validateSettingsPatch,
   validateTripPatch,
 } from '../src/app/core/trip.ts';
+import {
+  DEFAULT_LEG_CACHE_MAX_AGE_DAYS,
+  parseGeocodeSearchParams,
+  validateMatrixRequest,
+  validateRouteRequest,
+  type MapProvider,
+} from '../src/app/maps/map-provider.ts';
 import type { ServerConfig } from './config.ts';
 import { MAX_IMAGE_BYTES, mimeForImageName, sanitizeImage } from './images.ts';
+import { createServerMapProvider } from './map-adapter.ts';
+import {
+  createOpenRouteServiceProvider,
+  DEFAULT_ORS_TIMEOUT_MS,
+  MapProviderError,
+} from './ors-provider.ts';
 import { openPlaceStore, type PlaceStore } from './store.ts';
 
 const MAX_BODY = 1_000_000;
@@ -22,10 +35,12 @@ const SAFE_IMAGE_NAME = /^[A-Za-z0-9_-][A-Za-z0-9._-]{0,127}$/;
 class HttpError extends Error {
   readonly status: number;
   readonly errors: string[];
-  constructor(status: number, errors: string[]) {
+  readonly code?: string;
+  constructor(status: number, errors: string[], code?: string) {
     super(errors.join('; '));
     this.status = status;
     this.errors = errors;
+    this.code = code;
   }
 }
 
@@ -138,14 +153,47 @@ function assertPlacesExist(store: PlaceStore, ids: readonly string[]) {
   }
 }
 
-/** The local API: /api/places (with /:id/images), /api/settings and /api/trips. */
-export function placesHandler(store: PlaceStore, imagesDir?: string) {
+/** The local API: /api/places (with /:id/images), /api/settings, /api/trips and /api/maps. */
+export function placesHandler(store: PlaceStore, imagesDir?: string, maps?: MapProvider) {
   return async (req: IncomingMessage, res: ServerResponse) => {
     try {
       const host = (req.headers.host ?? '').replace(/:\d+$/, '').toLowerCase();
       if (!LOCAL_HOSTS.has(host))
         throw new HttpError(421, ['this service answers only on localhost']);
-      const path = new URL(req.url ?? '/', 'http://localhost').pathname;
+      const url = new URL(req.url ?? '/', 'http://localhost');
+      const path = url.pathname;
+
+      if (maps && path.startsWith('/api/maps/')) {
+        // A GET needs no preflight, so a cross-site page could spend the provider quota.
+        const site = req.headers['sec-fetch-site'];
+        if (site !== undefined && site !== 'same-origin' && site !== 'none')
+          throw new HttpError(403, ['map requests come only from the Hobo app']);
+        if (/^\/api\/maps\/route\/?$/.test(path)) {
+          if (req.method !== 'POST') throw new HttpError(405, ['use POST']);
+          const checked = validateRouteRequest(await readJson(req));
+          if (!checked.ok) throw new HttpError(400, checked.errors, 'bad_request');
+          return send(res, 200, await maps.route(checked.value));
+        }
+        if (/^\/api\/maps\/matrix\/?$/.test(path)) {
+          if (req.method !== 'POST') throw new HttpError(405, ['use POST']);
+          const checked = validateMatrixRequest(await readJson(req));
+          if (!checked.ok) throw new HttpError(400, checked.errors, 'bad_request');
+          return send(res, 200, await maps.matrix(checked.value));
+        }
+        if (/^\/api\/maps\/geocode\/?$/.test(path)) {
+          if (req.method !== 'GET') throw new HttpError(405, ['use GET']);
+          const checked = parseGeocodeSearchParams(url.searchParams);
+          if (!checked.ok) throw new HttpError(400, checked.errors, 'bad_request');
+          return send(res, 200, await maps.geocode(checked.value));
+        }
+        if (/^\/api\/maps\/autocomplete\/?$/.test(path)) {
+          if (req.method !== 'GET') throw new HttpError(405, ['use GET']);
+          const checked = parseGeocodeSearchParams(url.searchParams);
+          if (!checked.ok) throw new HttpError(400, checked.errors, 'bad_request');
+          return send(res, 200, await maps.autocomplete(checked.value));
+        }
+        throw new HttpError(404, ['no such path']);
+      }
 
       const imageMatch = /^\/api\/places\/([^/]+)\/images(?:\/([^/]+))?\/?$/.exec(path);
       if (imageMatch && imagesDir) {
@@ -283,8 +331,15 @@ export function placesHandler(store: PlaceStore, imagesDir?: string) {
 
       throw new HttpError(404, ['no such path']);
     } catch (error) {
+      if (error instanceof MapProviderError) {
+        return send(res, error.status, { code: error.code, errors: [error.userMessage] });
+      }
       if (error instanceof HttpError) {
-        return send(res, error.status, { errors: error.errors });
+        return send(
+          res,
+          error.status,
+          error.code ? { code: error.code, errors: error.errors } : { errors: error.errors },
+        );
       }
       console.error(error);
       return send(res, 500, { errors: ['internal error'] });
@@ -298,13 +353,34 @@ export interface RunningServer {
 }
 
 export type StartServerConfig = Pick<ServerConfig, 'host' | 'port' | 'dataDir'> &
-  Partial<Omit<ServerConfig, 'host' | 'port' | 'dataDir'>>;
+  Partial<Omit<ServerConfig, 'host' | 'port' | 'dataDir'>> & {
+    fetchImpl?: typeof fetch;
+  };
 
 /** Opens the store in the data folder (created if missing) and listens. */
 export async function startServer(config: StartServerConfig): Promise<RunningServer> {
   mkdirSync(config.dataDir, { recursive: true });
   const store = openPlaceStore(join(config.dataDir, 'hobo.sqlite'));
-  const server = createServer(placesHandler(store, join(config.dataDir, 'images')));
+  const resolvedConfig: ServerConfig = {
+    host: config.host,
+    port: config.port,
+    dataDir: config.dataDir,
+    mapProvider: config.mapProvider ?? 'openrouteservice',
+    openRouteServiceApiKey: config.openRouteServiceApiKey ?? null,
+    openRouteServiceBaseUrl: config.openRouteServiceBaseUrl ?? 'https://api.openrouteservice.org',
+    openRouteServiceTimeoutMs: config.openRouteServiceTimeoutMs ?? DEFAULT_ORS_TIMEOUT_MS,
+    legCacheMaxAgeDays: config.legCacheMaxAgeDays ?? DEFAULT_LEG_CACHE_MAX_AGE_DAYS,
+  };
+  const mapProvider = createServerMapProvider(resolvedConfig, store, {
+    openrouteservice: (cfg) =>
+      createOpenRouteServiceProvider({
+        apiKey: cfg.openRouteServiceApiKey,
+        baseUrl: cfg.openRouteServiceBaseUrl,
+        fetchImpl: config.fetchImpl,
+        timeoutMs: cfg.openRouteServiceTimeoutMs,
+      }),
+  });
+  const server = createServer(placesHandler(store, join(config.dataDir, 'images'), mapProvider));
   await new Promise<void>((resolve, reject) => {
     server.once('error', reject);
     server.listen(config.port, config.host, resolve);

@@ -121,6 +121,14 @@ export interface LegCache {
   putLeg(entry: LegCacheInput): CachedLeg;
 }
 
+export type MapErrorCode =
+  | 'missing_key'
+  | 'invalid_key'
+  | 'quota_exceeded'
+  | 'unreachable_route'
+  | 'upstream_error'
+  | 'bad_request';
+
 export type MapValidation<T> = { ok: true; value: T } | { ok: false; errors: string[] };
 
 const MATRIX_LIMITS = { minPoints: 2, maxPoints: 50 } as const;
@@ -227,9 +235,14 @@ export const DEFAULT_LEG_CACHE_MAX_AGE_DAYS = 30;
 export interface CachedMapProviderOptions {
   /** A cached leg older than this is a miss; defaults to `DEFAULT_LEG_CACHE_MAX_AGE_DAYS`. */
   readonly maxAgeDays?: number;
+  /** Geocode and autocomplete answers are reused for this long; defaults to 10 minutes. */
+  readonly geocodeMaxAgeMs?: number;
   /** Current time in milliseconds, for tests. */
   readonly now?: () => number;
 }
+
+const DEFAULT_GEOCODE_MAX_AGE_MS = 10 * 60_000;
+const GEOCODE_CACHE_ENTRIES = 200;
 
 /**
  * Wraps any `MapProvider` so cached legs are read first on both `route` and `matrix`,
@@ -244,6 +257,23 @@ export function cachedMapProvider(
   const providerId = normalizeProviderId(provider.id);
   const maxAgeMs = (options.maxAgeDays ?? DEFAULT_LEG_CACHE_MAX_AGE_DAYS) * 86_400_000;
   const now = options.now ?? Date.now;
+  // Short-lived memory cache so typing and repeated searches do not spend the provider quota.
+  const geocodeMaxAgeMs = options.geocodeMaxAgeMs ?? DEFAULT_GEOCODE_MAX_AGE_MS;
+  const answers = new Map<string, { at: number; value: readonly GeocodeCandidate[] }>();
+  const lookup = async (
+    kind: string,
+    request: GeocodeRequest,
+    fetchAnswer: () => Promise<readonly GeocodeCandidate[]>,
+  ) => {
+    const key = JSON.stringify([kind, request.query.trim().toLowerCase(), request.limit ?? null]);
+    const seen = answers.get(key);
+    if (seen && now() - seen.at <= geocodeMaxAgeMs) return seen.value;
+    const value = await fetchAnswer();
+    answers.delete(key);
+    answers.set(key, { at: now(), value });
+    if (answers.size > GEOCODE_CACHE_ENTRIES) answers.delete(answers.keys().next().value!);
+    return value;
+  };
   const freshLeg = (profile: TravelProfile, from: MapPoint, to: MapPoint) => {
     const hit = cache.getLeg(providerId, profile, from, to);
     if (!hit) return undefined;
@@ -343,6 +373,7 @@ export function cachedMapProvider(
         };
       }
 
+      // One uncached cell fetches the whole matrix (one provider call), so a quota error fails it all.
       const fresh = await provider.matrix({ points, profile });
       const normalizedCells: MatrixCell[] = fresh.cells.map((cell) => {
         const distanceMetres = nonNegativeWhole(cell.distanceMetres, 'distanceMetres');
@@ -379,8 +410,9 @@ export function cachedMapProvider(
         cells: normalizedCells,
       };
     },
-    geocode: (request) => provider.geocode(request),
-    autocomplete: (request) => provider.autocomplete(request),
+    geocode: (request) => lookup('geocode', request, () => provider.geocode(request)),
+    autocomplete: (request) =>
+      lookup('autocomplete', request, () => provider.autocomplete(request)),
   };
 }
 
@@ -512,4 +544,16 @@ export function validateGeocodeRequest(
     return { ok: false, errors };
   }
   return { ok: true, value: { query, limit } };
+}
+
+/**
+ * Reads `GET /api/maps/geocode|autocomplete` query parameters (`q`, `limit`) the way the
+ * server does; `MapsApi` sends exactly these, and its spec checks them with this reader.
+ */
+export function parseGeocodeSearchParams(
+  params: URLSearchParams,
+): MapValidation<{ query: string; limit: number }> {
+  const query = params.get('q') ?? params.get('query') ?? '';
+  const rawLimit = params.get('limit');
+  return validateGeocodeRequest(rawLimit === null ? { query } : { query, limit: Number(rawLimit) });
 }

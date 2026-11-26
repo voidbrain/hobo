@@ -1,0 +1,31 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [9.1, 45.1]
+      },
+      "properties": {
+        "label": "Harbour Quay, Portwind, Inventedland",
+        "country": "Inventedland",
+        "region": "Coast Shire",
+        "locality": "Portwind"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [9.25, 45.22]
+      },
+      "properties": {
+        "label": "Clocktower Square, Millhaven, Inventedland",
+        "country": "Inventedland",
+        "region": "Inland Vale",
+        "locality": "Millhaven"
+      }
+    }
+  ]
+}

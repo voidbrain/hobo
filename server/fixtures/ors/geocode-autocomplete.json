@@ -1,0 +1,17 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [9.1, 45.1]
+      },
+      "properties": {
+        "label": "Harbour Quay, Portwind",
+        "country": "Inventedland",
+        "locality": "Portwind"
+      }
+    }
+  ]
+}

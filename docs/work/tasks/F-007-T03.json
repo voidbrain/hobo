@@ -4,7 +4,7 @@
   "parent": "F-007",
   "title": "OpenRouteService provider",
   "goal": "Real routes, matrices and place search",
-  "status": "planned",
+  "status": "implemented",
   "acceptance": [
     "Directions, matrix, geocoding and autocomplete through ORS, called from `server/` and exposed to the app by the local API",
     "Errors and quota limits reported to the user; tests against recorded fixtures, never live"
@@ -31,16 +31,22 @@
   "escalation": [
     "A material scope or effort increase goes to the owner"
   ],
+  "prs": [
+    {
+      "pr": 9,
+      "note": "OpenRouteService directions, matrix, geocode and autocomplete via server /api/maps, MapsApi client and recorded fixtures"
+    }
+  ],
   "effort": {
     "size": "medium",
-    "estimate": "3 h agent, 1.5 d",
-    "basis": "Planned 2026-11-25 in the upfront step plan: scoped to one PR, at most 1.5 focused day(s). Not a measurement.",
-    "reviewed": "2026-11-25",
-    "agentHours": 3,
+    "estimate": "0 remaining",
+    "basis": "Implemented 2026-11-26 in PR #9; verification is green CI on PR #9 and merge.",
+    "reviewed": "2026-11-26",
+    "agentHours": 0,
     "ownerHours": 0.0,
     "baselineAgentHours": 3,
     "estimateAgentHours": 3,
-    "days": 1.5,
+    "days": 0,
     "baselineDays": 1.5
   }
 }
