@@ -1,0 +1,44 @@
+{
+  "version": 1,
+  "id": "F-018-T05",
+  "parent": "F-018",
+  "title": "hobo-v1 write cases, Italian and English",
+  "goal": "The model's use of the write tools is measured",
+  "status": "planned",
+  "acceptance": [
+    "Owner decision 2026-11-26 in chat: \"yes to both\": adding places to Hobo trips by chat (\"aggiungi Rocca Calascio al trip di agosto\") via MCP behind NERV's approval; and the owner's idea the same day to set an image on a Hobo place from NERV chat (nerv:F-143). Italian is required for every model-facing feature.",
+    "The F-011-T03 decline case \"aggiungi Rocca Calascio al trip di agosto\" becomes a write case: hobo_find_place then hobo_add_place_to_trip proposed for approval with the trip's id; \"metti questa foto a Rocca Calascio\" → hobo_set_place_image proposed for approval; an ambiguous name is asked back; each with an English form; regression and holdout splits"
+  ],
+  "dependsOn": [
+    "F-018-T02",
+    "F-018-T03",
+    "F-011-T03"
+  ],
+  "resources": [
+    "evals/gauntlet/hobo-v1.json",
+    "docs/work/records/F-018.md",
+    "generated:backlog-views"
+  ],
+  "capabilities": [
+    "bounded-edit",
+    "regression-design"
+  ],
+  "privacy": "Invented places, trips and images only; no API keys, tokens or personal data in Git.",
+  "validation": [
+    "npm test",
+    "npm run check:fast; final applicable CI"
+  ],
+  "escalation": [
+    "Material scope growth or effort increase goes to the owner before adoption"
+  ],
+  "effort": {
+    "size": "small",
+    "estimate": "0.75 h agent",
+    "basis": "Estimated 2026-11-26: about 6 cases added to the F-011-T03 pack. Not a measurement.",
+    "reviewed": "2026-11-26",
+    "agentHours": 0.75,
+    "baselineAgentHours": 0.75,
+    "estimateAgentHours": 0.75
+  },
+  "prs": []
+}

@@ -1,0 +1,45 @@
+{
+  "version": 1,
+  "id": "F-018-T02",
+  "parent": "F-018",
+  "title": "Find a place by name and add it to a trip",
+  "goal": "NERV can add a place to a trip by name, after the owner confirms the geocoded match",
+  "status": "planned",
+  "acceptance": [
+    "Owner decision 2026-11-26 in chat: \"yes to both\": adding places to Hobo trips by chat (\"aggiungi Rocca Calascio al trip di agosto\") via MCP behind NERV's approval; and the owner's idea the same day to set an image on a Hobo place from NERV chat (nerv:F-143). Italian is required for every model-facing feature.",
+    "hobo_find_place uses the existing geocode endpoint (server/map-adapter.ts); hobo_add_place_to_trip creates the place if it is a new candidate and appends it to the trip (or the named day), validated with zod",
+    "Idempotency table keyed by requestId; tests: add twice with one requestId writes once, unknown trip or day refused with the reason, ambiguous name returns several candidates (NERV asks the owner)"
+  ],
+  "dependsOn": [
+    "F-018-T01"
+  ],
+  "resources": [
+    "server/**",
+    "docs/DESIGN.md",
+    "docs/work/records/F-018.md",
+    "generated:backlog-views"
+  ],
+  "capabilities": [
+    "typescript",
+    "api-contracts",
+    "regression-design"
+  ],
+  "privacy": "Invented places, trips and images only; no API keys, tokens or personal data in Git.",
+  "validation": [
+    "npm test",
+    "npm run check:fast; final applicable CI"
+  ],
+  "escalation": [
+    "Material scope growth or effort increase goes to the owner before adoption"
+  ],
+  "effort": {
+    "size": "medium",
+    "estimate": "1.5 h agent",
+    "basis": "Estimated 2026-11-26: geocoding and trip writes exist behind the REST API; the work is two MCP tools and the idempotency table. Not a measurement.",
+    "reviewed": "2026-11-26",
+    "agentHours": 1.5,
+    "baselineAgentHours": 1.5,
+    "estimateAgentHours": 1.5
+  },
+  "prs": []
+}
