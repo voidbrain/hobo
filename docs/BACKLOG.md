@@ -1,22 +1,70 @@
 # <a id="top"></a>Hobo backlog
 
-Current work ledger, reviewed 25 November 2026 against main `17b2ce3`. Generated from [record sources](work/records) and [steps](work/tasks) by `npm run work:build`: edit those, not this file. [Rules](BACKLOG-RULES.md) · [Archive](archive/README.md) · [Reading the records](#how-to-use-this-file).
+Current work ledger, reviewed 26 November 2026 against main `975baa8`. Generated from [record sources](work/records) and [steps](work/tasks) by `npm run work:build`: edit those, not this file. [Rules](BACKLOG-RULES.md) · [Archive](archive/README.md) · [Reading the records](#how-to-use-this-file).
 
 <!-- totals:start -->
-**Remaining effort:** 44.75 h agent + 2.5 h owner across 35 open steps of 14 features. Generated from the task files.
+**Remaining effort:** 44.75 h agent + 2.5 h owner across 33 open steps of 14 features. Generated from the task files.
 <!-- totals:end -->
 
 ## Work items
 
 Bugs (B-) and features (F-) in one list, in work-queue order. Steps: `effort` = remaining agent time (🟢 up to 1 h · 🟡 4 h · 🔴 8 h · 🟣 more); `h` = agent hours, owner time apart; a step status is not the record's acceptance.
 
+### <a id="f-007"></a>[✨ F-007](#top)
+
+**Map provider adapter: Leaflet and OpenRouteService**
+
+| Status | Priority | Effort | Remaining | Depends on | Unlocks | Agent | Procedures | Decisions |
+|---|---|---|---|---|---|:---:|:---:|:---:|
+| 🔴 Open | 🔶 P2 | 🟡 Medium | 2 h agent + 0.25 h owner | — | [F-002-T04](#f-002-t04), [F-004-T03](#f-004-t03), [F-012-T01](#f-012-t01) | 🤖 | 🧑‍🔧 | — |
+
+💻 **→** Next: F-007-T02 — Leaflet map component (Planned).
+
+| | |
+|---|---|
+| **Issue** | Maps, routing, the distance/time matrix and geocoding go through one adapter, so providers can change. Start with Leaflet (OpenStreetMap tiles) and OpenRouteService (routing, matrix, geocoding and autocomplete, free key). Leg results are cached so what-if comparisons do not re-query. Routing and geocoding calls go through `server/`, which holds the key in git-ignored `server/config.local.json`; the key never reaches `public/` or the browser. |
+| **Reproduce** | Copy `server/config.example.json` to `server/config.local.json`, set `openRouteServiceApiKey`, run `npm run server`, and call `POST http://127.0.0.1:4310/api/maps/route` with two invented `{ lat, lng }` points. |
+| **Check** | One `MapProvider` interface; an OpenRouteService implementation tested against recorded fixtures; a Leaflet map component with attribution; a leg cache keyed by provider, profile, from and to; the key read only by `server/` from git-ignored `server/config.local.json`; a live route works with the owner's key. |
+
+**Feature steps**
+
+| Effort | Step | Estimate | Actual | Remaining | Status | Depends on | Unlocks | Who | PRs |
+|---|---|---|---|---|---|---|---|:---:|---|
+| 🟡 Medium | <a id="f-007-t02"></a>F-007-T02 — Leaflet map component | 2 h | 0 h | 2 h | Planned | — | [F-002-T04](#f-002-t04), [F-004-T03](#f-004-t03), [F-012-T01](#f-012-t01) | 🤖 | — |
+| 🟢 Small | <a id="f-007-t04"></a>F-007-T04 — Owner adds an OpenRouteService key and checks a live route | 0 h | 0 h | 0 h agent + 0.25 h owner | Planned | — | — | [🧑‍🔧](work/records/F-007.md) | — |
+| 🟡 Medium | **Total** | 7 h | 0 h (0 of 4 steps recorded) | 2 h agent + 0.25 h owner | 2 of 4 completed | | | | |
+
+<details><summary>Done steps (2)</summary>
+
+| Effort | Step | Estimate | Actual | Status | PRs |
+|---|---|---|---|---|---|
+| — | <a id="f-007-t01"></a>F-007-T01 — Adapter interface, local config and leg cache | 2 h | 0 h | Completed | [PR #8](https://github.com/voidbrain/hobo/pull/8) MapProvider adapter interface, local config without committed keys, and SQLite leg cache |
+| — | <a id="f-007-t03"></a>F-007-T03 — OpenRouteService provider | 3 h | 0 h | Completed | [PR #9](https://github.com/voidbrain/hobo/pull/9) OpenRouteService directions, matrix, geocode and autocomplete via server /api/maps, MapsApi client and recorded fixtures |
+
+</details>
+
+<details>
+<summary>Next action, estimates and PR history</summary>
+
+[Full notes & evidence](work/records/F-007.md)
+
+| Field | Value |
+|---|---|
+| PR / evidence | Steps: F-007-T01: [PR #8](https://github.com/voidbrain/hobo/pull/8) MapProvider adapter interface, local config without committed keys, and SQLite leg cache · F-007-T03: [PR #9](https://github.com/voidbrain/hobo/pull/9) OpenRouteService directions, matrix, geocode and autocomplete via server /api/maps, MapsApi client and recorded fixtures. [#1](https://github.com/voidbrain/hobo/pull/1); [#2](https://github.com/voidbrain/hobo/pull/2) (review fixes); [#8](https://github.com/voidbrain/hobo/pull/8) (F-007-T01); [#9](https://github.com/voidbrain/hobo/pull/9) (F-007-T03); Test: `src/app/maps/map-provider.spec.ts`, `server/config.test.ts`, `server/leg-cache.test.ts` (`47d4b46`), `server/ors.test.ts`, `src/app/maps/maps-api.spec.ts` (`bde43bb`) |
+| Opened | 2026-11-25 |
+| Verification | Pending |
+| Reviewed | 2026-11-26 |
+
+</details>
+
+---
 ### <a id="f-002"></a>[✨ F-002](#top)
 
 **Places: collect and organise**
 
 | Status | Priority | Effort | Remaining | Depends on | Unlocks | Agent | Procedures | Decisions |
 |---|---|---|---|---|---|:---:|:---:|:---:|
-| 🔴 Open | 🔶 P2 | 🔴 Large | 6.5 h | [F-007-T02](#f-007-t02), [F-007-T03](#f-007-t03) | [F-003-T01](#f-003-t01), [F-003-T02](#f-003-t02), [F-007-T01](#f-007-t01), [F-011-T01](#f-011-t01) | 🤖 | — | — |
+| 🔴 Open | 🔶 P2 | 🔴 Large | 6.5 h | [F-007-T02](#f-007-t02) | [F-003-T01](#f-003-t01), [F-003-T02](#f-003-t02), [F-011-T01](#f-011-t01) | 🤖 | — | — |
 
 💻 **→** Next: F-002-T01 — Local store service and place model (Implemented; verification pending).
 
@@ -30,10 +78,10 @@ Bugs (B-) and features (F-) in one list, in work-queue order. Steps: `effort` = 
 
 | Effort | Step | Estimate | Actual | Remaining | Status | Depends on | Unlocks | PRs |
 |---|---|---|---|---|---|---|---|---|
-| 🟢 Small | <a id="f-002-t01"></a>F-002-T01 — Local store service and place model | 3 h | 0 h | 0 h | Implemented; verification pending | — | [F-002-T02](#f-002-t02), [F-002-T03](#f-002-t03), [F-003-T01](#f-003-t01), [F-007-T01](#f-007-t01), [F-011-T01](#f-011-t01) | — |
+| 🟢 Small | <a id="f-002-t01"></a>F-002-T01 — Local store service and place model | 3 h | 0 h | 0 h | Implemented; verification pending | — | [F-002-T02](#f-002-t02), [F-002-T03](#f-002-t03), [F-003-T01](#f-003-t01), [F-011-T01](#f-011-t01) | — |
 | 🟢 Small | <a id="f-002-t03"></a>F-002-T03 — Place images | 2 h | 0 h | 0 h | Implemented; verification pending | [F-002-T01](#f-002-t01) | — | [PR #7](https://github.com/voidbrain/hobo/pull/7) content-sniffed place image upload, size limit, EXIF/GPS stripping and thumbnail component |
 | 🟡 Medium | <a id="f-002-t02"></a>F-002-T02 — Place list and form | 2.5 h | 0 h | 2.5 h | Planned | [F-002-T01](#f-002-t01) | [F-002-T04](#f-002-t04), [F-002-T05](#f-002-t05), [F-003-T02](#f-003-t02) | — |
-| 🟡 Medium | <a id="f-002-t04"></a>F-002-T04 — Place location | 2 h | 0 h | 2 h | Planned | [F-002-T02](#f-002-t02), [F-007-T02](#f-007-t02), [F-007-T03](#f-007-t03) | — | — |
+| 🟡 Medium | <a id="f-002-t04"></a>F-002-T04 — Place location | 2 h | 0 h | 2 h | Planned | [F-002-T02](#f-002-t02), [F-007-T02](#f-007-t02) | — | — |
 | 🟡 Medium | <a id="f-002-t05"></a>F-002-T05 — Categories and tags | 2 h | 0 h | 2 h | Planned | [F-002-T02](#f-002-t02) | — | — |
 | 🔴 Large | **Total** | 11.5 h | 0 h (0 of 5 steps recorded) | 6.5 h | 0 of 5 completed | | | |
 
@@ -48,47 +96,6 @@ Bugs (B-) and features (F-) in one list, in work-queue order. Steps: `effort` = 
 | Opened | 2026-11-25 |
 | Verification | Pending |
 | Reviewed | 2026-11-25 |
-
-</details>
-
----
-### <a id="f-007"></a>[✨ F-007](#top)
-
-**Map provider adapter: Leaflet and OpenRouteService**
-
-| Status | Priority | Effort | Remaining | Depends on | Unlocks | Agent | Procedures | Decisions |
-|---|---|---|---|---|---|:---:|:---:|:---:|
-| 🔴 Open | 🔶 P2 | 🟡 Medium | 2 h agent + 0.25 h owner | [F-002-T01](#f-002-t01) | [F-002-T04](#f-002-t04), [F-004-T02](#f-004-t02), [F-004-T03](#f-004-t03), [F-012-T01](#f-012-t01), [F-013-T01](#f-013-t01), [F-013-T02](#f-013-t02) | 🤖 | — | — |
-
-💻 **→** Next: F-007-T01 — Adapter interface, local config and leg cache (Implemented; verification pending).
-
-| | |
-|---|---|
-| **Issue** | Maps, routing, the distance/time matrix and geocoding go through one adapter, so providers can change. Start with Leaflet (OpenStreetMap tiles) and OpenRouteService (routing, matrix, geocoding and autocomplete, free key). Leg results are cached so what-if comparisons do not re-query. Routing and geocoding calls go through `server/`, which holds the key in git-ignored `server/config.local.json`; the key never reaches `public/` or the browser. |
-| **Reproduce** | Copy `server/config.example.json` to `server/config.local.json`, set `openRouteServiceApiKey`, run `npm run server`, and call `POST http://127.0.0.1:4310/api/maps/route` with two invented `{ lat, lng }` points. |
-| **Check** | One `MapProvider` interface; an OpenRouteService implementation tested against recorded fixtures; a Leaflet map component with attribution; a leg cache keyed by provider, profile, from and to; the key read only by `server/` from git-ignored `server/config.local.json`; a live route works with the owner's key. |
-
-**Feature steps**
-
-| Effort | Step | Estimate | Actual | Remaining | Status | Depends on | Unlocks | Who | PRs |
-|---|---|---|---|---|---|---|---|:---:|---|
-| 🟢 Small | <a id="f-007-t01"></a>F-007-T01 — Adapter interface, local config and leg cache | 2 h | 0 h | 0 h | Implemented; verification pending | [F-002-T01](#f-002-t01) | [F-007-T02](#f-007-t02), [F-007-T03](#f-007-t03), [F-013-T01](#f-013-t01), [F-013-T02](#f-013-t02) | 🤖 | [PR #8](https://github.com/voidbrain/hobo/pull/8) MapProvider adapter interface, local config without committed keys, and SQLite leg cache |
-| 🟢 Small | <a id="f-007-t03"></a>F-007-T03 — OpenRouteService provider | 3 h | 0 h | 0 h | Implemented; verification pending | [F-007-T01](#f-007-t01) | [F-002-T04](#f-002-t04), [F-004-T02](#f-004-t02), [F-007-T04](#f-007-t04) | 🤖 | [PR #9](https://github.com/voidbrain/hobo/pull/9) OpenRouteService directions, matrix, geocode and autocomplete via server /api/maps, MapsApi client and recorded fixtures |
-| 🟡 Medium | <a id="f-007-t02"></a>F-007-T02 — Leaflet map component | 2 h | 0 h | 2 h | Planned | [F-007-T01](#f-007-t01) | [F-002-T04](#f-002-t04), [F-004-T03](#f-004-t03), [F-012-T01](#f-012-t01) | ⏳ 🤖 | — |
-| 🟢 Small | <a id="f-007-t04"></a>F-007-T04 — Owner adds an OpenRouteService key and checks a live route | 0 h | 0 h | 0 h agent + 0.25 h owner | Planned | [F-007-T03](#f-007-t03) | — | ⏳ 🧑‍🔧 | — |
-| 🟡 Medium | **Total** | 7 h | 0 h (0 of 4 steps recorded) | 2 h agent + 0.25 h owner | 0 of 4 completed | | | | |
-
-<details>
-<summary>Next action, estimates and PR history</summary>
-
-[Full notes & evidence](work/records/F-007.md)
-
-| Field | Value |
-|---|---|
-| PR / evidence | Steps: F-007-T01: [PR #8](https://github.com/voidbrain/hobo/pull/8) MapProvider adapter interface, local config without committed keys, and SQLite leg cache · F-007-T03: [PR #9](https://github.com/voidbrain/hobo/pull/9) OpenRouteService directions, matrix, geocode and autocomplete via server /api/maps, MapsApi client and recorded fixtures. [#1](https://github.com/voidbrain/hobo/pull/1); [#2](https://github.com/voidbrain/hobo/pull/2) (review fixes); [#8](https://github.com/voidbrain/hobo/pull/8) (F-007-T01); [#9](https://github.com/voidbrain/hobo/pull/9) (F-007-T03); Test: `src/app/maps/map-provider.spec.ts`, `server/config.test.ts`, `server/leg-cache.test.ts` (`47d4b46`), `server/ors.test.ts`, `src/app/maps/maps-api.spec.ts` (`bde43bb`) |
-| Opened | 2026-11-25 |
-| Verification | Pending |
-| Reviewed | 2026-11-26 |
 
 </details>
 
@@ -139,7 +146,7 @@ Bugs (B-) and features (F-) in one list, in work-queue order. Steps: `effort` = 
 
 | Status | Priority | Effort | Remaining | Depends on | Unlocks | Agent | Procedures | Decisions |
 |---|---|---|---|---|---|:---:|:---:|:---:|
-| 🔴 Open | 🔶 P2 | 🔴 Large | 4.25 h | [F-003-T02](#f-003-t02), [F-007-T03](#f-007-t03), [F-007-T02](#f-007-t02) | [F-005-T01](#f-005-t01), [F-006-T02](#f-006-t02), [F-008-T01](#f-008-t01), [F-008-T02](#f-008-t02), [F-008-T04](#f-008-t04), [F-011-T01](#f-011-t01) | 🤖 | — | — |
+| 🔴 Open | 🔶 P2 | 🔴 Large | 4.25 h | [F-003-T02](#f-003-t02), [F-007-T02](#f-007-t02) | [F-005-T01](#f-005-t01), [F-006-T02](#f-006-t02), [F-008-T01](#f-008-t01), [F-008-T02](#f-008-t02), [F-008-T04](#f-008-t04), [F-011-T01](#f-011-t01) | 🤖 | — | — |
 
 💻 **→** Next: F-004-T01 — Pure totals (Implemented; verification pending).
 
@@ -154,7 +161,7 @@ Bugs (B-) and features (F-) in one list, in work-queue order. Steps: `effort` = 
 | Effort | Step | Estimate | Actual | Remaining | Status | Depends on | Unlocks | PRs |
 |---|---|---|---|---|---|---|---|---|
 | 🟢 Small | <a id="f-004-t01"></a>F-004-T01 — Pure totals | 1.5 h | 0 h | 0.25 h | Implemented; verification pending | — | [F-004-T02](#f-004-t02), [F-011-T01](#f-011-t01) | [PR #4](https://github.com/voidbrain/hobo/pull/4) pure route totals in src/app/core/route-totals.ts |
-| 🟡 Medium | <a id="f-004-t02"></a>F-004-T02 — Legs through the adapter | 2 h | 0 h | 2 h | Planned | [F-004-T01](#f-004-t01), [F-003-T02](#f-003-t02), [F-007-T03](#f-007-t03) | [F-004-T03](#f-004-t03), [F-005-T01](#f-005-t01), [F-008-T01](#f-008-t01), [F-011-T01](#f-011-t01) | — |
+| 🟡 Medium | <a id="f-004-t02"></a>F-004-T02 — Legs through the adapter | 2 h | 0 h | 2 h | Planned | [F-004-T01](#f-004-t01), [F-003-T02](#f-003-t02) | [F-004-T03](#f-004-t03), [F-005-T01](#f-005-t01), [F-008-T01](#f-008-t01), [F-011-T01](#f-011-t01) | — |
 | 🟡 Medium | <a id="f-004-t03"></a>F-004-T03 — Day filter, summary and route on the map | 2 h | 0 h | 2 h | Planned | [F-004-T02](#f-004-t02), [F-007-T02](#f-007-t02) | [F-006-T02](#f-006-t02), [F-008-T02](#f-008-t02), [F-008-T04](#f-008-t04) | — |
 | 🔴 Large | **Total** | 5.5 h | 0 h (0 of 3 steps recorded) | 4.25 h | 0 of 3 completed | | | |
 
@@ -498,7 +505,7 @@ Bugs (B-) and features (F-) in one list, in work-queue order. Steps: `effort` = 
 
 | Status | Priority | Effort | Remaining | Depends on | Unlocks | Agent | Procedures | Decisions |
 |---|---|---|---|---|---|:---:|:---:|:---:|
-| 🔴 Open | 🔹 P3 | 🟡 Medium | 4 h agent + 1 h owner | [F-007-T01](#f-007-t01) | — | ⏳ | — | — |
+| 🔴 Open | 🔹 P3 | 🟡 Medium | 4 h agent + 1 h owner | — | — | 🤖 | — | — |
 
 💻 **→** Next: F-013-T01 — OSRM provider (Planned).
 
@@ -512,8 +519,8 @@ Bugs (B-) and features (F-) in one list, in work-queue order. Steps: `effort` = 
 
 | Effort | Step | Estimate | Actual | Remaining | Status | Depends on | Unlocks | Who |
 |---|---|---|---|---|---|---|---|:---:|
-| 🟡 Medium | <a id="f-013-t01"></a>F-013-T01 — OSRM provider | 2 h | 0 h | 2 h | Planned | [F-007-T01](#f-007-t01) | [F-013-T03](#f-013-t03) | ⏳ 🤖 |
-| 🟡 Medium | <a id="f-013-t02"></a>F-013-T02 — Nominatim or Photon geocoding provider | 2 h | 0 h | 2 h | Planned | [F-007-T01](#f-007-t01) | [F-013-T03](#f-013-t03) | ⏳ 🤖 |
+| 🟡 Medium | <a id="f-013-t01"></a>F-013-T01 — OSRM provider | 2 h | 0 h | 2 h | Planned | — | [F-013-T03](#f-013-t03) | 🤖 |
+| 🟡 Medium | <a id="f-013-t02"></a>F-013-T02 — Nominatim or Photon geocoding provider | 2 h | 0 h | 2 h | Planned | — | [F-013-T03](#f-013-t03) | 🤖 |
 | 🟢 Small | <a id="f-013-t03"></a>F-013-T03 — Owner runs OSRM and Photon on the base | 0 h | 0 h | 0 h agent + 1 h owner | Planned | [F-013-T01](#f-013-t01), [F-013-T02](#f-013-t02) | — | ⏳ 🧑‍🔧 |
 | 🟡 Medium | **Total** | 4 h | 0 h (0 of 3 steps recorded) | 4 h agent + 1 h owner | 0 of 3 completed | | | |
 
@@ -574,6 +581,8 @@ Bugs (B-) and features (F-) in one list, in work-queue order. Steps: `effort` = 
 ## Other changes
 
 **Plan revision, 2026-11-25 (fresh review relayed by the coordinator).** Storage is a small Node 24 `server/` with SQLite that the app talks to (IndexedDB only as an optional offline cache later); the OpenRouteService key lives in git-ignored `server/` config, never in `public/`; F-007-T01 now waits on F-002-T01; F-011-T01 also waits on F-003-T01 and F-004-T02; F-008-T04 on F-003-T01 and F-004-T03. Estimates unchanged.
+
+**Reconciliation, 2026-11-26 (main `975baa8`).** PRs #1-#9 merged on green PR CI and green main runs; F-007-T01 (#8) and F-007-T03 (#9) closed. Harness reconciled from v10.21.3 to v10.21.4 (#10).
 
 ## How to use this file
 
