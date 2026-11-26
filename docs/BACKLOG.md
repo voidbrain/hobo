@@ -3,7 +3,7 @@
 Current work ledger, reviewed 26 November 2026 against main `8eff54d`. Generated from [record sources](work/records) and [steps](work/tasks) by `npm run work:build`: edit those, not this file. [Rules](BACKLOG-RULES.md) · [Archive](archive/README.md) · [Reading the records](#how-to-use-this-file).
 
 <!-- totals:start -->
-**Remaining effort:** 45.5 h agent + 2.5 h owner across 39 open steps of 16 features. Generated from the task files.
+**Remaining effort:** 49 h agent + 2.5 h owner across 41 open steps of 17 features. Generated from the task files.
 <!-- totals:end -->
 
 ## Work items
@@ -620,6 +620,45 @@ Bugs (B-) and features (F-) in one list, in work-queue order. Steps: `effort` = 
 | Field | Value |
 |---|---|
 | PR / evidence | Steps: F-016-T01: [PR #14](https://github.com/voidbrain/hobo/pull/14) settings on · F-016-T02: [PR #14](https://github.com/voidbrain/hobo/pull/14) first architecture review · F-016-T05: [PR #15](https://github.com/voidbrain/hobo/pull/15) coverage.enforce on. [#14](https://github.com/voidbrain/hobo/pull/14); [#15](https://github.com/voidbrain/hobo/pull/15) |
+| Opened | 2026-11-26 |
+| Verification | Pending |
+| Reviewed | 2026-11-26 |
+
+</details>
+
+---
+### <a id="f-017"></a>[✨ F-017](#top)
+
+**Axe accessibility pass per main route in the browser suite**
+
+| Status | Priority | Effort | Remaining | Depends on | Unlocks | Agent | Procedures | Decisions |
+|---|---|---|---|---|---|:---:|:---:|:---:|
+| 🔴 Open | 🔹 P3 | 🟡 Medium | 3.5 h | — | — | 🤖 | — | — |
+
+💻 **→** Next: F-017-T01 — Axe pass per main route with a seeded-violation fixture (Planned).
+
+| | |
+|---|---|
+| **Issue** | NERV, bricks and openbando run axe in browser tests; Hobo has no accessibility check beyond contrast, so a missing label, a keyboard trap or a bad ARIA role would pass CI. There is no browser suite (tests run with `ng test` and `node --test` for the server), so this step also adds the runner. Evidence: [NERV practices transfer report](https://github.com/voidbrain/coordinator/blob/main/docs/reviews/2026-11-26-nerv-practices-transfer.md), inventory 13; class A item A10; missing practice M12. Owner decision 2026-11-26 in chat: "NERV practices inventory accept all" (all 22 proposals of the [report](https://github.com/voidbrain/coordinator/blob/main/docs/reviews/2026-11-26-nerv-practices-transfer.md); this record is proposal 17). |
+| **Reproduce** | Read the CI workflow and the test scripts of Hobo: no axe run. Main routes: `/` (the only route). |
+| **Check** | One axe pass per main route (`/` (the only route)) fails on serious and critical violations and reports moderate ones, proved by a seeded-violation fixture that fails first (F-017-T01); CI runs it on every PR (F-017-T02). |
+
+**Feature steps**
+
+| Effort | Step | Estimate | Actual | Remaining | Status | Depends on | Unlocks | PRs |
+|---|---|---|---|---|---|---|---|---|
+| 🟡 Medium | <a id="f-017-t01"></a>F-017-T01 — Axe pass per main route with a seeded-violation fixture | 2.5 h | 0 h | 2.5 h | Planned | — | [F-017-T02](#f-017-t02) | [PR #16](https://github.com/voidbrain/hobo/pull/16) plan |
+| 🟢 Small | <a id="f-017-t02"></a>F-017-T02 — Run the axe pass in CI | 1 h | 0 h | 1 h | Planned | [F-017-T01](#f-017-t01) | — | [PR #16](https://github.com/voidbrain/hobo/pull/16) plan |
+| 🟡 Medium | **Total** | 3.5 h | 0 h (0 of 2 steps recorded) | 3.5 h | 0 of 2 completed | | | |
+
+<details>
+<summary>Next action, estimates and evidence</summary>
+
+[Full notes & evidence](work/records/F-017.md)
+
+| Field | Value |
+|---|---|
+| PR / evidence | Steps: F-017-T01: [PR #16](https://github.com/voidbrain/hobo/pull/16) plan · F-017-T02: [PR #16](https://github.com/voidbrain/hobo/pull/16) plan. [#16](https://github.com/voidbrain/Hobo/pull/16) (plan); [report](https://github.com/voidbrain/coordinator/blob/main/docs/reviews/2026-11-26-nerv-practices-transfer.md); owner decision 2026-11-26 |
 | Opened | 2026-11-26 |
 | Verification | Pending |
 | Reviewed | 2026-11-26 |

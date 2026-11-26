@@ -1,0 +1,46 @@
+{
+  "version": 1,
+  "id": "F-017-T01",
+  "parent": "F-017",
+  "title": "Axe pass per main route with a seeded-violation fixture",
+  "goal": "A browser test runs axe on each main route of Hobo",
+  "status": "planned",
+  "acceptance": [
+    "The browser test visits `/` (the only route) and fails on serious or critical axe violations; moderate ones are listed in the output",
+    "A seeded fixture (an unlabeled input on a test-only page) proves the test fails when it should; findings on the real routes are fixed in the same step or recorded as records with ids",
+    "Fixture data is invented",
+    "Failing test committed first: the seeded-violation fixture expects a failure before the axe pass is wired; the change never edits that test to pass"
+  ],
+  "dependsOn": [],
+  "resources": [
+    "src/**",
+    "package.json",
+    "docs/work/records/F-017.md",
+    "generated:backlog-views"
+  ],
+  "capabilities": [
+    "bounded-edit"
+  ],
+  "privacy": "Neutral content only; no secrets, tokens or personal data in Git. Fixtures are invented.",
+  "validation": [
+    "npm run check:fast; final applicable CI"
+  ],
+  "escalation": [
+    "Material scope growth or effort increase goes to the owner before adoption"
+  ],
+  "effort": {
+    "size": "medium",
+    "estimate": "2.5 h agent",
+    "basis": "The report's 3 h for the template helper split: a first use in Hobo is the same size plus a browser runner. Estimated 2026-11-26 at agent speed from the report's effort column. Not a measurement.",
+    "reviewed": "2026-11-26",
+    "agentHours": 2.5,
+    "baselineAgentHours": 2.5,
+    "estimateAgentHours": 2.5
+  },
+  "prs": [
+    {
+      "pr": 16,
+      "note": "plan"
+    }
+  ]
+}
