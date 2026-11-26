@@ -1,6 +1,7 @@
 import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed, type ComponentFixture } from '@angular/core/testing';
+import * as L from 'leaflet';
 import { firstValueFrom } from 'rxjs';
 import { DEFAULT_OSM_TILES, type MapPoint, type RouteResult } from './map-provider';
 import { MapsApi } from './maps-api';
@@ -71,6 +72,45 @@ describe('MapView (F-007-T02)', () => {
     await fixture.whenStable();
     expect(el.querySelectorAll('path.hobo-map-route').length).toBe(0);
     expect(el.querySelectorAll('path.hobo-map-marker').length).toBe(1);
+  });
+
+  it('shows a place name with markup as plain text in its tooltip', async () => {
+    const label = '<img src="x" onerror="alert(1)">Harbour Quay';
+    const { el } = await render({ markers: [{ location: PORTWIND, label }] });
+    el.querySelector('path.hobo-map-marker')!.dispatchEvent(
+      new MouseEvent('mouseover', { bubbles: true }),
+    );
+    const tooltip = el.querySelector('.leaflet-tooltip');
+    expect(tooltip?.textContent).toBe(label);
+    expect(tooltip?.querySelector('img')).toBeNull();
+  });
+
+  it('keeps the view while the same points arrive again, and refits when they change', async () => {
+    const markers = [
+      { location: PORTWIND, label: 'Harbour Quay' },
+      { location: GREYFELL, label: 'Fell Road' },
+    ];
+    const fitBounds = vi.spyOn(L.Map.prototype, 'fitBounds');
+    const setView = vi.spyOn(L.Map.prototype, 'setView');
+    try {
+      const { fixture } = await render({ markers });
+      expect(fitBounds).toHaveBeenCalledTimes(1);
+      const viewsAfterFit = setView.mock.calls.length;
+      // A new array with the same points (as a page re-render gives) must not undo a user's pan.
+      fixture.componentRef.setInput(
+        'markers',
+        markers.map((m) => ({ ...m })),
+      );
+      await fixture.whenStable();
+      expect(fitBounds).toHaveBeenCalledTimes(1);
+      expect(setView.mock.calls.length).toBe(viewsAfterFit);
+      fixture.componentRef.setInput('markers', [{ location: MILLHAVEN, label: 'Mill Lane' }]);
+      await fixture.whenStable();
+      expect(setView.mock.calls.at(-1)?.[0]).toEqual(MILLHAVEN);
+    } finally {
+      fitBounds.mockRestore();
+      setView.mockRestore();
+    }
   });
 
   it('removes the Leaflet map when destroyed', async () => {

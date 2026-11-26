@@ -93,6 +93,8 @@ export class MapView {
   private tileLayer?: L.TileLayer;
   private tileConfig?: TileLayerConfig;
   private readonly overlays = L.layerGroup();
+  /** The points the view was last fitted to: refit only when they change, keeping a user's pan. */
+  private fittedTo?: string;
 
   constructor() {
     const destroyRef = inject(DestroyRef);
@@ -138,11 +140,14 @@ export class MapView {
           className: 'hobo-map-marker',
           radius: 7,
         })
-          .bindTooltip(marker.label)
+          .bindTooltip(textOnly(marker.label))
           .addTo(this.overlays);
       }
 
       const points = [...markers.map((m) => m.location), ...routes.flat()];
+      const fitKey = JSON.stringify([points.map((p) => [p.lat, p.lng]), tiles.maxZoom]);
+      if (fitKey === this.fittedTo) return;
+      this.fittedTo = fitKey;
       if (points.length === 0) {
         map.setView(WORLD_VIEW.center, WORLD_VIEW.zoom);
       } else if (points.length === 1 || samePoint(points)) {
@@ -166,4 +171,11 @@ export class MapView {
 function samePoint(points: readonly MapPoint[]): boolean {
   const [first] = points;
   return points.every((p) => p.lat === first!.lat && p.lng === first!.lng);
+}
+
+/** Leaflet writes string tooltips as HTML; a text node keeps a place name plain text. */
+function textOnly(text: string): HTMLElement {
+  const span = document.createElement('span');
+  span.textContent = text;
+  return span;
 }
