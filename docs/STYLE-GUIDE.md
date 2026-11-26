@@ -2,7 +2,7 @@
 
 How the product looks and talks, and how this repository's documents are written. Read it before changing UI (templates, component styles, global styles, user-facing text). The values live in code: CSS custom properties in [`src/styles.scss`](../src/styles.scss) (`:root`, with a dark set under `prefers-color-scheme: dark`). When this guide and the code disagree, the code is what ships: fix whichever is wrong and record the discrepancy in the backlog if it is not fixed in the same change.
 
-Hobo is the owner's own trip planner: collect places, then build trips and compare routes. Calm and practical, like a paper map on a table: warm off-white ground, one teal accent for actions and the route line, everything else neutral. The map carries the colour; the UI stays out of its way. Shared components are written so they can move to 🧱 bricks (coordinator solution:F-012) unchanged: inputs and outputs only, tokens only, no app services.
+Hobo is the owner's own trip planner: collect places, then build trips and compare routes. Calm and practical, like a paper map on a table: warm off-white ground, one teal accent for actions and the route line, everything else neutral. The map carries the colour; the UI stays out of its way. Shared components are written so they can move to 🧱 bricks (coordinator coordinator:F-012) unchanged: inputs and outputs only, tokens only, no app services.
 
 ## Documentation ownership
 
@@ -51,7 +51,7 @@ Scale `--space-1` 0.25rem, `--space-2` 0.5rem, `--space-3` 1rem, `--space-4` 1.5
 
 ## Components
 
-Each shared component gets an entry here and is built to move to 🧱 bricks (coordinator solution:F-012; Hobo's F-010 tracks the move): no app services injected, tokens only. Bricks (0.3.0) has no map component yet, so the map is Hobo's own until F-010 moves it.
+Each shared component gets an entry here and is built to move to 🧱 bricks (coordinator coordinator:F-012; Hobo's F-010 tracks the move): no app services injected, tokens only. Bricks (0.3.0) has no map component yet, so the map is Hobo's own until F-010 moves it.
 
 - **Map view** (`hobo-map-view`, [`src/app/maps/map-view.ts`](../src/app/maps/map-view.ts)): Leaflet with OpenStreetMap tiles; the attribution stays visible. Inputs `markers` (`{ location, label }`), `routes` (one line per leg, the `geometry` from `/api/maps/route`), `tiles` and `label` (the region's accessible name). Route lines in `--color-accent`; markers are `--color-accent` dots with a `--color-surface` ring and the place name as tooltip; a visually hidden list reads the places out. A 1px `--color-border` frame with `--radius`, at least 16rem tall. It fits its view to the markers and lines.
 

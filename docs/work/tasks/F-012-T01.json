@@ -9,7 +9,7 @@
     "Compare `src/app/maps` with openbando's `core/geo.ts` (https://github.com/voidbrain/openbando/blob/main/src/app/core/geo.ts): list overlapping functions (distance, bearings, bounds, Leaflet helpers) in both repositories",
     "A function that both projects would import is proposed as a package in 🧊 blocks (voidbrain/blocks) through a coordination record in the coordinator; shared domain logic goes to blocks only once two projects import it (coordinator DOMAINS.md, \"The blocks criterion\"), never to the coordinator itself",
     "If nothing would be imported by both, close the step with the reason",
-    "Closed 2026-11-26 as \"not yet\" (owner \"ok to all\", gap review of solution:F-016-T08): no geo or routing function exists in both projects that both would import today; evidence: coordinator docs/reviews/2026-11-shared-assets/blocks.md (hobo 735e8af, openbando c18cfd1), function by function. The revisit trigger moved to F-013-T02. It blocks the verdict, not blocks creation."
+    "Closed 2026-11-26 as \"not yet\" (owner \"ok to all\", gap review of coordinator:F-016-T08): no geo or routing function exists in both projects that both would import today; evidence: coordinator docs/reviews/2026-11-shared-assets/blocks.md (hobo 735e8af, openbando c18cfd1), function by function. The revisit trigger moved to F-013-T02. It blocks the verdict, not blocks creation."
   ],
   "dependsOn": [
     "F-007-T02"
