@@ -517,12 +517,12 @@ Bugs (B-) and features (F-) in one list, in work-queue order. Steps: `effort` = 
 
 **Feature steps**
 
-| Effort | Step | Estimate | Actual | Remaining | Status | Depends on | Unlocks | Who |
-|---|---|---|---|---|---|---|---|:---:|
-| 🟢 Small | <a id="f-013-t01"></a>F-013-T01 — OSRM provider | 2 h | 0 h | 0 h | Implemented; verification pending | — | [F-013-T03](#f-013-t03) | 🤖 |
-| 🟡 Medium | <a id="f-013-t02"></a>F-013-T02 — Nominatim or Photon geocoding provider | 2 h | 0 h | 2 h | Planned | — | [F-013-T03](#f-013-t03) | 🤖 |
-| 🟢 Small | <a id="f-013-t03"></a>F-013-T03 — Owner runs OSRM and Photon on the base | 0 h | 0 h | 0 h agent + 1 h owner | Planned | [F-013-T01](#f-013-t01), [F-013-T02](#f-013-t02) | — | ⏳ 🧑‍🔧 |
-| 🟡 Medium | **Total** | 4 h | 0 h (0 of 3 steps recorded) | 2 h agent + 1 h owner | 0 of 3 completed | | | |
+| Effort | Step | Estimate | Actual | Remaining | Status | Depends on | Unlocks | Who | PRs |
+|---|---|---|---|---|---|---|---|:---:|---|
+| 🟢 Small | <a id="f-013-t01"></a>F-013-T01 — OSRM provider | 2 h | 0 h | 0 h | Implemented; verification pending | — | [F-013-T03](#f-013-t03) | 🤖 | [PR #11](https://github.com/voidbrain/hobo/pull/11) OSRM route and matrix behind the MapProvider adapter, config-only base URL, recorded-fixture contract shared with ORS |
+| 🟡 Medium | <a id="f-013-t02"></a>F-013-T02 — Nominatim or Photon geocoding provider | 2 h | 0 h | 2 h | Planned | — | [F-013-T03](#f-013-t03) | 🤖 | — |
+| 🟢 Small | <a id="f-013-t03"></a>F-013-T03 — Owner runs OSRM and Photon on the base | 0 h | 0 h | 0 h agent + 1 h owner | Planned | [F-013-T01](#f-013-t01), [F-013-T02](#f-013-t02) | — | ⏳ 🧑‍🔧 | — |
+| 🟡 Medium | **Total** | 4 h | 0 h (0 of 3 steps recorded) | 2 h agent + 1 h owner | 0 of 3 completed | | | | |
 
 <details>
 <summary>Next action, estimates and PR history</summary>
@@ -531,7 +531,7 @@ Bugs (B-) and features (F-) in one list, in work-queue order. Steps: `effort` = 
 
 | Field | Value |
 |---|---|
-| PR / evidence | [#1](https://github.com/voidbrain/hobo/pull/1); Test: `server/osrm.test.ts`, `server/config.test.ts` |
+| PR / evidence | Steps: F-013-T01: [PR #11](https://github.com/voidbrain/hobo/pull/11) OSRM route and matrix behind the MapProvider adapter, config-only base URL, recorded-fixture contract shared with ORS. [#1](https://github.com/voidbrain/hobo/pull/1); [#11](https://github.com/voidbrain/hobo/pull/11) (F-013-T01); Test: `server/osrm.test.ts`, `server/config.test.ts` |
 | Opened | 2026-11-25 |
 | Verification | Pending |
 | Reviewed | 2026-11-26 |

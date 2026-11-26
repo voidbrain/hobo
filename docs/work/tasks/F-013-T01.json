@@ -30,6 +30,12 @@
   "escalation": [
     "A material scope or effort increase goes to the owner"
   ],
+  "prs": [
+    {
+      "pr": 11,
+      "note": "OSRM route and matrix behind the MapProvider adapter, config-only base URL, recorded-fixture contract shared with ORS"
+    }
+  ],
   "effort": {
     "size": "medium",
     "estimate": "0 remaining",
