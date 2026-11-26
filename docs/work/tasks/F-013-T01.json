@@ -4,7 +4,7 @@
   "parent": "F-013",
   "title": "OSRM provider",
   "goal": "Routing and matrix without a key",
-  "status": "implemented",
+  "status": "closed",
   "acceptance": [
     "OSRM route and table calls behind the adapter in `server/`",
     "Same recorded-fixture tests as ORS"
@@ -39,7 +39,7 @@
   "effort": {
     "size": "medium",
     "estimate": "0 remaining",
-    "basis": "Done 2026-11-26: server/osrm-provider.ts (route and table behind the MapProvider adapter, config-only base URL, timeouts, error mapping), recorded OSRM fixtures and a provider contract test shared with ORS. No actual: start time not recorded.",
+    "basis": "Closed 2026-11-26: merged in #11 on green PR CI and green main run 45783847529; the step's acceptance is automated (recorded-fixture contract shared with ORS), the live check is F-013-T03. No actual: the step was not timed.",
     "reviewed": "2026-11-26",
     "agentHours": 0,
     "ownerHours": 0.0,
