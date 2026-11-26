@@ -245,6 +245,56 @@ describe('OpenRouteService call limits (F-007-T03 review)', () => {
   });
 });
 
+describe('OpenRouteService refusals (F-007-T03 review)', () => {
+  const answering = (status: number, body: unknown) =>
+    makeFixtureFetch(
+      () =>
+        new Response(JSON.stringify(body), {
+          status,
+          headers: { 'content-type': 'application/json' },
+        }),
+    ).fetchImpl;
+
+  it('maps only the no-route codes to unreachable_route', async () => {
+    for (const code of [2009, 2010]) {
+      const ors = createOpenRouteServiceProvider({
+        apiKey: 'fixture-key',
+        fetchImpl: answering(404, { error: { code, message: 'raw upstream detail' } }),
+        log: () => undefined,
+      });
+      await assert.rejects(
+        () => ors.route({ from: PORTWIND, to: MILLHAVEN }),
+        (err: unknown) =>
+          err instanceof MapProviderError &&
+          err.status === 422 &&
+          err.code === 'unreachable_route' &&
+          !err.userMessage.includes('raw upstream detail'),
+      );
+    }
+  });
+
+  it('reports other 400s as upstream_error and keeps the ORS text in the server log', async () => {
+    const logged: string[] = [];
+    const ors = createOpenRouteServiceProvider({
+      apiKey: 'secret-token-never-echo',
+      fetchImpl: answering(400, {
+        error: { code: 2003, message: 'Parameter value invalid for secret-token-never-echo' },
+      }),
+      log: (message) => logged.push(message),
+    });
+    await assert.rejects(
+      () => ors.route({ from: PORTWIND, to: MILLHAVEN }),
+      (err: unknown) =>
+        err instanceof MapProviderError &&
+        err.status === 502 &&
+        err.code === 'upstream_error' &&
+        !err.userMessage.includes('Parameter value invalid'),
+    );
+    assert.equal(logged.length, 1);
+    assert.match(logged[0] ?? '', /400 code 2003: Parameter value invalid for \[redacted\]/);
+  });
+});
+
 describe('local /api/maps endpoints and SQLite leg cache join (F-007-T03)', () => {
   let dataDir: string;
   let server: RunningServer | undefined;

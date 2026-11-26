@@ -38,6 +38,8 @@ export interface OrsProviderOptions {
   readonly fetchImpl?: typeof fetch;
   /** Milliseconds per call; defaults to `DEFAULT_ORS_TIMEOUT_MS`. */
   readonly timeoutMs?: number;
+  /** Server-side log for upstream details the user does not see; defaults to `console.error`. */
+  readonly log?: (message: string) => void;
 }
 
 function scrubSecret(message: string, secret: string): string {
@@ -105,6 +107,9 @@ function extractOrsErrorDetail(
   return {};
 }
 
+/** ORS directions error codes for "route not found" (2009) and "routable point not found" (2010). */
+const ORS_NO_ROUTE_CODES: ReadonlySet<number> = new Set([2009, 2010]);
+
 function isTimeout(error: unknown): boolean {
   return error instanceof Error && (error.name === 'TimeoutError' || error.name === 'AbortError');
 }
@@ -123,6 +128,7 @@ async function callOrsJson(
   init: RequestInit,
   apiKey: string,
   timeoutMs: number,
+  log: (message: string) => void,
 ): Promise<unknown> {
   let response: Response;
   try {
@@ -155,7 +161,7 @@ async function callOrsJson(
   }
 
   const detail = extractOrsErrorDetail(parsed, apiKey);
-  if (response.status === 429 || detail.code === 2003) {
+  if (response.status === 429) {
     throw new MapProviderError(
       429,
       'quota_exceeded',
@@ -169,17 +175,21 @@ async function callOrsJson(
       'OpenRouteService rejected the API key. Check openRouteServiceApiKey in server/config.local.json.',
     );
   }
-  if (response.status === 404 || response.status === 400) {
+  if (detail.code !== undefined && ORS_NO_ROUTE_CODES.has(detail.code)) {
     throw new MapProviderError(
       422,
       'unreachable_route',
-      detail.message || 'OpenRouteService could not find a route for the given locations.',
+      'OpenRouteService could not find a route for the given locations.',
     );
   }
+  // Other refusals (bad parameters, limits, server faults): the ORS text stays in the server log.
+  log(
+    `OpenRouteService ${response.status}${detail.code === undefined ? '' : ` code ${detail.code}`}: ${detail.message ?? 'no message'}`,
+  );
   throw new MapProviderError(
     502,
     'upstream_error',
-    `OpenRouteService failed with status ${response.status}.`,
+    `OpenRouteService refused the request (status ${response.status}).`,
   );
 }
 
@@ -230,6 +240,7 @@ export function createOpenRouteServiceProvider(options: OrsProviderOptions): Map
   const baseUrl = (options.baseUrl ?? DEFAULT_BASE_URL).replace(/\/+$/, '');
   const fetchImpl = options.fetchImpl ?? globalThis.fetch;
   const timeoutMs = options.timeoutMs ?? DEFAULT_ORS_TIMEOUT_MS;
+  const log = options.log ?? ((message: string) => console.error(message));
 
   function requireKey(): string {
     const key = options.apiKey?.trim() ?? '';
@@ -262,6 +273,7 @@ export function createOpenRouteServiceProvider(options: OrsProviderOptions): Map
       },
       apiKey,
       timeoutMs,
+      log,
     );
     return parsePeliasFeatures(payload);
   }
@@ -292,6 +304,7 @@ export function createOpenRouteServiceProvider(options: OrsProviderOptions): Map
         },
         apiKey,
         timeoutMs,
+        log,
       );
 
       if (typeof payload !== 'object' || payload === null) {
@@ -368,6 +381,7 @@ export function createOpenRouteServiceProvider(options: OrsProviderOptions): Map
         },
         apiKey,
         timeoutMs,
+        log,
       );
 
       if (typeof payload !== 'object' || payload === null) {
