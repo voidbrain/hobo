@@ -351,6 +351,7 @@ export function cachedMapProvider(
         };
       }
 
+      // One uncached cell fetches the whole matrix (one provider call), so a quota error fails it all.
       const fresh = await provider.matrix({ points, profile });
       const normalizedCells: MatrixCell[] = fresh.cells.map((cell) => {
         const distanceMetres = nonNegativeWhole(cell.distanceMetres, 'distanceMetres');

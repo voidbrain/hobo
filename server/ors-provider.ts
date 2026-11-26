@@ -159,7 +159,7 @@ async function callOrsJson(
     throw new MapProviderError(
       429,
       'quota_exceeded',
-      'OpenRouteService rate or daily quota limit reached. Cached legs remain available; wait and try again.',
+      'OpenRouteService rate or daily quota limit reached. Routes and matrices whose legs are all cached still work; anything with a new leg waits until the limit resets.',
     );
   }
   if (response.status === 401 || response.status === 403) {

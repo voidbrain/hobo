@@ -342,6 +342,25 @@ describe('local /api/maps endpoints and SQLite leg cache join (F-007-T03)', () =
     assert.ok(errBody.errors[0] && /quota|rate limit/i.test(errBody.errors[0]));
     assert.equal(JSON.stringify(errBody).includes('local-only-ors-key'), false);
 
+    // A matrix whose legs are all cached still answers; one new leg fails the whole matrix,
+    // and the message says so rather than promising cached legs.
+    const callsBefore = calls.length;
+    const cachedMatrixRes = await fetch(`${server.url}/api/maps/matrix`, {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ points: [MILLHAVEN, PORTWIND] }),
+    });
+    assert.equal(cachedMatrixRes.status, 200);
+    assert.equal(calls.length, callsBefore);
+    const partlyNewRes = await fetch(`${server.url}/api/maps/matrix`, {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ points: [PORTWIND, MILLHAVEN, { lat: 46.0, lng: 10.0 }] }),
+    });
+    assert.equal(partlyNewRes.status, 429);
+    const partlyNew = (await partlyNewRes.json()) as { code: string; errors: string[] };
+    assert.match(partlyNew.errors[0] ?? '', /all cached still work; anything with a new leg waits/);
+
     // 5. Validation errors return 400
     const badGeo = await fetch(`${server.url}/api/maps/geocode?q=`);
     assert.equal(badGeo.status, 400);
