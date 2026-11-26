@@ -3,7 +3,7 @@
 Current work ledger, reviewed 26 November 2026 against main `8eff54d`. Generated from [record sources](work/records) and [steps](work/tasks) by `npm run work:build`: edit those, not this file. [Rules](BACKLOG-RULES.md) · [Archive](archive/README.md) · [Reading the records](#how-to-use-this-file).
 
 <!-- totals:start -->
-**Remaining effort:** 50.25 h agent + 2.5 h owner across 42 open steps of 16 features. Generated from the task files.
+**Remaining effort:** 55.25 h agent + 2.5 h owner across 47 open steps of 17 features. Generated from the task files.
 <!-- totals:end -->
 
 ## Work items
@@ -220,6 +220,46 @@ Bugs (B-) and features (F-) in one list, in work-queue order. Steps: `effort` = 
 | Field | Value |
 |---|---|
 | PR / evidence | Steps: F-001-T01: [PR #1](https://github.com/voidbrain/hobo/pull/1) scaffold and harness. [#1](https://github.com/voidbrain/hobo/pull/1); [#3](https://github.com/voidbrain/hobo/pull/3) |
+| Opened | 2026-11-25 |
+| Verification | Pending |
+| Reviewed | 2026-11-25 |
+
+</details>
+
+---
+### <a id="f-011"></a>[✨ F-011](#top)
+
+**NERV integration: MCP server for places, trips and totals**
+
+| Status | Priority | Effort | Remaining | Depends on | Unlocks | Agent | Procedures | Decisions |
+|---|---|---|---|---|---|:---:|:---:|:---:|
+| 🔴 Open | 🔹 P3 | 🔴 Large | 4.25 h agent + 0.25 h owner | [F-002-T01](#f-002-t01), [F-003-T01](#f-003-t01), [F-004-T01](#f-004-t01), [F-004-T02](#f-004-t02) | [F-018-T01](#f-018-t01), [F-018-T05](#f-018-t05) | ⏳ | — | — |
+
+💻 **→** Next: F-011-T01 — MCP endpoint in the local service (Planned).
+
+| | |
+|---|---|
+| **Issue** | NERV should read Hobo the way it reads Grover's hub: an MCP server exposing places, trips and route totals. |
+| **Reproduce** | NERV cannot see Hobo. |
+| **Check** | The local service exposes an MCP endpoint with read tools (list places, get a trip, route totals for a trip, a day or the whole trip); an end-to-end test lists and calls the tools; NERV answers a question about a trip from chat. |
+
+**Feature steps**
+
+| Effort | Step | Estimate | Actual | Remaining | Status | Depends on | Unlocks | Who | PRs |
+|---|---|---|---|---|---|---|---|:---:|---|
+| 🟡 Medium | <a id="f-011-t01"></a>F-011-T01 — MCP endpoint in the local service | 2.5 h | 0 h | 2.5 h | Planned | [F-002-T01](#f-002-t01), [F-003-T01](#f-003-t01), [F-004-T01](#f-004-t01), [F-004-T02](#f-004-t02) | [F-011-T02](#f-011-t02), [F-011-T03](#f-011-t03), [F-018-T01](#f-018-t01) | ⏳ 🤖 | — |
+| 🟢 Small | <a id="f-011-t02"></a>F-011-T02 — Owner connects Hobo to NERV and checks it from chat | 0 h | 0 h | 0 h agent + 0.25 h owner | Planned | [F-011-T01](#f-011-t01) | — | ⏳ 🧑‍🔧 | — |
+| 🟡 Medium | <a id="f-011-t03"></a>F-011-T03 — Gauntlet cases for the MCP tools (hobo-v1), Italian and English | 1.75 h | 0 h | 1.75 h | Planned | [F-011-T01](#f-011-t01) | [F-018-T05](#f-018-t05) | ⏳ 🤖 | [PR #17](https://github.com/voidbrain/hobo/pull/17) plan |
+| 🔴 Large | **Total** | 4.25 h | 0 h (0 of 3 steps recorded) | 4.25 h agent + 0.25 h owner | 0 of 3 completed | | | | |
+
+<details>
+<summary>Next action, estimates and PR history</summary>
+
+[Full notes & evidence](work/records/F-011.md)
+
+| Field | Value |
+|---|---|
+| PR / evidence | Steps: F-011-T03: [PR #17](https://github.com/voidbrain/hobo/pull/17) plan. [#1](https://github.com/voidbrain/hobo/pull/1); [#2](https://github.com/voidbrain/hobo/pull/2) (review fixes); [#17](https://github.com/voidbrain/hobo/pull/17) (plan) |
 | Opened | 2026-11-25 |
 | Verification | Pending |
 | Reviewed | 2026-11-25 |
@@ -590,42 +630,44 @@ Bugs (B-) and features (F-) in one list, in work-queue order. Steps: `effort` = 
 </details>
 
 ---
-### <a id="f-011"></a>[✨ F-011](#top)
+### <a id="f-018"></a>[✨ F-018](#top)
 
-**NERV integration: MCP server for places, trips and totals**
+**NERV write tools: add a place to a trip and set a place's image, behind NERV's approval**
 
 | Status | Priority | Effort | Remaining | Depends on | Unlocks | Agent | Procedures | Decisions |
 |---|---|---|---|---|---|:---:|:---:|:---:|
-| 🔴 Open | 🔹 P3 | 🔴 Large | 4.25 h agent + 0.25 h owner | [F-002-T01](#f-002-t01), [F-003-T01](#f-003-t01), [F-004-T01](#f-004-t01), [F-004-T02](#f-004-t02) | — | ⏳ | — | — |
+| 🔴 Open | 🔹 P3 | 🔴 Large | 5 h | [F-011-T01](#f-011-t01), [F-011-T03](#f-011-t03) | — | ⏳ | — | — |
 
-💻 **→** Next: F-011-T01 — MCP endpoint in the local service (Planned).
+💻 **→** Next: F-018-T01 — Write-tool contract in docs/DESIGN.md (Planned).
 
 | | |
 |---|---|
-| **Issue** | NERV should read Hobo the way it reads Grover's hub: an MCP server exposing places, trips and route totals. |
-| **Reproduce** | NERV cannot see Hobo. |
-| **Check** | The local service exposes an MCP endpoint with read tools (list places, get a trip, route totals for a trip, a day or the whole trip); an end-to-end test lists and calls the tools; NERV answers a question about a trip from chat. |
+| **Issue** | Owner decision 2026-11-26 in chat: "yes to both", including adding places to Hobo trips by chat ("aggiungi Rocca Calascio al trip di agosto") via MCP behind NERV's approval. The same day the owner asked to attach an image to a place from NERV chat ("put it in chat and tell to use that, or to find some on the web, propose … and save the accepted", nerv:F-143). Hobo's MCP tools are read-only (F-011). The owner uses all modules in Italian. |
+| **Reproduce** | After F-011-T01, `tools/list` on Hobo's MCP endpoint shows only list_places, get_trip and trip_totals; NERV cannot add a place or set an image. |
+| **Check** | A written contract (F-018-T01); hobo_find_place and hobo_add_place_to_trip (name → geocode → owner confirms in NERV → add, F-018-T02) and hobo_set_place_image (bytes or https URL, attribution stored, F-018-T03), all validated, idempotent by requestId and annotated as writes so NERV asks first; the credit line in the gallery (F-018-T04); hobo-v1's decline case becomes a write case, Italian and English (F-018-T05). |
 
 **Feature steps**
 
-| Effort | Step | Estimate | Actual | Remaining | Status | Depends on | Unlocks | Who | PRs |
-|---|---|---|---|---|---|---|---|:---:|---|
-| 🟡 Medium | <a id="f-011-t01"></a>F-011-T01 — MCP endpoint in the local service | 2.5 h | 0 h | 2.5 h | Planned | [F-002-T01](#f-002-t01), [F-003-T01](#f-003-t01), [F-004-T01](#f-004-t01), [F-004-T02](#f-004-t02) | [F-011-T02](#f-011-t02), [F-011-T03](#f-011-t03) | ⏳ 🤖 | — |
-| 🟢 Small | <a id="f-011-t02"></a>F-011-T02 — Owner connects Hobo to NERV and checks it from chat | 0 h | 0 h | 0 h agent + 0.25 h owner | Planned | [F-011-T01](#f-011-t01) | — | ⏳ 🧑‍🔧 | — |
-| 🟡 Medium | <a id="f-011-t03"></a>F-011-T03 — Gauntlet cases for the MCP tools (hobo-v1), Italian and English | 1.75 h | 0 h | 1.75 h | Planned | [F-011-T01](#f-011-t01) | — | ⏳ 🤖 | [PR #17](https://github.com/voidbrain/hobo/pull/17) plan |
-| 🔴 Large | **Total** | 4.25 h | 0 h (0 of 3 steps recorded) | 4.25 h agent + 0.25 h owner | 0 of 3 completed | | | | |
+| Effort | Step | Estimate | Actual | Remaining | Status | Depends on | Unlocks | PRs |
+|---|---|---|---|---|---|---|---|---|
+| 🟢 Small | <a id="f-018-t01"></a>F-018-T01 — Write-tool contract in docs/DESIGN.md | 0.5 h | 0 h | 0.5 h | Planned | [F-011-T01](#f-011-t01) | [F-018-T02](#f-018-t02), [F-018-T03](#f-018-t03) | [PR #19](https://github.com/voidbrain/hobo/pull/19) plan |
+| 🟡 Medium | <a id="f-018-t02"></a>F-018-T02 — Find a place by name and add it to a trip | 1.5 h | 0 h | 1.5 h | Planned | [F-018-T01](#f-018-t01) | [F-018-T05](#f-018-t05) | [PR #19](https://github.com/voidbrain/hobo/pull/19) plan |
+| 🟡 Medium | <a id="f-018-t03"></a>F-018-T03 — Set a place's image with attribution | 1.5 h | 0 h | 1.5 h | Planned | [F-018-T01](#f-018-t01) | [F-018-T04](#f-018-t04), [F-018-T05](#f-018-t05) | [PR #19](https://github.com/voidbrain/hobo/pull/19) plan |
+| 🟢 Small | <a id="f-018-t04"></a>F-018-T04 — Show the image credit in the place gallery | 0.75 h | 0 h | 0.75 h | Planned | [F-018-T03](#f-018-t03) | — | [PR #19](https://github.com/voidbrain/hobo/pull/19) plan |
+| 🟢 Small | <a id="f-018-t05"></a>F-018-T05 — hobo-v1 write cases, Italian and English | 0.75 h | 0 h | 0.75 h | Planned | [F-018-T02](#f-018-t02), [F-018-T03](#f-018-t03), [F-011-T03](#f-011-t03) | — | [PR #19](https://github.com/voidbrain/hobo/pull/19) plan |
+| 🔴 Large | **Total** | 5 h | 0 h (0 of 5 steps recorded) | 5 h | 0 of 5 completed | | | |
 
 <details>
 <summary>Next action, estimates and PR history</summary>
 
-[Full notes & evidence](work/records/F-011.md)
+[Full notes & evidence](work/records/F-018.md)
 
 | Field | Value |
 |---|---|
-| PR / evidence | Steps: F-011-T03: [PR #17](https://github.com/voidbrain/hobo/pull/17) plan. [#1](https://github.com/voidbrain/hobo/pull/1); [#2](https://github.com/voidbrain/hobo/pull/2) (review fixes); [#17](https://github.com/voidbrain/hobo/pull/17) (plan) |
-| Opened | 2026-11-25 |
+| PR / evidence | Steps: F-018-T01: [PR #19](https://github.com/voidbrain/hobo/pull/19) plan · F-018-T02: [PR #19](https://github.com/voidbrain/hobo/pull/19) plan · F-018-T03: [PR #19](https://github.com/voidbrain/hobo/pull/19) plan · F-018-T04: [PR #19](https://github.com/voidbrain/hobo/pull/19) plan · F-018-T05: [PR #19](https://github.com/voidbrain/hobo/pull/19) plan. Plan: [#19](https://github.com/voidbrain/hobo/pull/19) |
+| Opened | 2026-11-26 |
 | Verification | Pending |
-| Reviewed | 2026-11-25 |
+| Reviewed | 2026-11-26 |
 
 </details>
 

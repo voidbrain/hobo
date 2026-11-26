@@ -1,0 +1,49 @@
+{
+  "version": 1,
+  "id": "F-018-T03",
+  "parent": "F-018",
+  "title": "Set a place's image with attribution",
+  "goal": "NERV can save an accepted image to a place, with its source and licence",
+  "status": "planned",
+  "acceptance": [
+    "Owner decision 2026-11-26 in chat: \"yes to both\": adding places to Hobo trips by chat (\"aggiungi Rocca Calascio al trip di agosto\") via MCP behind NERV's approval; and the owner's idea the same day to set an image on a Hobo place from NERV chat (nerv:F-143). Italian is required for every model-facing feature.",
+    "hobo_set_place_image accepts base64 bytes or an https URL; a URL is fetched by Hobo with a public-address check (no private, loopback or link-local targets), a timeout and the 5 MB limit; both go through server/images.ts (type by magic bytes, metadata stripped)",
+    "Attribution (source, licence, author, url) is stored with the image name; idempotent by requestId; tests for bytes, URL, oversize, wrong type, a private-address URL and a repeat"
+  ],
+  "dependsOn": [
+    "F-018-T01"
+  ],
+  "resources": [
+    "server/**",
+    "docs/work/records/F-018.md",
+    "generated:backlog-views"
+  ],
+  "capabilities": [
+    "typescript",
+    "privacy-review",
+    "regression-design"
+  ],
+  "privacy": "Invented places, trips and images only; no API keys, tokens or personal data in Git.",
+  "validation": [
+    "npm test",
+    "npm run check:fast; final applicable CI"
+  ],
+  "escalation": [
+    "Material scope growth or effort increase goes to the owner before adoption"
+  ],
+  "effort": {
+    "size": "medium",
+    "estimate": "1.5 h agent",
+    "basis": "Estimated 2026-11-26: image sanitising exists; the URL fetch guard and the attribution column carry the work. Not a measurement.",
+    "reviewed": "2026-11-26",
+    "agentHours": 1.5,
+    "baselineAgentHours": 1.5,
+    "estimateAgentHours": 1.5
+  },
+  "prs": [
+    {
+      "pr": 19,
+      "note": "plan"
+    }
+  ]
+}
