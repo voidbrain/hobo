@@ -6,11 +6,12 @@
   "goal": "Hobo uses bricks for its shared UI",
   "status": "planned",
   "acceptance": [
-    "Waits on 🧱 bricks (coordinator solution:F-012) being published",
+    "Starts when bricks:F-007-T03 (Hobo migration note and the bricks release that carries it) is done; bricks is published (0.3.0 on npm) and its adoption is bricks:F-007, not coordinator solution:F-012",
     "Components moved, Hobo imports the bricks package, tests still green"
   ],
   "dependsOn": [
-    "F-010-T01"
+    "F-010-T01",
+    "bricks:F-007-T03"
   ],
   "resources": [
     "src/app/shared/**",
@@ -34,10 +35,10 @@
   "effort": {
     "size": "medium",
     "estimate": "2 h agent, 1 d",
-    "basis": "Planned 2026-11-25 in the upfront step plan: scoped to one PR, at most 1 focused day(s). Not a measurement.",
-    "reviewed": "2026-11-25",
+    "basis": "Planned 2026-11-25 in the upfront step plan: scoped to one PR, at most 1 focused day(s). Dependency changed 2026-11-26 from a prose wait on solution:F-012 to bricks:F-007-T03 (cross-project audit proposal 3, accepted by the owner in chat 2026-11-26 (\"accept all 17 proposals\")). Not a measurement.",
+    "reviewed": "2026-11-26",
     "agentHours": 2,
-    "ownerHours": 0.0,
+    "ownerHours": 0,
     "baselineAgentHours": 2,
     "estimateAgentHours": 2,
     "days": 1,

@@ -3,7 +3,7 @@
 Current work ledger, reviewed 26 November 2026 against main `8eff54d`. Generated from [record sources](work/records) and [steps](work/tasks) by `npm run work:build`: edit those, not this file. [Rules](BACKLOG-RULES.md) · [Archive](archive/README.md) · [Reading the records](#how-to-use-this-file).
 
 <!-- totals:start -->
-**Remaining effort:** 40.75 h agent + 2.5 h owner across 32 open steps of 14 features. Generated from the task files.
+**Remaining effort:** 44.25 h agent + 2.5 h owner across 34 open steps of 15 features. Generated from the task files.
 <!-- totals:end -->
 
 ## Work items
@@ -319,7 +319,7 @@ Bugs (B-) and features (F-) in one list, in work-queue order. Steps: `effort` = 
 |---|---|
 | **Issue** | The maps and geo domain is shared with openbando, which uses Leaflet and its own geo maths in `src/app/core/geo.ts`. A shared package could serve both. This is a candidate, not a decision. |
 | **Reproduce** | — |
-| **Check** | A dated comparison of Hobo's `src/app/maps/` and openbando's geo code lists the shared functions and proposes a package and its owner, raised with the coordinator; or the record closes with the reason not to share. |
+| **Check** | A dated comparison of Hobo's `src/app/maps/` and openbando's geo code lists the shared functions and proposes, for a function both projects would import, a package in blocks (through a coordination record); or the record closes with the reason not to share. |
 
 **Feature steps**
 
@@ -427,7 +427,7 @@ Bugs (B-) and features (F-) in one list, in work-queue order. Steps: `effort` = 
 
 | Status | Priority | Effort | Remaining | Depends on | Unlocks | Agent | Procedures | Decisions |
 |---|---|---|---|---|---|:---:|:---:|:---:|
-| 🔴 Open | 🔹 P3 | 🟡 Medium | 3.5 h | — | — | 🤖 | — | — |
+| 🔴 Open | 🔹 P3 | 🟡 Medium | 3.5 h | `bricks:F-007-T03` | — | 🤖 | — | — |
 
 💻 **→** Next: F-010-T01 — Bricks-ready contract and check (Ready).
 
@@ -442,7 +442,7 @@ Bugs (B-) and features (F-) in one list, in work-queue order. Steps: `effort` = 
 | Effort | Step | Estimate | Actual | Remaining | Status | Depends on | Unlocks |
 |---|---|---|---|---|---|---|---|
 | 🟡 Medium | <a id="f-010-t01"></a>F-010-T01 — Bricks-ready contract and check | 1.5 h | 0 h | 1.5 h | Ready | — | [F-010-T02](#f-010-t02) |
-| 🟡 Medium | <a id="f-010-t02"></a>F-010-T02 — Move shared components to bricks | 2 h | 0 h | 2 h | Planned | [F-010-T01](#f-010-t01) | — |
+| 🟡 Medium | <a id="f-010-t02"></a>F-010-T02 — Move shared components to bricks | 2 h | 0 h | 2 h | Planned | [F-010-T01](#f-010-t01), `bricks:F-007-T03` | — |
 | 🟡 Medium | **Total** | 3.5 h | 0 h (0 of 2 steps recorded) | 3.5 h | 0 of 2 completed | | |
 
 <details>
@@ -540,6 +540,45 @@ Bugs (B-) and features (F-) in one list, in work-queue order. Steps: `effort` = 
 |---|---|
 | PR / evidence | Steps: F-013-T01: [PR #11](https://github.com/voidbrain/hobo/pull/11) OSRM route and matrix behind the MapProvider adapter, config-only base URL, recorded-fixture contract shared with ORS. [#1](https://github.com/voidbrain/hobo/pull/1); [#11](https://github.com/voidbrain/hobo/pull/11) (F-013-T01); Test: `server/osrm.test.ts`, `server/config.test.ts` |
 | Opened | 2026-11-25 |
+| Verification | Pending |
+| Reviewed | 2026-11-26 |
+
+</details>
+
+---
+### <a id="f-015"></a>[✨ F-015](#top)
+
+**Full audit and audit enforcement**
+
+| Status | Priority | Effort | Remaining | Depends on | Unlocks | Agent | Procedures | Decisions |
+|---|---|---|---|---|---|:---:|:---:|:---:|
+| 🔴 Open | 🔹 P3 | 🟡 Medium | 3.5 h | — | — | 🤖 | — | — |
+
+💻 **→** Next: F-015-T01 — Next audit as kind full (Planned).
+
+| | |
+|---|---|
+| **Issue** | Hobo has only a scoped audit (2026-11-25, which checked all eight areas), so no report of kind `full` exists and `audit.enforce` is off. The 2026-11-26 cross-project audit (coordinator, docs/audits/2026-11-26-cross-project.md, proposal 16) proposes a full audit, then enforcement. |
+| **Reproduce** | `docs/audits/2026-11-25-baseline.audit.json` has `"kind": "scoped"`; `.harness.json` has `"audit": {"enforce": false}`. |
+| **Check** | A report with manifest `kind: full` passes `npm run check:audits`, and `audit.enforce` is true. |
+
+**Feature steps**
+
+| Effort | Step | Estimate | Actual | Remaining | Status | Depends on | Unlocks |
+|---|---|---|---|---|---|---|---|
+| 🟡 Medium | <a id="f-015-t01"></a>F-015-T01 — Next audit as kind full | 3 h | 0 h | 3 h | Planned | — | [F-015-T02](#f-015-t02) |
+| 🟢 Small | <a id="f-015-t02"></a>F-015-T02 — Turn audit.enforce on | 0.5 h | 0 h | 0.5 h | Planned | [F-015-T01](#f-015-t01) | — |
+| 🟡 Medium | **Total** | 3.5 h | 0 h (0 of 2 steps recorded) | 3.5 h | 0 of 2 completed | | |
+
+<details>
+<summary>Next action, estimates and PR history</summary>
+
+[Full notes & evidence](work/records/F-015.md)
+
+| Field | Value |
+|---|---|
+| PR / evidence | [#13](https://github.com/voidbrain/hobo/pull/13) |
+| Opened | 2026-11-26 |
 | Verification | Pending |
 | Reviewed | 2026-11-26 |
 
