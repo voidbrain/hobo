@@ -9,7 +9,7 @@ export type MapProviderFactory = (config: ServerConfig) => MapProvider;
 
 /**
  * Selects the configured provider implementation in `server/` and wraps it with the
- * SQLite-backed leg cache so trips and what-if comparisons never re-query cached legs.
+ * SQLite-backed leg cache (legs older than `legCacheMaxAgeDays` are fetched again) so trips and what-if comparisons never re-query cached legs.
  */
 export function createServerMapProvider(
   config: ServerConfig,
@@ -20,5 +20,5 @@ export function createServerMapProvider(
   if (!factory) {
     throw new Error(`No map provider registered for ${config.mapProvider}`);
   }
-  return cachedMapProvider(factory(config), cache);
+  return cachedMapProvider(factory(config), cache, { maxAgeDays: config.legCacheMaxAgeDays });
 }

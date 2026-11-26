@@ -239,6 +239,44 @@ describe('cachedMapProvider and memory leg cache (F-007-T01)', () => {
     expect(spies.route).toHaveBeenCalledTimes(1);
   });
 
+  it('fetches route geometry once for a leg that only the matrix has cached', async () => {
+    const cache = createMemoryLegCache();
+    const { provider, spies } = makeStubProvider();
+    const cached = cachedMapProvider(provider, cache);
+
+    await cached.matrix({ points: [NORTHGATE, RIVERFORD] });
+    expect(spies.matrix).toHaveBeenCalledTimes(1);
+
+    const first = await cached.route({ from: NORTHGATE, to: RIVERFORD });
+    expect(spies.route).toHaveBeenCalledTimes(1);
+    expect(first.geometry.length).toBeGreaterThan(0);
+
+    const again = await cached.route({ from: NORTHGATE, to: RIVERFORD });
+    expect(spies.route).toHaveBeenCalledTimes(1);
+    expect(again.cached).toBe(true);
+    expect(again.geometry.length).toBeGreaterThan(0);
+  });
+
+  it('treats a cached leg older than maxAgeDays as a miss and fetches it again', async () => {
+    const cache = createMemoryLegCache(() => '2026-01-01T00:00:00.000Z');
+    const { provider, spies } = makeStubProvider();
+    let nowMs = Date.parse('2026-01-30T00:00:00.000Z');
+    const cached = cachedMapProvider(provider, cache, { maxAgeDays: 30, now: () => nowMs });
+
+    await cached.route({ from: NORTHGATE, to: RIVERFORD });
+    await cached.matrix({ points: [NORTHGATE, RIVERFORD] });
+    expect((await cached.route({ from: NORTHGATE, to: RIVERFORD })).cached).toBe(true);
+    await cached.matrix({ points: [NORTHGATE, RIVERFORD] });
+    expect(spies.route).toHaveBeenCalledTimes(1);
+    expect(spies.matrix).toHaveBeenCalledTimes(1);
+
+    nowMs = Date.parse('2026-02-01T00:00:00.000Z');
+    expect((await cached.route({ from: NORTHGATE, to: RIVERFORD })).cached).toBe(false);
+    await cached.matrix({ points: [NORTHGATE, RIVERFORD] });
+    expect(spies.route).toHaveBeenCalledTimes(2);
+    expect(spies.matrix).toHaveBeenCalledTimes(2);
+  });
+
   it('forwards geocode and autocomplete calls through the adapter', async () => {
     const cache = createMemoryLegCache();
     const { provider, spies } = makeStubProvider();

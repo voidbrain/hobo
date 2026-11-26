@@ -11,6 +11,7 @@ import {
   validateTripPatch,
 } from '../src/app/core/trip.ts';
 import {
+  DEFAULT_LEG_CACHE_MAX_AGE_DAYS,
   validateGeocodeRequest,
   validateMatrixRequest,
   validateRouteRequest,
@@ -366,6 +367,7 @@ export async function startServer(config: StartServerConfig): Promise<RunningSer
     mapProvider: config.mapProvider ?? 'openrouteservice',
     openRouteServiceApiKey: config.openRouteServiceApiKey ?? null,
     openRouteServiceBaseUrl: config.openRouteServiceBaseUrl ?? 'https://api.openrouteservice.org',
+    legCacheMaxAgeDays: config.legCacheMaxAgeDays ?? DEFAULT_LEG_CACHE_MAX_AGE_DAYS,
   };
   const mapProvider = createServerMapProvider(resolvedConfig, store, {
     openrouteservice: (cfg) =>

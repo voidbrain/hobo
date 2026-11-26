@@ -143,7 +143,8 @@ function normalizeCoord(value: number, label: string, min: number, max: number):
   return zeroSafe.toFixed(6);
 }
 
-function nonNegativeWhole(value: number, label: string): number {
+/** Rounds a provider distance or time to a whole, non-negative number (shared with `server/`). */
+export function nonNegativeWhole(value: number, label: string): number {
   if (typeof value !== 'number' || !Number.isFinite(value) || value < 0) {
     throw new RangeError(`${label} must be a non-negative number`);
   }
@@ -228,12 +229,35 @@ export function createMemoryLegCache(now = () => new Date().toISOString()): LegC
   };
 }
 
+/** Default age after which a cached leg is fetched again (roads and timings change). */
+export const DEFAULT_LEG_CACHE_MAX_AGE_DAYS = 30;
+
+export interface CachedMapProviderOptions {
+  /** A cached leg older than this is a miss; defaults to `DEFAULT_LEG_CACHE_MAX_AGE_DAYS`. */
+  readonly maxAgeDays?: number;
+  /** Current time in milliseconds, for tests. */
+  readonly now?: () => number;
+}
+
 /**
  * Wraps any `MapProvider` so cached legs are read first on both `route` and `matrix`,
  * avoiding redundant provider calls during trip edits and what-if comparisons.
+ * A leg older than `maxAgeDays` is a miss and is fetched again.
  */
-export function cachedMapProvider(provider: MapProvider, cache: LegCache): MapProvider {
+export function cachedMapProvider(
+  provider: MapProvider,
+  cache: LegCache,
+  options: CachedMapProviderOptions = {},
+): MapProvider {
   const providerId = normalizeProviderId(provider.id);
+  const maxAgeMs = (options.maxAgeDays ?? DEFAULT_LEG_CACHE_MAX_AGE_DAYS) * 86_400_000;
+  const now = options.now ?? Date.now;
+  const freshLeg = (profile: TravelProfile, from: MapPoint, to: MapPoint) => {
+    const hit = cache.getLeg(providerId, profile, from, to);
+    if (!hit) return undefined;
+    const updated = Date.parse(hit.updatedAt);
+    return Number.isFinite(updated) && now() - updated <= maxAgeMs ? hit : undefined;
+  };
   return {
     id: providerId,
     tiles: provider.tiles,
@@ -253,8 +277,9 @@ export function cachedMapProvider(provider: MapProvider, cache: LegCache): MapPr
           cached: true,
         };
       }
-      const hit = cache.getLeg(providerId, profile, request.from, request.to);
-      if (hit) {
+      const hit = freshLeg(profile, request.from, request.to);
+      // A matrix-only leg has no geometry: route still asks the provider for the line.
+      if (hit && hit.geometry.length > 0) {
         return {
           provider: hit.provider,
           profile: hit.profile,
@@ -302,7 +327,7 @@ export function cachedMapProvider(provider: MapProvider, cache: LegCache): MapPr
             cachedCells.push({ fromIndex: i, toIndex: j, distanceMetres: 0, travelMinutes: 0 });
             continue;
           }
-          const hit = cache.getLeg(providerId, profile, from, to);
+          const hit = freshLeg(profile, from, to);
           if (!hit) {
             allCached = false;
             break;

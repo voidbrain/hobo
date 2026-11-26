@@ -14,6 +14,8 @@ export interface ServerConfig {
   mapProvider: ConfiguredMapProvider;
   openRouteServiceApiKey: string | null;
   openRouteServiceBaseUrl: string;
+  /** Cached legs older than this are fetched again (default 30). */
+  legCacheMaxAgeDays: number;
 }
 
 const KEYS = [
@@ -23,6 +25,7 @@ const KEYS = [
   'mapProvider',
   'openRouteServiceApiKey',
   'openRouteServiceBaseUrl',
+  'legCacheMaxAgeDays',
 ] as const;
 
 function parseOptionalSecret(raw: unknown, name: string): string | null {
@@ -50,7 +53,8 @@ function parseHttpUrl(raw: unknown, name: string): string {
 
 /**
  * Defaults, then `config.local.json` in `dir` (git-ignored), then HOBO_HOST, HOBO_PORT,
- * HOBO_DATA_DIR, HOBO_MAP_PROVIDER, HOBO_ORS_API_KEY and HOBO_ORS_BASE_URL.
+ * HOBO_DATA_DIR, HOBO_MAP_PROVIDER, HOBO_ORS_API_KEY, HOBO_ORS_BASE_URL and
+ * HOBO_LEG_CACHE_MAX_AGE_DAYS.
  * A relative dataDir is relative to `dir`. API keys never leave `server/`.
  */
 export function loadConfig(dir: string, env: NodeJS.ProcessEnv = process.env): ServerConfig {
@@ -82,11 +86,16 @@ export function loadConfig(dir: string, env: NodeJS.ProcessEnv = process.env): S
     env['HOBO_ORS_BASE_URL'] ?? local['openRouteServiceBaseUrl'] ?? DEFAULT_ORS_BASE_URL,
     'openRouteServiceBaseUrl',
   );
+  const legCacheMaxAgeDays = Number(
+    env['HOBO_LEG_CACHE_MAX_AGE_DAYS'] ?? local['legCacheMaxAgeDays'] ?? 30,
+  );
 
   if (typeof host !== 'string' || !host) throw new Error('host must be a host name');
   if (!Number.isInteger(port) || port < 0 || port > 65535)
     throw new Error('port must be 0 to 65535');
   if (typeof dataDir !== 'string' || !dataDir) throw new Error('dataDir must be a folder');
+  if (!Number.isInteger(legCacheMaxAgeDays) || legCacheMaxAgeDays < 1)
+    throw new Error('legCacheMaxAgeDays must be a whole number of days, at least 1');
   if (
     typeof rawProvider !== 'string' ||
     !(SUPPORTED_MAP_PROVIDERS as readonly string[]).includes(rawProvider)
@@ -101,5 +110,6 @@ export function loadConfig(dir: string, env: NodeJS.ProcessEnv = process.env): S
     mapProvider: rawProvider as ConfiguredMapProvider,
     openRouteServiceApiKey,
     openRouteServiceBaseUrl,
+    legCacheMaxAgeDays,
   };
 }

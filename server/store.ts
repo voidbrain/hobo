@@ -10,6 +10,7 @@ import type {
   TripPatch,
 } from '../src/app/core/trip.ts';
 import {
+  nonNegativeWhole,
   toLegCacheColumns,
   type CachedLeg,
   type LegCache,
@@ -190,13 +191,6 @@ const toCachedLeg = (row: LegCacheRow): CachedLeg => ({
   geometry: JSON.parse(row.geometry) as MapPoint[],
   updatedAt: row.updated_at,
 });
-
-function nonNegativeWhole(value: number, label: string): number {
-  if (!Number.isFinite(value) || value < 0) {
-    throw new RangeError(`${label} must be a non-negative number`);
-  }
-  return Math.round(value);
-}
 
 function stripPlaceFromEndpoint(ep: TripEndpoint | null, placeId: string): TripEndpoint | null {
   if (!ep || ep.placeId !== placeId) return ep;

@@ -12,8 +12,8 @@ import { loadConfig } from './config.ts';
 import { createServerMapProvider } from './map-adapter.ts';
 import { openPlaceStore } from './store.ts';
 
-const HARBOUR: MapPoint = { lat: 44.41, lng: 8.93 };
-const RIDGE: MapPoint = { lat: 44.55, lng: 9.12 };
+const MILLBROOK: MapPoint = { lat: 12.345678, lng: 23.456789 };
+const FERNHILL: MapPoint = { lat: 12.485678, lng: 23.646789 };
 
 describe('SQLite leg cache and server map adapter (F-007-T01)', () => {
   let dir: string;
@@ -28,11 +28,11 @@ describe('SQLite leg cache and server map adapter (F-007-T01)', () => {
     const saved = store.putLeg({
       provider: 'openrouteservice',
       profile: 'driving-car',
-      from: HARBOUR,
-      to: RIDGE,
+      from: MILLBROOK,
+      to: FERNHILL,
       distanceMetres: 28_400.4,
       travelMinutes: 34.6,
-      geometry: [HARBOUR, { lat: 44.48, lng: 9.01 }, RIDGE],
+      geometry: [MILLBROOK, { lat: 12.415678, lng: 23.536789 }, FERNHILL],
     });
     assert.equal(saved.distanceMetres, 28_400);
     assert.equal(saved.travelMinutes, 35);
@@ -40,17 +40,17 @@ describe('SQLite leg cache and server map adapter (F-007-T01)', () => {
     assert.equal(saved.geometry.length, 3);
 
     // Direction, profile and provider stay distinct
-    assert.equal(store.getLeg('openrouteservice', 'driving-car', RIDGE, HARBOUR), undefined);
-    assert.equal(store.getLeg('openrouteservice', 'foot-walking', HARBOUR, RIDGE), undefined);
-    assert.equal(store.getLeg('osrm', 'driving-car', HARBOUR, RIDGE), undefined);
+    assert.equal(store.getLeg('openrouteservice', 'driving-car', FERNHILL, MILLBROOK), undefined);
+    assert.equal(store.getLeg('openrouteservice', 'foot-walking', MILLBROOK, FERNHILL), undefined);
+    assert.equal(store.getLeg('osrm', 'driving-car', MILLBROOK, FERNHILL), undefined);
 
     // Upsert with empty geometry (e.g. from matrix) preserves previously cached route geometry
     clock = '2026-11-26T07:15:00.000Z';
     store.putLeg({
       provider: 'openrouteservice',
       profile: 'driving-car',
-      from: HARBOUR,
-      to: RIDGE,
+      from: MILLBROOK,
+      to: FERNHILL,
       distanceMetres: 28_410,
       travelMinutes: 35,
       geometry: [],
@@ -59,7 +59,7 @@ describe('SQLite leg cache and server map adapter (F-007-T01)', () => {
 
     const reopened = openPlaceStore(dbFile);
     try {
-      const hit = reopened.getLeg('openrouteservice', 'driving-car', HARBOUR, RIDGE);
+      const hit = reopened.getLeg('openrouteservice', 'driving-car', MILLBROOK, FERNHILL);
       assert.ok(hit);
       assert.equal(hit.distanceMetres, 28_410);
       assert.equal(hit.travelMinutes, 35);
@@ -110,11 +110,11 @@ describe('SQLite leg cache and server map adapter (F-007-T01)', () => {
         openrouteservice: () => fakeOrs,
       });
 
-      const first = await adapter.route({ from: HARBOUR, to: RIDGE });
+      const first = await adapter.route({ from: MILLBROOK, to: FERNHILL });
       assert.equal(first.cached, false);
       assert.equal(routeCalls, 1);
 
-      const second = await adapter.route({ from: HARBOUR, to: RIDGE });
+      const second = await adapter.route({ from: MILLBROOK, to: FERNHILL });
       assert.equal(second.cached, true);
       assert.equal(routeCalls, 1);
 
