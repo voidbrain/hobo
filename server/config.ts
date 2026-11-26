@@ -1,7 +1,7 @@
 import { existsSync, readFileSync } from 'node:fs';
 import { isAbsolute, join } from 'node:path';
 
-export const SUPPORTED_MAP_PROVIDERS = ['openrouteservice'] as const;
+export const SUPPORTED_MAP_PROVIDERS = ['openrouteservice', 'osrm'] as const;
 export type ConfiguredMapProvider = (typeof SUPPORTED_MAP_PROVIDERS)[number];
 
 const DEFAULT_ORS_BASE_URL = 'https://api.openrouteservice.org';
@@ -16,6 +16,10 @@ export interface ServerConfig {
   openRouteServiceBaseUrl: string;
   /** Milliseconds one OpenRouteService call may take (default 10000). */
   openRouteServiceTimeoutMs: number;
+  /** Self-hosted OSRM (F-013): config only, never from a request; null until the owner sets it. */
+  osrmBaseUrl: string | null;
+  /** Milliseconds one OSRM call may take (default 10000). */
+  osrmTimeoutMs: number;
   /** Cached legs older than this are fetched again (default 30). */
   legCacheMaxAgeDays: number;
 }
@@ -28,6 +32,8 @@ const KEYS = [
   'openRouteServiceApiKey',
   'openRouteServiceBaseUrl',
   'openRouteServiceTimeoutMs',
+  'osrmBaseUrl',
+  'osrmTimeoutMs',
   'legCacheMaxAgeDays',
 ] as const;
 
@@ -55,9 +61,32 @@ function parseHttpUrl(raw: unknown, name: string): string {
 }
 
 /**
+ * A provider base URL the server may call: http or https, no user name or password, no query
+ * or fragment. It comes only from local config, never from a request, so a page cannot steer
+ * the server to another host (SSRF); a blank value means not configured.
+ */
+function parseOptionalBaseUrl(raw: unknown, name: string): string | null {
+  if (raw === undefined || raw === null) return null;
+  if (typeof raw === 'string' && !raw.trim()) return null;
+  const url = parseHttpUrl(raw, name);
+  const parsed = new URL(url);
+  if (parsed.username || parsed.password || parsed.search || parsed.hash) {
+    throw new Error(`${name} must be a plain http or https URL without credentials or query`);
+  }
+  return url;
+}
+
+function wholeMs(raw: unknown, name: string): number {
+  const value = Number(raw);
+  if (!Number.isInteger(value) || value < 1)
+    throw new Error(`${name} must be a whole number of milliseconds, at least 1`);
+  return value;
+}
+
+/**
  * Defaults, then `config.local.json` in `dir` (git-ignored), then HOBO_HOST, HOBO_PORT,
  * HOBO_DATA_DIR, HOBO_MAP_PROVIDER, HOBO_ORS_API_KEY, HOBO_ORS_BASE_URL,
- * HOBO_ORS_TIMEOUT_MS and HOBO_LEG_CACHE_MAX_AGE_DAYS.
+ * HOBO_ORS_TIMEOUT_MS, HOBO_OSRM_BASE_URL, HOBO_OSRM_TIMEOUT_MS and HOBO_LEG_CACHE_MAX_AGE_DAYS.
  * A relative dataDir is relative to `dir`. API keys never leave `server/`.
  */
 export function loadConfig(dir: string, env: NodeJS.ProcessEnv = process.env): ServerConfig {
@@ -92,6 +121,14 @@ export function loadConfig(dir: string, env: NodeJS.ProcessEnv = process.env): S
   const openRouteServiceTimeoutMs = Number(
     env['HOBO_ORS_TIMEOUT_MS'] ?? local['openRouteServiceTimeoutMs'] ?? 10_000,
   );
+  const osrmBaseUrl = parseOptionalBaseUrl(
+    env['HOBO_OSRM_BASE_URL'] ?? local['osrmBaseUrl'],
+    'osrmBaseUrl',
+  );
+  const osrmTimeoutMs = wholeMs(
+    env['HOBO_OSRM_TIMEOUT_MS'] ?? local['osrmTimeoutMs'] ?? 10_000,
+    'osrmTimeoutMs',
+  );
   const legCacheMaxAgeDays = Number(
     env['HOBO_LEG_CACHE_MAX_AGE_DAYS'] ?? local['legCacheMaxAgeDays'] ?? 30,
   );
@@ -119,6 +156,8 @@ export function loadConfig(dir: string, env: NodeJS.ProcessEnv = process.env): S
     openRouteServiceApiKey,
     openRouteServiceBaseUrl,
     openRouteServiceTimeoutMs,
+    osrmBaseUrl,
+    osrmTimeoutMs,
     legCacheMaxAgeDays,
   };
 }

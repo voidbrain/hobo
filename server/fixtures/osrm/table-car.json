@@ -1,0 +1,23 @@
+{
+  "code": "Ok",
+  "distances": [
+    [0, 21450.6, 38900.2],
+    [21600.0, 0, 19200.4],
+    [39100.8, 19350.0, 0]
+  ],
+  "durations": [
+    [0, 1628.4, 2880.0],
+    [1650.0, 0, 1440.0],
+    [2910.0, 1470.0, 0]
+  ],
+  "sources": [
+    { "name": "Harbour Quay", "location": [9.1, 45.1] },
+    { "name": "Mill Lane", "location": [9.25, 45.22] },
+    { "name": "Fell Road", "location": [9.4, 45.3] }
+  ],
+  "destinations": [
+    { "name": "Harbour Quay", "location": [9.1, 45.1] },
+    { "name": "Mill Lane", "location": [9.25, 45.22] },
+    { "name": "Fell Road", "location": [9.4, 45.3] }
+  ]
+}

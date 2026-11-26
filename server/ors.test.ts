@@ -11,7 +11,8 @@ import type {
   RouteResult,
 } from '../src/app/maps/map-provider.ts';
 import { startServer, type RunningServer } from './app.ts';
-import { createOpenRouteServiceProvider, MapProviderError } from './ors-provider.ts';
+import { MapProviderError } from './map-adapter.ts';
+import { createOpenRouteServiceProvider } from './ors-provider.ts';
 
 const FIXTURES_DIR = join(dirname(fileURLToPath(import.meta.url)), 'fixtures', 'ors');
 const readFixture = (name: string) => readFileSync(join(FIXTURES_DIR, name), 'utf8');

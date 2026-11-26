@@ -1,0 +1,24 @@
+{
+  "code": "Ok",
+  "routes": [
+    {
+      "distance": 21450.6,
+      "duration": 1628.4,
+      "weight": 1628.4,
+      "weight_name": "routability",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [9.1, 45.1],
+          [9.18, 45.16],
+          [9.25, 45.22]
+        ]
+      },
+      "legs": [{ "distance": 21450.6, "duration": 1628.4, "steps": [], "summary": "" }]
+    }
+  ],
+  "waypoints": [
+    { "name": "Harbour Quay", "location": [9.1, 45.1], "distance": 1.2 },
+    { "name": "Mill Lane", "location": [9.25, 45.22], "distance": 0.8 }
+  ]
+}
