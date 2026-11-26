@@ -6,8 +6,9 @@
   "goal": "A recommendation on a shared geo package",
   "status": "planned",
   "acceptance": [
-    "List overlapping functions (distance, bearings, bounds, Leaflet helpers) in both repositories",
-    "Proposal raised in the coordinator, which owns cross-repository packages"
+    "Compare `src/app/maps` with openbando's `core/geo.ts` (https://github.com/voidbrain/openbando/blob/main/src/app/core/geo.ts): list overlapping functions (distance, bearings, bounds, Leaflet helpers) in both repositories",
+    "A function that both projects would import is proposed as a package in 🧊 blocks (voidbrain/blocks) through a coordination record in the coordinator; shared domain logic goes to blocks only once two projects import it (coordinator DOMAINS.md, \"The blocks criterion\"), never to the coordinator itself",
+    "If nothing would be imported by both, close the step with the reason"
   ],
   "dependsOn": [
     "F-007-T02"
@@ -31,10 +32,10 @@
   "effort": {
     "size": "small",
     "estimate": "1 h agent, 0.5 d",
-    "basis": "Planned 2026-11-25 in the upfront step plan: scoped to one PR, at most 0.5 focused day(s). Not a measurement.",
-    "reviewed": "2026-11-25",
+    "basis": "Planned 2026-11-25 in the upfront step plan: scoped to one PR, at most 0.5 focused day(s). Acceptance rewritten 2026-11-26 (cross-project audit proposal 7, accepted by the owner in chat 2026-11-26 (\"accept all 17 proposals\")): blocks, not the coordinator, holds shared packages. Not a measurement.",
+    "reviewed": "2026-11-26",
     "agentHours": 1,
-    "ownerHours": 0.0,
+    "ownerHours": 0,
     "baselineAgentHours": 1,
     "estimateAgentHours": 1,
     "days": 0.5,
