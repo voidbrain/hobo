@@ -1,0 +1,40 @@
+{
+  "version": 1,
+  "id": "F-017-T02",
+  "parent": "F-017",
+  "title": "Run the axe pass in CI",
+  "goal": "The axe pass runs on every PR",
+  "status": "planned",
+  "acceptance": [
+    "`.github/workflows/ci.yml` installs the browser and runs the axe pass; a failing violation fails the job",
+    "The run is green on `main` and the coverage table names the new test (change impact)"
+  ],
+  "dependsOn": [
+    "F-017-T01"
+  ],
+  "resources": [
+    ".github/workflows/ci.yml",
+    "package.json",
+    "docs/work/records/F-017.md",
+    "generated:backlog-views"
+  ],
+  "capabilities": [
+    "bounded-edit"
+  ],
+  "privacy": "Neutral content only; no secrets, tokens or personal data in Git. Fixtures are invented.",
+  "validation": [
+    "npm run check:fast; final applicable CI"
+  ],
+  "escalation": [
+    "Material scope growth or effort increase goes to the owner before adoption"
+  ],
+  "effort": {
+    "size": "small",
+    "estimate": "1 h agent",
+    "basis": "One workflow step plus the browser install and a green run. Estimated 2026-11-26 at agent speed from the report's effort column. Not a measurement.",
+    "reviewed": "2026-11-26",
+    "agentHours": 1,
+    "baselineAgentHours": 1,
+    "estimateAgentHours": 1
+  }
+}
