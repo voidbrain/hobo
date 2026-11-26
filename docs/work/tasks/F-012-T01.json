@@ -4,11 +4,12 @@
   "parent": "F-012",
   "title": "Compare and propose",
   "goal": "A recommendation on a shared geo package",
-  "status": "planned",
+  "status": "closed",
   "acceptance": [
     "Compare `src/app/maps` with openbando's `core/geo.ts` (https://github.com/voidbrain/openbando/blob/main/src/app/core/geo.ts): list overlapping functions (distance, bearings, bounds, Leaflet helpers) in both repositories",
     "A function that both projects would import is proposed as a package in 🧊 blocks (voidbrain/blocks) through a coordination record in the coordinator; shared domain logic goes to blocks only once two projects import it (coordinator DOMAINS.md, \"The blocks criterion\"), never to the coordinator itself",
-    "If nothing would be imported by both, close the step with the reason"
+    "If nothing would be imported by both, close the step with the reason",
+    "Closed 2026-11-26 as \"not yet\" (owner \"ok to all\", gap review of solution:F-016-T08): no geo or routing function exists in both projects that both would import today; evidence: coordinator docs/reviews/2026-11-shared-assets/blocks.md (hobo 735e8af, openbando c18cfd1), function by function. The revisit trigger moved to F-013-T02. It blocks the verdict, not blocks creation."
   ],
   "dependsOn": [
     "F-007-T02"
@@ -31,14 +32,20 @@
   ],
   "effort": {
     "size": "small",
-    "estimate": "1 h agent, 0.5 d",
-    "basis": "Planned 2026-11-25 in the upfront step plan: scoped to one PR, at most 0.5 focused day(s). Acceptance rewritten 2026-11-26 (cross-project audit proposal 7, accepted by the owner in chat 2026-11-26 (\"accept all 17 proposals\")): blocks, not the coordinator, holds shared packages. Not a measurement.",
+    "estimate": "0 remaining",
+    "basis": "Closed 2026-11-26 as \"not yet\": the comparison is coordinator docs/reviews/2026-11-shared-assets/blocks.md (about 0.25 h of the review, not timed here).",
     "reviewed": "2026-11-26",
-    "agentHours": 1,
-    "ownerHours": 0,
+    "agentHours": 0,
+    "ownerHours": 0.0,
     "baselineAgentHours": 1,
     "estimateAgentHours": 1,
-    "days": 0.5,
+    "days": 0,
     "baselineDays": 0.5
-  }
+  },
+  "prs": [
+    {
+      "pr": 17,
+      "note": "closed not yet"
+    }
+  ]
 }

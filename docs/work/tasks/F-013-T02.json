@@ -7,7 +7,8 @@
   "status": "planned",
   "acceptance": [
     "Geocode and autocomplete behind the adapter in `server/`",
-    "Recorded-fixture tests"
+    "Recorded-fixture tests",
+    "Compare the geocoder with openbando's src/app/services/geo.service.ts geocode and coarserQueries; if both would import the same client, propose a first geo package in blocks through a coordination record, otherwise record the reason (trigger from F-012-T01, coordinator docs/reviews/2026-11-shared-assets/blocks.md)"
   ],
   "dependsOn": [
     "F-007-T01"
