@@ -648,14 +648,14 @@ Bugs (B-) and features (F-) in one list, in work-queue order. Steps: `effort` = 
 
 **Feature steps**
 
-| Effort | Step | Estimate | Actual | Remaining | Status | Depends on | Unlocks |
-|---|---|---|---|---|---|---|---|
-| 🟢 Small | <a id="f-018-t01"></a>F-018-T01 — Write-tool contract in docs/DESIGN.md | 0.5 h | 0 h | 0.5 h | Planned | [F-011-T01](#f-011-t01) | [F-018-T02](#f-018-t02), [F-018-T03](#f-018-t03) |
-| 🟡 Medium | <a id="f-018-t02"></a>F-018-T02 — Find a place by name and add it to a trip | 1.5 h | 0 h | 1.5 h | Planned | [F-018-T01](#f-018-t01) | [F-018-T05](#f-018-t05) |
-| 🟡 Medium | <a id="f-018-t03"></a>F-018-T03 — Set a place's image with attribution | 1.5 h | 0 h | 1.5 h | Planned | [F-018-T01](#f-018-t01) | [F-018-T04](#f-018-t04), [F-018-T05](#f-018-t05) |
-| 🟢 Small | <a id="f-018-t04"></a>F-018-T04 — Show the image credit in the place gallery | 0.75 h | 0 h | 0.75 h | Planned | [F-018-T03](#f-018-t03) | — |
-| 🟢 Small | <a id="f-018-t05"></a>F-018-T05 — hobo-v1 write cases, Italian and English | 0.75 h | 0 h | 0.75 h | Planned | [F-018-T02](#f-018-t02), [F-018-T03](#f-018-t03), [F-011-T03](#f-011-t03) | — |
-| 🔴 Large | **Total** | 5 h | 0 h (0 of 5 steps recorded) | 5 h | 0 of 5 completed | | |
+| Effort | Step | Estimate | Actual | Remaining | Status | Depends on | Unlocks | PRs |
+|---|---|---|---|---|---|---|---|---|
+| 🟢 Small | <a id="f-018-t01"></a>F-018-T01 — Write-tool contract in docs/DESIGN.md | 0.5 h | 0 h | 0.5 h | Planned | [F-011-T01](#f-011-t01) | [F-018-T02](#f-018-t02), [F-018-T03](#f-018-t03) | [PR #19](https://github.com/voidbrain/hobo/pull/19) plan |
+| 🟡 Medium | <a id="f-018-t02"></a>F-018-T02 — Find a place by name and add it to a trip | 1.5 h | 0 h | 1.5 h | Planned | [F-018-T01](#f-018-t01) | [F-018-T05](#f-018-t05) | [PR #19](https://github.com/voidbrain/hobo/pull/19) plan |
+| 🟡 Medium | <a id="f-018-t03"></a>F-018-T03 — Set a place's image with attribution | 1.5 h | 0 h | 1.5 h | Planned | [F-018-T01](#f-018-t01) | [F-018-T04](#f-018-t04), [F-018-T05](#f-018-t05) | [PR #19](https://github.com/voidbrain/hobo/pull/19) plan |
+| 🟢 Small | <a id="f-018-t04"></a>F-018-T04 — Show the image credit in the place gallery | 0.75 h | 0 h | 0.75 h | Planned | [F-018-T03](#f-018-t03) | — | [PR #19](https://github.com/voidbrain/hobo/pull/19) plan |
+| 🟢 Small | <a id="f-018-t05"></a>F-018-T05 — hobo-v1 write cases, Italian and English | 0.75 h | 0 h | 0.75 h | Planned | [F-018-T02](#f-018-t02), [F-018-T03](#f-018-t03), [F-011-T03](#f-011-t03) | — | [PR #19](https://github.com/voidbrain/hobo/pull/19) plan |
+| 🔴 Large | **Total** | 5 h | 0 h (0 of 5 steps recorded) | 5 h | 0 of 5 completed | | | |
 
 <details>
 <summary>Next action, estimates and PR history</summary>
@@ -664,7 +664,7 @@ Bugs (B-) and features (F-) in one list, in work-queue order. Steps: `effort` = 
 
 | Field | Value |
 |---|---|
-| PR / evidence | Plan: PR pending |
+| PR / evidence | Steps: F-018-T01: [PR #19](https://github.com/voidbrain/hobo/pull/19) plan · F-018-T02: [PR #19](https://github.com/voidbrain/hobo/pull/19) plan · F-018-T03: [PR #19](https://github.com/voidbrain/hobo/pull/19) plan · F-018-T04: [PR #19](https://github.com/voidbrain/hobo/pull/19) plan · F-018-T05: [PR #19](https://github.com/voidbrain/hobo/pull/19) plan. Plan: [#19](https://github.com/voidbrain/hobo/pull/19) |
 | Opened | 2026-11-26 |
 | Verification | Pending |
 | Reviewed | 2026-11-26 |
