@@ -4,7 +4,7 @@
   "parent": "F-007",
   "title": "OpenRouteService provider",
   "goal": "Real routes, matrices and place search",
-  "status": "implemented",
+  "status": "closed",
   "acceptance": [
     "Directions, matrix, geocoding and autocomplete through ORS, called from `server/` and exposed to the app by the local API",
     "Errors and quota limits reported to the user; tests against recorded fixtures, never live"
@@ -40,7 +40,7 @@
   "effort": {
     "size": "medium",
     "estimate": "0 remaining",
-    "basis": "Implemented 2026-11-26 in PR #9; verification is green CI on PR #9 and merge.",
+    "basis": "Closed 2026-11-26: merged in #9 on green PR CI and green main run 45778801970; the step's acceptance is automated (tests against recorded fixtures), the live key check is F-007-T04. No actual: the step was not timed.",
     "reviewed": "2026-11-26",
     "agentHours": 0,
     "ownerHours": 0.0,

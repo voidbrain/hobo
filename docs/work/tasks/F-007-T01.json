@@ -4,7 +4,7 @@
   "parent": "F-007",
   "title": "Adapter interface, local config and leg cache",
   "goal": "Providers are swappable and legs are fetched once",
-  "status": "implemented",
+  "status": "closed",
   "acceptance": [
     "`MapProvider` interface: route, matrix, geocode, autocomplete",
     "Provider implementations run in `server/`; the key and provider choice come from git-ignored `server/config.local.json`, with a committed `server/config.example.json` without keys",
@@ -42,7 +42,7 @@
   "effort": {
     "size": "medium",
     "estimate": "0 remaining",
-    "basis": "Implemented 2026-11-26 in PR #8; verification is green CI on PR #8 and merge.",
+    "basis": "Closed 2026-11-26: merged in #8 on green PR CI and green main run 45778099528; the step's acceptance is automated (tests against recorded fixtures), the live key check is F-007-T04. No actual: the step was not timed.",
     "reviewed": "2026-11-26",
     "agentHours": 0,
     "ownerHours": 0.0,
