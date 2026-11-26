@@ -47,7 +47,9 @@
     "work:launch": "node tools/usage-launch.mjs",
     "rule-load": "node tools/rule-load.mjs",
     "check:rule-load": "node tools/rule-load.mjs --check",
-    "check:fast": "npm run format:check && npm run lint && npm run typecheck && npm run check:backlog && npm run check:work && npm run check:rules"
+    "check:fast": "npm run format:check && npm run lint && npm run typecheck && npm run check:backlog && npm run check:work && npm run check:rules",
+    "work:pr": "node tools/work-items.mjs pr",
+    "work:close": "node tools/work-items.mjs close"
   },
   "private": true,
   "packageManager": "npm@11.21.3",
