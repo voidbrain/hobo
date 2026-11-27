@@ -52,6 +52,14 @@ const savedTrip: Trip = {
   updatedAt: '2026-11-27T10:00:00.000Z',
 };
 
+const tripWithStops: Trip = {
+  ...savedTrip,
+  days: [
+    { date: '2026-12-02', stops: [harbour.id, ridge.id] },
+    { date: '2026-12-03', stops: [] },
+  ],
+};
+
 const setInput = (root: HTMLElement, id: string, value: string) => {
   const input = root.querySelector<HTMLInputElement>(`#${id}`)!;
   input.value = value;
@@ -187,6 +195,90 @@ describe('TripsPage', () => {
     expect(root.querySelector('[role="status"]')?.textContent).toContain('Trip saved.');
     expect(root.textContent).toContain('Other trip');
     expect(root.textContent).toContain('Coast Loop Extended');
+  });
+
+  it('reorders and moves stops with keyboard controls, then persists the order', async () => {
+    tripsApi.list.mockReturnValueOnce(of([tripWithStops]));
+    const fixture = TestBed.createComponent(TripsPage);
+    await fixture.whenStable();
+    const root = fixture.nativeElement as HTMLElement;
+    root.querySelector<HTMLButtonElement>('.edit-trip')?.click();
+    await fixture.whenStable();
+
+    const moveUp = [...root.querySelectorAll<HTMLButtonElement>('#trip-days button')].find(
+      (button) => button.textContent?.trim() === 'Move Ridge View up',
+    );
+    expect(moveUp).toBeDefined();
+    moveUp?.click();
+    await fixture.whenStable();
+
+    const moveDay = [...root.querySelectorAll<HTMLButtonElement>('#trip-days button')].find(
+      (button) => button.textContent?.trim() === 'Move Harbour to 2026-12-03',
+    );
+    expect(moveDay).toBeDefined();
+    moveDay?.click();
+    await fixture.whenStable();
+    submit(root);
+    await nextTurn();
+    await fixture.whenStable();
+
+    expect(tripsApi.update).toHaveBeenCalledWith(
+      tripWithStops.id,
+      expect.objectContaining({
+        days: [
+          { date: '2026-12-02', stops: [ridge.id] },
+          { date: '2026-12-03', stops: [harbour.id] },
+        ],
+      }),
+    );
+  });
+
+  it('reorders and moves stops by dragging them to a day position', async () => {
+    tripsApi.list.mockReturnValueOnce(of([tripWithStops]));
+    const fixture = TestBed.createComponent(TripsPage);
+    await fixture.whenStable();
+    const root = fixture.nativeElement as HTMLElement;
+    root.querySelector<HTMLButtonElement>('.edit-trip')?.click();
+    await fixture.whenStable();
+    let draggedId = '';
+    const dataTransfer = {
+      setData(_type: string, value: string) {
+        draggedId = value;
+      },
+      getData() {
+        return draggedId;
+      },
+    } as unknown as DataTransfer;
+    const source = root.querySelector<HTMLElement>('[data-stop-id="place-harbour"]')!;
+    const target = root.querySelector<HTMLElement>('[data-stop-id="place-ridge"]')!;
+    const dragStart = new Event('dragstart', { bubbles: true });
+    Object.defineProperty(dragStart, 'dataTransfer', { value: dataTransfer });
+    source.dispatchEvent(dragStart);
+    const drop = new Event('drop', { bubbles: true, cancelable: true });
+    Object.defineProperty(drop, 'dataTransfer', { value: dataTransfer });
+    target.dispatchEvent(drop);
+    await fixture.whenStable();
+
+    const firstDay = root.querySelector<HTMLElement>('#day-2026-12-02')?.parentElement;
+    const firstDayText = firstDay?.textContent ?? '';
+    expect(firstDayText.indexOf('Ridge View')).toBeLessThan(firstDayText.indexOf('Harbour'));
+
+    draggedId = '';
+    const movedStop = root.querySelector<HTMLElement>('[data-stop-id="place-ridge"]')!;
+    const secondDragStart = new Event('dragstart', { bubbles: true });
+    Object.defineProperty(secondDragStart, 'dataTransfer', { value: dataTransfer });
+    movedStop.dispatchEvent(secondDragStart);
+    const secondDrop = new Event('drop', { bubbles: true, cancelable: true });
+    Object.defineProperty(secondDrop, 'dataTransfer', { value: dataTransfer });
+    root.querySelector('#day-2026-12-03')?.dispatchEvent(secondDrop);
+    await fixture.whenStable();
+
+    expect(root.querySelector('#day-2026-12-03')?.parentElement?.textContent).toContain(
+      'Ridge View',
+    );
+    expect(root.querySelector('#day-2026-12-02')?.parentElement?.textContent).not.toContain(
+      'Ridge View',
+    );
   });
 
   it('reports a load failure without hiding the Trips page', async () => {

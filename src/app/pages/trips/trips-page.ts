@@ -3,7 +3,7 @@ import { Component, computed, ElementRef, inject, signal, viewChild } from '@ang
 import { FormField, form, required, submit } from '@angular/forms/signals';
 import { firstValueFrom } from 'rxjs';
 import { filterPlaces, taxonomyValues } from '../../core/place-taxonomy';
-import { addTripStop, reconcileTripDays, removeTripStop } from '../../core/trip';
+import { addTripStop, moveTripStop, reconcileTripDays, removeTripStop } from '../../core/trip';
 import type { HoboSettings, Trip, TripDay, TripEndpoint, TripFields } from '../../core/trip';
 import type { Place } from '../../core/place';
 import { PlacesApi } from '../../data/places-api';
@@ -81,6 +81,7 @@ export class TripsPage {
   protected readonly pageTitle = viewChild<ElementRef<HTMLElement>>('pageTitle');
   protected readonly error = signal('');
   protected readonly status = signal('');
+  private readonly draggedStop = signal<{ date: string; index: number } | null>(null);
 
   constructor() {
     void this.load();
@@ -150,6 +151,40 @@ export class TripsPage {
 
   protected removeStop(date: string, index: number): void {
     this.savedDays.set(removeTripStop(this.tripDays(), date, index));
+  }
+
+  protected moveStop(date: string, index: number, offset: -1 | 1): void {
+    const day = this.tripDays().find((candidate) => candidate.date === date);
+    const nextIndex = index + offset;
+    if (!day || nextIndex < 0 || nextIndex >= day.stops.length) return;
+    this.applyStopMove(date, index, date, nextIndex);
+  }
+
+  protected moveStopToDay(fromDate: string, index: number, toDate: string): void {
+    const target = this.tripDays().find((day) => day.date === toDate);
+    if (!target) return;
+    this.applyStopMove(fromDate, index, toDate, target.stops.length);
+  }
+
+  protected startStopDrag(event: DragEvent, date: string, index: number): void {
+    this.draggedStop.set({ date, index });
+    if (event.dataTransfer) {
+      event.dataTransfer.effectAllowed = 'move';
+      event.dataTransfer.setData('text/plain', `${date}:${index}`);
+    }
+  }
+
+  protected allowStopDrop(event: DragEvent): void {
+    event.preventDefault();
+  }
+
+  protected dropStop(event: DragEvent, toDate: string, toIndex: number): void {
+    event.preventDefault();
+    event.stopPropagation();
+    const source = this.draggedStop();
+    this.draggedStop.set(null);
+    if (!source) return;
+    this.applyStopMove(source.date, source.index, toDate, toIndex);
   }
 
   protected placeName(id: string): string {
@@ -251,6 +286,19 @@ export class TripsPage {
     this.placeSearch.set('');
     this.categoryFilter.set('');
     this.tagFilter.set('');
+  }
+
+  private applyStopMove(
+    fromDate: string,
+    fromIndex: number,
+    toDate: string,
+    toIndex: number,
+  ): void {
+    const days = this.tripDays();
+    const placeId = days.find((day) => day.date === fromDate)?.stops[fromIndex];
+    if (!placeId) return;
+    this.savedDays.set(moveTripStop(days, fromDate, fromIndex, toDate, toIndex));
+    this.status.set(`${this.placeName(placeId)} moved to ${toDate}.`);
   }
 
   private async load(): Promise<void> {
