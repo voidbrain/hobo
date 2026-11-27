@@ -14,7 +14,7 @@ import {
 import type { Place, PlaceFields, PlacePatch } from '../../core/place';
 import { PlacesApi } from '../../data/places-api';
 import type { GeocodeCandidate, MapPoint } from '../../maps/map-provider';
-import { MapsApi } from '../../maps/maps-api';
+import { MapsApi, MapsApiError } from '../../maps/maps-api';
 import { MapView, type MapMarker } from '../../maps/map-view';
 
 interface PlaceFormValue {
@@ -78,10 +78,13 @@ export class PlacesPage {
           return timer(250).pipe(
             switchMap(() => this.mapsApi.autocomplete(normalized, 5)),
             map((candidates) => ({ candidates, error: '' })),
-            catchError(() =>
+            catchError((error: unknown) =>
               of({
                 candidates: [],
-                error: 'Could not search for places. Check map settings and try again.',
+                error:
+                  error instanceof MapsApiError && error.code === 'missing_key'
+                    ? 'Place search needs an OpenRouteService key. Add openRouteServiceApiKey to server/config.local.json; see README for setup.'
+                    : 'Could not search for places. Check map settings and try again.',
               }),
             ),
           );

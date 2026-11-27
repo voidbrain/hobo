@@ -27,8 +27,10 @@ Expected: a name alone creates a place; optional fields save and reload; the nam
 
 ## F-002-T04 — Place location
 
-1. Edit `Test place 01` and enter at least three characters of a known place name in **Search for a place**. With the keyboard, choose a result and confirm focus returns to search and the selected coordinates are announced.
-3. Save, reload the page, and edit the place again. Confirm the marker and coordinates remain.
-4. Choose **Use map centre** with the keyboard. Confirm the marker moves and the selected coordinates change; save and reload once more. A pointer click on another map point should also update the marker and coordinates.
+1. Ensure `server/config.local.json` exists. If it does not, copy `server/config.example.json` to that path; set `openRouteServiceApiKey` to your OpenRouteService key and restart the server. The file is git-ignored. OSRM does not support place search.
+2. To check the missing-key guidance, temporarily leave `openRouteServiceApiKey` empty and restart the server. Search for `Treviso` and confirm the message says place search needs an OpenRouteService key and points to the local config and README. Restore the key and restart the server.
+3. Edit `Test place 01` and enter `Treviso` in **Search for a place**. With the keyboard, choose a result and confirm focus returns to search and the selected coordinates are announced.
+4. Save, reload the page, and edit the place again. Confirm the marker and coordinates remain.
+5. On the untouched world view, choose **Use map centre** with the keyboard. Confirm no location is selected and the message says to zoom in to a local area first. Zoom to level 10 or closer and choose the button again; confirm the marker moves and the selected coordinates change. Save and reload once more. A pointer click on another map point should also update the marker and coordinates.
 
-Expected: autocomplete suggestions come from the configured local map provider, a result or map click sets the place location, and the selected coordinates persist. Search requires a working geocoding provider in the local server configuration.
+Expected: autocomplete suggestions come from OpenRouteService, the missing-key message identifies the setting to configure, a result or map click sets the place location, and the selected coordinates persist. The map-centre control refuses world-scale coordinates until zoom level 10.

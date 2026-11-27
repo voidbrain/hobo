@@ -7,6 +7,7 @@ import {
   inject,
   input,
   output,
+  signal,
   viewChild,
 } from '@angular/core';
 import * as L from 'leaflet';
@@ -22,6 +23,8 @@ export interface MapMarker {
 const WORLD_VIEW = { center: { lat: 20, lng: 0 }, zoom: 2 } as const;
 /** Zoom for a single place, close enough to see its streets. */
 const SINGLE_POINT_ZOOM = 14;
+/** A map centre is useful as a place only after the user has zoomed into a local area. */
+const MIN_LOCATION_PICK_ZOOM = 10;
 
 /**
  * Leaflet map with OpenStreetMap tiles and their attribution, place markers and route lines
@@ -37,6 +40,7 @@ const SINGLE_POINT_ZOOM = 14;
     <button type="button" class="hobo-map-view__center" (click)="pickCenter()">
       Use map centre
     </button>
+    <p class="hobo-map-view__message" role="status" aria-live="polite">{{ centerMessage() }}</p>
     @if (markers().length > 0) {
       <ol class="hobo-map-view__places" [attr.aria-label]="label() + ': places'">
         @for (marker of markers(); track $index) {
@@ -87,6 +91,23 @@ const SINGLE_POINT_ZOOM = 14;
       outline: 2px solid var(--color-accent);
       outline-offset: 2px;
     }
+    hobo-map-view .hobo-map-view__message {
+      position: absolute;
+      z-index: 1000;
+      top: calc(var(--space-2) + 2.25rem);
+      right: var(--space-2);
+      max-width: min(22rem, calc(100% - 2 * var(--space-2)));
+      margin: 0;
+      padding: var(--space-1) var(--space-2);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius);
+      background: var(--color-surface);
+      color: var(--color-text);
+      font-size: var(--font-size-small);
+    }
+    hobo-map-view .hobo-map-view__message:empty {
+      display: none;
+    }
     hobo-map-view .hobo-map-route {
       stroke: var(--color-accent);
       stroke-width: 4;
@@ -110,10 +131,17 @@ export class MapView {
   readonly tiles = input<TileLayerConfig>(DEFAULT_OSM_TILES);
   /** Coordinate picked by clicking the map. */
   readonly picked = output<MapPoint>();
+  protected readonly centerMessage = signal('');
 
   protected pickCenter(): void {
-    const point = this.map?.getCenter().wrap();
-    if (point) this.picked.emit({ lat: point.lat, lng: point.lng });
+    if (!this.map) return;
+    if (this.map.getZoom() < MIN_LOCATION_PICK_ZOOM) {
+      this.centerMessage.set('Zoom in to a local area before using the map centre.');
+      return;
+    }
+    this.centerMessage.set('');
+    const point = this.map.getCenter().wrap();
+    this.picked.emit({ lat: point.lat, lng: point.lng });
   }
 
   private readonly host = viewChild.required<ElementRef<HTMLDivElement>>('map');

@@ -19,3 +19,7 @@ PRs #22–#24 merged on green CI. #22 reconciled through `cb4d7c0` and had no fe
 ## 2026-11-27 — main `1d7727d`
 
 PR #25 merged on green CI. F-002-T02 and F-002-T04 owner walkthroughs remain pending; F-016-T03 closed on #23's CI, while F-016-T04 remains planned because its latest scheduled run predates its acceptance date.
+
+## 2026-11-27 — main `cf2473c`
+
+PRs #25 and #26 merged on green CI. #26 delivered the required-name error accessibility fix and recorded a fresh-context independent review with no findings. F-002-T02 and F-002-T04 owner walkthroughs remain pending. F-016-T04 remains planned; no qualifying scheduled run has been verified.

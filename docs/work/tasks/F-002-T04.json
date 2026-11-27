@@ -6,9 +6,9 @@
   "goal": "A place has coordinates, found by search or picked on the map",
   "status": "implemented",
   "acceptance": [
-    "Search by name with autocomplete through the provider adapter, or click on the map",
+    "Search by name with autocomplete through the provider adapter, or click on the map; missing OpenRouteService key errors explain how to set openRouteServiceApiKey in server/config.local.json",
     "Location shown on the map; tests with recorded provider fixtures",
-    "Keyboard users can select the map centre, return focus to search after choosing a result, and hear selected coordinates",
+    "Keyboard users can select the map centre after zoom level 10, receive an explanation before that zoom, return focus to search after choosing a result, and hear selected coordinates",
     "Owner confirms a provider result and map click display and persist the selected location (manual check in docs/manual-checks/places-and-trips.md)"
   ],
   "dependsOn": [

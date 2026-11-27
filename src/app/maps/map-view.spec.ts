@@ -92,6 +92,8 @@ describe('MapView (F-007-T02)', () => {
     const { fixture, el } = await render({});
     const picked: MapPoint[] = [];
     fixture.componentInstance.picked.subscribe((point) => picked.push(point));
+    const map = (fixture.componentInstance as unknown as { map: L.Map }).map;
+    map.setZoom(10);
     const button = el.querySelector<HTMLButtonElement>('.hobo-map-view__center')!;
     button.focus();
     button.click();
@@ -100,6 +102,28 @@ describe('MapView (F-007-T02)', () => {
     expect(picked).toHaveLength(1);
     expect(picked[0]?.lng).toBeGreaterThanOrEqual(-180);
     expect(picked[0]?.lng).toBeLessThanOrEqual(180);
+  });
+
+  it('refuses a world-scale map centre until zoom 10 and explains why', async () => {
+    const { fixture, el } = await render({});
+    const picked: MapPoint[] = [];
+    fixture.componentInstance.picked.subscribe((point) => picked.push(point));
+    const button = el.querySelector<HTMLButtonElement>('.hobo-map-view__center')!;
+    button.click();
+    fixture.detectChanges();
+
+    expect(picked).toHaveLength(0);
+    expect(el.querySelector('[role="status"]')?.textContent).toContain(
+      'Zoom in to a local area before using the map centre.',
+    );
+
+    const map = (fixture.componentInstance as unknown as { map: L.Map }).map;
+    map.setZoom(10);
+    button.click();
+    fixture.detectChanges();
+
+    expect(picked).toHaveLength(1);
+    expect(el.querySelector('[role="status"]')?.textContent).toBe('');
   });
 
   it('wraps a click beyond the antimeridian into a valid longitude', async () => {
