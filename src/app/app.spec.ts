@@ -16,4 +16,13 @@ describe('App', () => {
     const brand = (fixture.nativeElement as HTMLElement).querySelector('.brand');
     expect(brand?.textContent).toContain('Hobo');
   });
+
+  it('links to places and trips from the main navigation', async () => {
+    const fixture = TestBed.createComponent(App);
+    await fixture.whenStable();
+    const root = fixture.nativeElement as HTMLElement;
+
+    expect(root.querySelector('nav a[href="/places"]')?.textContent).toContain('Places');
+    expect(root.querySelector('nav a[href="/trips"]')?.textContent).toContain('Trips');
+  });
 });
