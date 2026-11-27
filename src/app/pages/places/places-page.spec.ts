@@ -1,8 +1,21 @@
 import { TestBed } from '@angular/core/testing';
+import { By } from '@angular/platform-browser';
 import { of, throwError } from 'rxjs';
 import { PlacesApi } from '../../data/places-api';
 import type { Place } from '../../core/place';
+import type { GeocodeCandidate, MapPoint } from '../../maps/map-provider';
+import { MapsApi } from '../../maps/maps-api';
+import { MapView } from '../../maps/map-view';
 import { PlacesPage } from './places-page';
+
+const pickedPoint: MapPoint = { lat: 45.2, lng: 9.3 };
+const candidate: GeocodeCandidate = {
+  label: 'Lake Braies, Inventedland',
+  location: pickedPoint,
+  country: 'Inventedland',
+  region: null,
+  locality: 'Lake Braies',
+};
 
 const place: Place = {
   id: 'place-1',
@@ -24,12 +37,18 @@ describe('PlacesPage', () => {
     create: vi.fn(() => of(place)),
     update: vi.fn(() => of(place)),
   };
+  const mapsApi = {
+    autocomplete: vi.fn(() => of([candidate])),
+  };
 
   beforeEach(() => {
     vi.clearAllMocks();
     TestBed.configureTestingModule({
       imports: [PlacesPage],
-      providers: [{ provide: PlacesApi, useValue: api }],
+      providers: [
+        { provide: PlacesApi, useValue: api },
+        { provide: MapsApi, useValue: mapsApi },
+      ],
     });
   });
 
@@ -148,5 +167,58 @@ describe('PlacesPage', () => {
     await fixture.whenStable();
 
     expect(root.textContent).toContain('Could not save the place. Try again.');
+  });
+
+  it('searches autocomplete suggestions, shows the location, and saves it', async () => {
+    const fixture = TestBed.createComponent(PlacesPage);
+    await fixture.whenStable();
+    const root = fixture.nativeElement as HTMLElement;
+    root.querySelector<HTMLButtonElement>('button')?.click();
+    await fixture.whenStable();
+
+    const search = root.querySelector<HTMLInputElement>('#location-search')!;
+    search.value = 'Lake Braies';
+    search.dispatchEvent(new Event('input', { bubbles: true }));
+    await new Promise((resolve) => setTimeout(resolve, 300));
+    await fixture.whenStable();
+
+    expect(mapsApi.autocomplete).toHaveBeenCalledWith('Lake Braies', 5);
+    root.querySelector<HTMLButtonElement>('.location-suggestions button')?.click();
+    await fixture.whenStable();
+    const map = fixture.debugElement.query(By.directive(MapView)).componentInstance as MapView;
+    expect(map.markers()).toEqual([
+      { location: pickedPoint, label: 'Lake Braies, Inventedland' },
+    ]);
+
+    const name = root.querySelector<HTMLInputElement>('#place-name')!;
+    name.value = 'Lake Braies';
+    name.dispatchEvent(new Event('input', { bubbles: true }));
+    root.querySelector<HTMLFormElement>('form')!.dispatchEvent(
+      new Event('submit', { bubbles: true, cancelable: true }),
+    );
+    await fixture.whenStable();
+
+    expect(api.create).toHaveBeenCalledWith(expect.objectContaining({ location: pickedPoint }));
+  });
+
+  it('uses a map pick as the saved place location', async () => {
+    const fixture = TestBed.createComponent(PlacesPage);
+    await fixture.whenStable();
+    const root = fixture.nativeElement as HTMLElement;
+    root.querySelector<HTMLButtonElement>('button')?.click();
+    await fixture.whenStable();
+    const map = fixture.debugElement.query(By.directive(MapView)).componentInstance as MapView;
+    map.picked.emit(pickedPoint);
+    await fixture.whenStable();
+
+    const name = root.querySelector<HTMLInputElement>('#place-name')!;
+    name.value = 'Map picked place';
+    name.dispatchEvent(new Event('input', { bubbles: true }));
+    root.querySelector<HTMLFormElement>('form')!.dispatchEvent(
+      new Event('submit', { bubbles: true, cancelable: true }),
+    );
+    await fixture.whenStable();
+
+    expect(api.create).toHaveBeenCalledWith(expect.objectContaining({ location: pickedPoint }));
   });
 });
