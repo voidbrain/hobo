@@ -77,7 +77,7 @@ describe('trips and settings API (F-003-T01)', () => {
     assert.equal(custom.to, null);
   });
 
-  it('persists stops per day referencing places, rejects unknown places, and survives restarts', async () => {
+  it('refuses place deletion when trips use it and preserves stops across restarts', async () => {
     const p1 = (await (
       await call('/api/places', { method: 'POST', body: JSON.stringify({ name: 'Lantern Hill' }) })
     ).json()) as Place;
@@ -111,6 +111,18 @@ describe('trips and settings API (F-003-T01)', () => {
       })
     ).json()) as Trip;
 
+    const second = (await (
+      await call('/api/trips', {
+        method: 'POST',
+        body: JSON.stringify({
+          name: 'Hill Loop',
+          startDate: '2026-10-03',
+          endDate: '2026-10-03',
+          days: [{ date: '2026-10-03', stops: [p1.id] }],
+        }),
+      })
+    ).json()) as Trip;
+
     const patchedRes = await call(`/api/trips/${created.id}`, {
       method: 'PATCH',
       body: JSON.stringify({ endDate: '2026-10-03' }),
@@ -123,16 +135,31 @@ describe('trips and settings API (F-003-T01)', () => {
       { date: '2026-10-03', stops: [] },
     ]);
 
-    // Deleting a place removes dangling references from stored trip stops.
-    assert.equal((await call(`/api/places/${p1.id}`, { method: 'DELETE' })).status, 204);
+    const deleteResponse = await call(`/api/places/${p1.id}`, { method: 'DELETE' });
+    assert.equal(deleteResponse.status, 409);
+    assert.deepEqual(await deleteResponse.json(), {
+      errors: ['Cannot delete Lantern Hill because it is used in trips: Bay Trail, Hill Loop.'],
+    });
+    assert.equal((await call(`/api/places/${p1.id}`)).status, 200);
     const afterPlaceDelete = (await (await call(`/api/trips/${created.id}`)).json()) as Trip;
-    assert.deepEqual(afterPlaceDelete.days[0]?.stops, [p2.id]);
+    assert.deepEqual(afterPlaceDelete.days[0]?.stops, [p1.id, p2.id]);
+    const afterSecondTrip = (await (await call(`/api/trips/${second.id}`)).json()) as Trip;
+    assert.deepEqual(afterSecondTrip.days[0]?.stops, [p1.id]);
 
     // Restart persistence
     await server.close();
     server = await startServer({ host: '127.0.0.1', port: 0, dataDir });
     const listed = (await (await call('/api/trips')).json()) as Trip[];
-    assert.deepEqual(listed, [afterPlaceDelete]);
+    assert.deepEqual(listed, [afterPlaceDelete, afterSecondTrip]);
+
+    assert.equal((await call(`/api/places/${p2.id}`, { method: 'DELETE' })).status, 409);
+    const unused = (await (
+      await call('/api/places', {
+        method: 'POST',
+        body: JSON.stringify({ name: 'Unused Cove' }),
+      })
+    ).json()) as Place;
+    assert.equal((await call(`/api/places/${unused.id}`, { method: 'DELETE' })).status, 204);
 
     // Malformed URI & delete lifecycle
     assert.equal((await call('/api/trips/%E0')).status, 404);

@@ -1,8 +1,9 @@
 import { TestBed } from '@angular/core/testing';
-import { provideHttpClient } from '@angular/common/http';
+import { HttpErrorResponse, provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { By } from '@angular/platform-browser';
 import { of, throwError } from 'rxjs';
+import { afterEach } from 'vitest';
 import autocompleteFixture from '../../../../server/fixtures/ors/geocode-autocomplete.json';
 import { PlacesApi } from '../../data/places-api';
 import type { Place } from '../../core/place';
@@ -39,8 +40,11 @@ describe('PlacesPage', () => {
     list: vi.fn(() => of([place])),
     create: vi.fn(() => of(place)),
     update: vi.fn(() => of(place)),
+    remove: vi.fn(() => of(undefined)),
     reassignTaxonomy: vi.fn(() => of([] as Place[])),
   };
+
+  afterEach(() => vi.restoreAllMocks());
 
   beforeEach(() => {
     vi.clearAllMocks();
@@ -252,6 +256,92 @@ describe('PlacesPage', () => {
     await fixture.whenStable();
 
     expect(root.querySelector('#place-form')).toBeNull();
+  });
+
+  it('confirms deletion from the place list, announces success, and returns focus to the page', async () => {
+    const confirm = vi.spyOn(window, 'confirm').mockReturnValue(true);
+    const fixture = TestBed.createComponent(PlacesPage);
+    await fixture.whenStable();
+    const root = fixture.nativeElement as HTMLElement;
+
+    root.querySelector<HTMLButtonElement>('.delete-place')?.click();
+    await fixture.whenStable();
+
+    expect(confirm).toHaveBeenCalledWith('Delete "Rocca Calascio"? This cannot be undone.');
+    expect(api.remove).toHaveBeenCalledWith('place-1');
+    expect(root.querySelector('.place-list')).toBeNull();
+    expect(root.querySelector('[role="status"]')?.textContent).toContain(
+      'Rocca Calascio was deleted.',
+    );
+    expect(document.activeElement).toBe(root.querySelector('#places-title'));
+  });
+
+  it('confirms deletion from the edit form', async () => {
+    vi.spyOn(window, 'confirm').mockReturnValue(true);
+    const fixture = TestBed.createComponent(PlacesPage);
+    await fixture.whenStable();
+    const root = fixture.nativeElement as HTMLElement;
+    root.querySelector<HTMLButtonElement>('.place-list .edit-place')?.click();
+    await fixture.whenStable();
+
+    root.querySelector<HTMLButtonElement>('#delete-place')?.click();
+    await fixture.whenStable();
+
+    expect(api.remove).toHaveBeenCalledWith('place-1');
+    expect(root.querySelector('#place-form')).toBeNull();
+    expect(root.textContent).toContain('Rocca Calascio was deleted.');
+  });
+
+  it('announces all trip names when the service refuses a deletion', async () => {
+    api.remove.mockReturnValueOnce(
+      throwError(
+        () =>
+          new HttpErrorResponse({
+            status: 409,
+            error: {
+              errors: ['Cannot delete Rocca Calascio because it is used in trips: Ridge Weekend, Bay Trail.'],
+            },
+          }),
+      ),
+    );
+    vi.spyOn(window, 'confirm').mockReturnValue(true);
+    const fixture = TestBed.createComponent(PlacesPage);
+    await fixture.whenStable();
+    const root = fixture.nativeElement as HTMLElement;
+
+    root.querySelector<HTMLButtonElement>('.delete-place')?.click();
+    await fixture.whenStable();
+
+    expect(root.querySelector('[role="alert"]')?.textContent).toContain(
+      'Ridge Weekend, Bay Trail',
+    );
+    expect(root.querySelector('.place-list')).not.toBeNull();
+  });
+
+  it('connects confirmed deletion to PlacesApi and announces a service refusal', async () => {
+    TestBed.overrideProvider(PlacesApi, { useFactory: () => new PlacesApi() });
+    const confirm = vi.spyOn(window, 'confirm').mockReturnValue(true);
+    const fixture = TestBed.createComponent(PlacesPage);
+    const root = fixture.nativeElement as HTMLElement;
+    const http = TestBed.inject(HttpTestingController);
+    http.expectOne('/api/places').flush([place]);
+    await fixture.whenStable();
+
+    root.querySelector<HTMLButtonElement>('.delete-place')?.click();
+    await fixture.whenStable();
+
+    expect(confirm).toHaveBeenCalled();
+    const request = http.expectOne('/api/places/place-1');
+    expect(request.request.method).toBe('DELETE');
+    request.flush(
+      { errors: ['Cannot delete Rocca Calascio because it is used in trips: Ridge Weekend.'] },
+      { status: 409, statusText: 'Conflict' },
+    );
+    await fixture.whenStable();
+
+    expect(root.querySelector('[role="alert"]')?.textContent).toContain('Ridge Weekend');
+    expect(root.querySelector('.place-list')).not.toBeNull();
+    http.verify();
   });
 
   it('reports a failed place load', async () => {
