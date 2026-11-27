@@ -1,69 +1,22 @@
 # <a id="top"></a>Hobo backlog
 
-Current work ledger, reviewed 27 November 2026 against main `32c2b33`. Generated from [record sources](work/records) and [steps](work/tasks) by `npm run work:build`: edit those, not this file. [Rules](BACKLOG-RULES.md) · [Archive](archive/README.md) · [Reading the records](#how-to-use-this-file).
+Current work ledger, reviewed 27 November 2026 against main `cea3294`. Generated from [record sources](work/records) and [steps](work/tasks) by `npm run work:build`: edit those, not this file. [Rules](BACKLOG-RULES.md) · [Archive](archive/README.md) · [Reading the records](#how-to-use-this-file).
 
 <!-- totals:start -->
-**Remaining effort:** 47.75 h agent + 2.5 h owner across 37 open steps of 16 features. Generated from the task files.
+**Remaining effort:** 44.75 h agent + 2.5 h owner across 37 open steps of 16 features. 0.75 h of actual effort recorded on 1 step. Generated from the task files.
 <!-- totals:end -->
 
 ## Work items
 
 Bugs (B-) and features (F-) in one list, in work-queue order. Steps: `effort` = remaining agent time (🟢 up to 1 h · 🟡 4 h · 🔴 8 h · 🟣 more); `h` = agent hours, owner time apart; a step status is not the record's acceptance.
 
-### <a id="f-003"></a>[✨ F-003](#top)
-
-**Trips: dates, start and end, stops**
-
-| Status | Priority | Effort | Remaining | Depends on | Unlocks | Agent | Procedures | Decisions |
-|---|---|---|---|---|---|:---:|:---:|:---:|
-| 🔴 Open | 🔶 P2 | 🔴 Large | 5 h | — | [F-004-T02](#f-004-t02) | 🤖 | — | — |
-
-💻 **→** Next: F-003-T02 — Trip editor (Implemented; verification pending).
-
-| | |
-|---|---|
-| **Issue** | A trip has dates (a single day or several), a start and an end (home by default) and stops, picked from places or added on the fly. |
-| **Reproduce** | There is no trip yet. |
-| **Check** | A trip can be created for one or more days; from and to default to the home set in settings and can be changed; stops are picked from places or created on the fly (which adds a place); stops can be reordered and moved between days. |
-
-**Feature steps**
-
-| Effort | Step | Estimate | Actual | Remaining | Status | Depends on | Unlocks | PRs |
-|---|---|---|---|---|---|---|---|---|
-| 🟡 Medium | <a id="f-003-t02"></a>F-003-T02 — Trip editor | 3 h | 0 h | 3 h | Implemented; verification pending | — | [F-003-T03](#f-003-t03), [F-004-T02](#f-004-t02) | — |
-| 🟡 Medium | <a id="f-003-t03"></a>F-003-T03 — Reorder stops and move them between days | 2 h | 0 h | 2 h | Planned | [F-003-T02](#f-003-t02) | — | — |
-| 🔴 Large | **Total** | 7 h | 0 h (0 of 3 steps recorded) | 5 h | 1 of 3 completed | | | |
-
-<details><summary>Done steps (1)</summary>
-
-| Effort | Step | Estimate | Actual | Status | PRs |
-|---|---|---|---|---|---|
-| — | <a id="f-003-t01"></a>F-003-T01 — Trip model and API | 2 h | 0 h | Completed | [PR #6](https://github.com/voidbrain/hobo/pull/6) trip model, pure helpers, SQLite persistence, home settings and trips API |
-
-</details>
-
-<details>
-<summary>Next action, estimates and PR history</summary>
-
-[Full notes & evidence](work/records/F-003.md)
-
-| Field | Value |
-|---|---|
-| PR / evidence | Steps: F-003-T01: [PR #6](https://github.com/voidbrain/hobo/pull/6) trip model, pure helpers, SQLite persistence, home settings and trips API; step review: 2026-11-26 Claude (Opus, fresh worktree) reviewed PR #6 written by Gemini: no blockers. Added API tests for 400/404/405 answers, unknown home and endpoint places, a single day with no home, time-zone independence across a daylight-saving change, and clearing a deleted place from home and trip endpoints; documented that dates carry no time zone and that shrinking a trip drops stops outside the new range.. [#1](https://github.com/voidbrain/hobo/pull/1); [#6](https://github.com/voidbrain/hobo/pull/6) (F-003-T01, CI 45720389688); Test: `src/app/core/trip.spec.ts`, `src/app/data/trips-api.spec.ts`, `server/trips.test.ts` (`193bbca`); F-003-T02 tests: `src/app/app.routes.spec.ts`, `src/app/pages/trips/trips-page.spec.ts`; Review: 2026-11-26 Claude (Opus), no blockers; added API error, time-zone and deleted-place tests; [#30](https://github.com/voidbrain/hobo/pull/30) |
-| Opened | 2026-11-25 |
-| Verification | Unit/integration · 2026-11-27 · F-003-T01 (#6 CI 45720389688) green; F-003-T02 targeted Angular tests pass; CI and manual owner check pending |
-| Reviewed | 2026-11-27 |
-
-</details>
-
----
 ### <a id="f-004"></a>[✨ F-004](#top)
 
 **Routing totals per leg, per day and per trip**
 
 | Status | Priority | Effort | Remaining | Depends on | Unlocks | Agent | Procedures | Decisions |
 |---|---|---|---|---|---|:---:|:---:|:---:|
-| 🔴 Open | 🔶 P2 | 🟡 Medium | 4 h | [F-003-T02](#f-003-t02) | [F-005-T01](#f-005-t01), [F-006-T02](#f-006-t02), [F-008-T01](#f-008-t01), [F-008-T02](#f-008-t02), [F-008-T04](#f-008-t04), [F-011-T01](#f-011-t01) | ⏳ | — | — |
+| 🔴 Open | 🔶 P2 | 🟡 Medium | 4 h | — | [F-005-T01](#f-005-t01), [F-006-T02](#f-006-t02), [F-008-T01](#f-008-t01), [F-008-T02](#f-008-t02), [F-008-T04](#f-008-t04), [F-011-T01](#f-011-t01) | 🤖 | — | — |
 
 💻 **→** Next: F-004-T02 — Legs through the adapter (Planned).
 
@@ -77,7 +30,7 @@ Bugs (B-) and features (F-) in one list, in work-queue order. Steps: `effort` = 
 
 | Effort | Step | Estimate | Actual | Remaining | Status | Depends on | Unlocks | PRs |
 |---|---|---|---|---|---|---|---|---|
-| 🟡 Medium | <a id="f-004-t02"></a>F-004-T02 — Legs through the adapter | 2 h | 0 h | 2 h | Planned | [F-003-T02](#f-003-t02) | [F-004-T03](#f-004-t03), [F-005-T01](#f-005-t01), [F-008-T01](#f-008-t01), [F-011-T01](#f-011-t01) | — |
+| 🟡 Medium | <a id="f-004-t02"></a>F-004-T02 — Legs through the adapter | 2 h | 0 h | 2 h | Planned | — | [F-004-T03](#f-004-t03), [F-005-T01](#f-005-t01), [F-008-T01](#f-008-t01), [F-011-T01](#f-011-t01) | — |
 | 🟡 Medium | <a id="f-004-t03"></a>F-004-T03 — Day filter, summary and route on the map | 2 h | 0 h | 2 h | Planned | [F-004-T02](#f-004-t02) | [F-006-T02](#f-006-t02), [F-008-T02](#f-008-t02), [F-008-T04](#f-008-t04) | — |
 | 🟡 Medium | **Total** | 5.5 h | 0 h (0 of 3 steps recorded) | 4 h | 1 of 3 completed | | | |
 
@@ -148,6 +101,53 @@ Bugs (B-) and features (F-) in one list, in work-queue order. Steps: `effort` = 
 | PR / evidence | Steps: F-007-T01: [PR #8](https://github.com/voidbrain/hobo/pull/8) MapProvider adapter interface, local config without committed keys, and SQLite leg cache · F-007-T02: [PR #12](https://github.com/voidbrain/hobo/pull/12) MapView: Leaflet, OSM tiles and attribution, markers and route lines from inputs, token classes · F-007-T03: [PR #9](https://github.com/voidbrain/hobo/pull/9) OpenRouteService directions, matrix, geocode and autocomplete via server /api/maps, MapsApi client and recorded fixtures · F-007-T05: [PR #17](https://github.com/voidbrain/hobo/pull/17) plan. [#1](https://github.com/voidbrain/hobo/pull/1); [#2](https://github.com/voidbrain/hobo/pull/2) (review fixes); [#8](https://github.com/voidbrain/hobo/pull/8) (F-007-T01); [#9](https://github.com/voidbrain/hobo/pull/9) (F-007-T03); [#12](https://github.com/voidbrain/hobo/pull/12) (F-007-T02, CI 45784696923); [#17](https://github.com/voidbrain/hobo/pull/17) (plan); [#21](https://github.com/voidbrain/hobo/pull/21) (coordinator prefix); Test: `src/app/maps/map-provider.spec.ts`, `server/config.test.ts`, `server/leg-cache.test.ts` (`47d4b46`), `server/ors.test.ts`, `src/app/maps/maps-api.spec.ts` (`bde43bb`), `src/app/maps/map-view.spec.ts` |
 | Opened | 2026-11-25 |
 | Verification | Unit/integration · 2026-11-27 · F-007-T01 (#8), F-007-T02 (#12 CI 45784696923) and F-007-T03 (#9) green; F-007-T04 owner live key check and F-007-T05 pending |
+| Reviewed | 2026-11-27 |
+
+</details>
+
+---
+### <a id="f-003"></a>[✨ F-003](#top)
+
+**Trips: dates, start and end, stops**
+
+| Status | Priority | Effort | Remaining | Depends on | Unlocks | Agent | Procedures | Decisions |
+|---|---|---|---|---|---|:---:|:---:|:---:|
+| 🔴 Open | 🔶 P2 | 🟡 Medium | 2 h | — | — | 🤖 | — | — |
+
+💻 **→** Next: F-003-T03 — Reorder stops and move them between days (Implemented; verification pending).
+
+| | |
+|---|---|
+| **Issue** | A trip has dates (a single day or several), a start and an end (home by default) and stops, picked from places or added on the fly. |
+| **Reproduce** | There is no trip yet. |
+| **Check** | A trip can be created for one or more days; from and to default to the home set in settings and can be changed; stops are picked from places or created on the fly (which adds a place); stops can be reordered and moved between days. |
+
+**Feature steps**
+
+| Effort | Step | Estimate | Actual | Remaining | Status | PRs |
+|---|---|---|---|---|---|---|
+| 🟡 Medium | <a id="f-003-t03"></a>F-003-T03 — Reorder stops and move them between days | 2 h | 0 h | 2 h | Implemented; verification pending | — |
+| 🟡 Medium | **Total** | 7 h | 0.75 h (1 of 3 steps recorded) | 2 h | 2 of 3 completed | |
+
+<details><summary>Done steps (2)</summary>
+
+| Effort | Step | Estimate | Actual | Status | PRs |
+|---|---|---|---|---|---|
+| — | <a id="f-003-t01"></a>F-003-T01 — Trip model and API | 2 h | 0 h | Completed | [PR #6](https://github.com/voidbrain/hobo/pull/6) trip model, pure helpers, SQLite persistence, home settings and trips API |
+| 🟢 Small | <a id="f-003-t02"></a>F-003-T02 — Trip editor | 3 h | 0.75 h (measured) | Verified | — |
+
+</details>
+
+<details>
+<summary>Next action, estimates and PR history</summary>
+
+[Full notes & evidence](work/records/F-003.md)
+
+| Field | Value |
+|---|---|
+| PR / evidence | Steps: F-003-T01: [PR #6](https://github.com/voidbrain/hobo/pull/6) trip model, pure helpers, SQLite persistence, home settings and trips API; step review: 2026-11-26 Claude (Opus, fresh worktree) reviewed PR #6 written by Gemini: no blockers. Added API tests for 400/404/405 answers, unknown home and endpoint places, a single day with no home, time-zone independence across a daylight-saving change, and clearing a deleted place from home and trip endpoints; documented that dates carry no time zone and that shrinking a trip drops stops outside the new range.. [#1](https://github.com/voidbrain/hobo/pull/1); [#6](https://github.com/voidbrain/hobo/pull/6) (F-003-T01, CI 45720389688); Test: `src/app/core/trip.spec.ts`, `src/app/data/trips-api.spec.ts`, `server/trips.test.ts` (`193bbca`); F-003-T02: `src/app/app.routes.spec.ts`, `src/app/pages/trips/trips-page.spec.ts` (105 Angular tests; CI 46002161841); F-003-T03 tests: `src/app/pages/trips/trips-page.spec.ts` (failing-first keyboard/drag/drop persistence cases); Review: 2026-11-26 Claude (Opus), no blockers; added API error, time-zone and deleted-place tests; [#30](https://github.com/voidbrain/hobo/pull/30) |
+| Opened | 2026-11-25 |
+| Verification | Unit/integration · 2026-11-27 · F-003-T01 (#6 CI 45720389688) and F-003-T02 (#30 CI 46002161841) green; T03 local checks and CI pending. Human · Pending · follow F-003-T02 and F-003-T03 in `docs/manual-checks/places-and-trips.md` |
 | Reviewed | 2026-11-27 |
 
 </details>
@@ -698,7 +698,7 @@ Bugs (B-) and features (F-) in one list, in work-queue order. Steps: `effort` = 
 
 **Plan revision, 2026-11-25 (fresh review relayed by the coordinator).** Storage is a small Node 24 `server/` with SQLite that the app talks to (IndexedDB only as an optional offline cache later); the OpenRouteService key lives in git-ignored `server/` config, never in `public/`; F-007-T01 now waits on F-002-T01; F-011-T01 also waits on F-003-T01 and F-004-T02; F-008-T04 on F-003-T01 and F-004-T03. Estimates unchanged.
 
-**Reconciliation log:** [docs/archive/reconciliation-2026.md](archive/reconciliation-2026.md). Latest: 2026-11-27 against main `32c2b33` (#29 merged green; F-002-T02 owner walkthrough passed, T04 location walkthrough pending; T05 and T06 CI green).
+**Reconciliation log:** [docs/archive/reconciliation-2026.md](archive/reconciliation-2026.md). Latest: 2026-11-27 against main `cea3294` (#30 merged green; F-003-T02 verified; F-003-T03 ready; F-002-T04 location walkthrough remains pending).
 
 ## How to use this file
 

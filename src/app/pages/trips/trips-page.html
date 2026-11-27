@@ -180,20 +180,61 @@
 
       <section id="trip-days" class="trip-days" aria-label="Stops by day">
         @for (day of tripDays(); track day.date) {
-          <section class="trip-day" [attr.aria-labelledby]="'day-' + day.date">
+          <section
+            class="trip-day"
+            [attr.aria-labelledby]="'day-' + day.date"
+            (dragover)="allowStopDrop($event)"
+            (drop)="dropStop($event, day.date, day.stops.length)"
+          >
             <h3 [id]="'day-' + day.date">{{ day.date }}</h3>
             @if (day.stops.length) {
               <ol>
                 @for (placeId of day.stops; track $index; let stopIndex = $index) {
-                  <li>
+                  <li
+                    class="trip-stop"
+                    draggable="true"
+                    [attr.data-stop-id]="placeId"
+                    (dragstart)="startStopDrag($event, day.date, stopIndex)"
+                    (dragover)="allowStopDrop($event)"
+                    (drop)="dropStop($event, day.date, stopIndex)"
+                  >
                     <span>{{ placeName(placeId) }}</span>
-                    <button
-                      type="button"
-                      class="secondary"
-                      (click)="removeStop(day.date, stopIndex)"
-                    >
-                      Remove {{ placeName(placeId) }}
-                    </button>
+                    <div class="stop-actions">
+                      <button
+                        type="button"
+                        class="secondary"
+                        [disabled]="stopIndex === 0"
+                        (click)="moveStop(day.date, stopIndex, -1)"
+                      >
+                        Move {{ placeName(placeId) }} up
+                      </button>
+                      <button
+                        type="button"
+                        class="secondary"
+                        [disabled]="stopIndex === day.stops.length - 1"
+                        (click)="moveStop(day.date, stopIndex, 1)"
+                      >
+                        Move {{ placeName(placeId) }} down
+                      </button>
+                      @for (targetDay of tripDays(); track targetDay.date) {
+                        @if (targetDay.date !== day.date) {
+                          <button
+                            type="button"
+                            class="secondary"
+                            (click)="moveStopToDay(day.date, stopIndex, targetDay.date)"
+                          >
+                            Move {{ placeName(placeId) }} to {{ targetDay.date }}
+                          </button>
+                        }
+                      }
+                      <button
+                        type="button"
+                        class="secondary"
+                        (click)="removeStop(day.date, stopIndex)"
+                      >
+                        Remove {{ placeName(placeId) }}
+                      </button>
+                    </div>
                   </li>
                 }
               </ol>

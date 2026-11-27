@@ -72,3 +72,12 @@ Expected: confirmation is keyboard-operable; successful deletion is announced an
 6. Repeat the core flow with the keyboard: add a trip, enter its fields, filter and add a stop, create a place, save, and edit. Confirm all controls can receive keyboard focus, validation errors are announced, and save success is announced.
 
 Expected: trips save with their date range, from/to endpoints and selected places; place search and category/tag filters combine; a new place is created and added as a stop; saved trips can be reopened and edited. Reordering and moving stops are checked in F-003-T03.
+
+## F-003-T03 — Reorder stops and move them between days
+
+1. Create or edit a two-day trip named `Stop order check` for `2026-12-02` through `2026-12-03`. Add `Harbour`, `Ridge View` and `New Lookout` to December 2, in that order. Add another saved place to December 3, then save.
+2. Drag `New Lookout` above `Harbour` within December 2. Confirm the visible stop order changes. Drag `Ridge View` to the end of December 3 and confirm it appears after the existing stop there.
+3. Repeat with the keyboard using the stop controls. Move `Harbour` after `New Lookout`, then move `Ridge View` from December 3 to December 2. Confirm focus remains on a usable stop control and the changed order/day is announced or visible.
+4. Save and reload the trip. Confirm both day assignments and the exact stop order persist.
+
+Expected: pointer drag and keyboard controls both reorder stops within a day and move them between days; saving and reloading preserves each stop's order and day.

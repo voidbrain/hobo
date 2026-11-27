@@ -4,7 +4,7 @@
   "parent": "F-003",
   "title": "Trip editor",
   "goal": "The owner builds a trip from places",
-  "status": "implemented",
+  "status": "verified",
   "acceptance": [
     "Create a trip, set dates and from/to",
     "Pick stops from places (search, category and tag filters) or add one on the fly, which creates a place"
@@ -36,14 +36,16 @@
   ],
   "effort": {
     "size": "medium",
-    "estimate": "3 h agent, 1.5 d",
-    "basis": "Planned 2026-11-25 in the upfront step plan: scoped to one PR, at most 1.5 focused day(s). Not a measurement.",
-    "reviewed": "2026-11-25",
-    "agentHours": 3,
+    "estimate": "0 remaining",
+    "basis": "Verified in #30 on 2026-11-27 after green CI 46002161841. Measured 0.75 h from the work-usage interval through merge; coverage counters were unavailable.",
+    "reviewed": "2026-11-27",
+    "agentHours": 0,
     "ownerHours": 0.0,
+    "actualAgentHours": 0.75,
+    "actualSource": "measured",
     "baselineAgentHours": 3,
     "estimateAgentHours": 3,
-    "days": 1.5,
+    "days": 0,
     "baselineDays": 1.5
   }
 }

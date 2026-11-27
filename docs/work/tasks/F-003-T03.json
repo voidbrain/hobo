@@ -4,7 +4,7 @@
   "parent": "F-003",
   "title": "Reorder stops and move them between days",
   "goal": "The stop order is easy to change",
-  "status": "planned",
+  "status": "implemented",
   "acceptance": [
     "Drag to reorder and move between days, with a keyboard alternative",
     "Order persists; tests on the pure reorder helper"

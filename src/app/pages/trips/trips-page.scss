@@ -173,6 +173,16 @@ select:focus-visible {
   gap: var(--space-2);
 }
 
+.trip-stop[draggable='true'] {
+  cursor: grab;
+}
+
+.stop-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
 .field-error {
   margin: 0;
   color: var(--color-danger);
