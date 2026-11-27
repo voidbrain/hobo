@@ -213,7 +213,7 @@ describe('TripsPage', () => {
     await fixture.whenStable();
 
     const moveDay = [...root.querySelectorAll<HTMLButtonElement>('#trip-days button')].find(
-      (button) => button.textContent?.trim() === 'Move Ridge View to 2026-12-03',
+      (button) => button.textContent?.trim() === 'Move Harbour to 2026-12-03',
     );
     expect(moveDay).toBeDefined();
     moveDay?.click();
@@ -226,8 +226,8 @@ describe('TripsPage', () => {
       tripWithStops.id,
       expect.objectContaining({
         days: [
-          { date: '2026-12-02', stops: [ridge.id, harbour.id] },
-          { date: '2026-12-03', stops: [] },
+          { date: '2026-12-02', stops: [ridge.id] },
+          { date: '2026-12-03', stops: [harbour.id] },
         ],
       }),
     );
