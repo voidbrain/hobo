@@ -1,6 +1,6 @@
 # <a id="top"></a>Hobo backlog
 
-Current work ledger, reviewed 27 November 2026 against main `e4beef8`. Generated from [record sources](work/records) and [steps](work/tasks) by `npm run work:build`: edit those, not this file. [Rules](BACKLOG-RULES.md) · [Archive](archive/README.md) · [Reading the records](#how-to-use-this-file).
+Current work ledger, reviewed 27 November 2026 against main `cf2473c`. Generated from [record sources](work/records) and [steps](work/tasks) by `npm run work:build`: edit those, not this file. [Rules](BACKLOG-RULES.md) · [Archive](archive/README.md) · [Reading the records](#how-to-use-this-file).
 
 <!-- totals:start -->
 **Remaining effort:** 50 h agent + 2.5 h owner across 37 open steps of 16 features. Generated from the task files.
@@ -18,13 +18,13 @@ Bugs (B-) and features (F-) in one list, in work-queue order. Steps: `effort` = 
 |---|---|---|---|---|---|:---:|:---:|:---:|
 | 🔴 Open | 🔶 P2 | 🟡 Medium | 2.5 h | — | [F-003-T02](#f-003-t02) | 🤖 | 🧑‍🔧 | — |
 
-🧑 **→** Repeat the updated place form check in the [manual walkthrough](manual-checks/places-and-trips.md#f-002-t02--place-list-and-form).
+🧑 **→** Repeat the updated place form and location checks in the [manual walkthrough](manual-checks/places-and-trips.md#f-002-t02--place-list-and-form).
 
 | | |
 |---|---|
 | **Issue** | Places are added at random as they are found, then organised. Each place has a name, description, images, category, tags, notes, a location and the time spent on site (2 h, half day or full day, queues and movement on site included). Data stays on the owner's own machine or base: a small Node 24 `server/` with SQLite (`node:sqlite`) that the Angular app talks to; it also serves the NERV MCP server (F-011), share links (F-008) and keeps API keys off the client. IndexedDB is at most an optional offline cache later. No hosted multi-user backend. |
 | **Reproduce** | Open Hobo: there is no way to add a place yet. |
-| **Check** | A place can be added with only a name, then edited to fill every field; an empty name shows an announced danger error and marks the field invalid; images are stored locally with GPS metadata stripped; places can be filtered and grouped by category and tag; data survives a restart and never enters git. |
+| **Check** | A place can be added with only a name, then edited to fill every field; an empty name shows an announced danger error and marks the field invalid; a missing OpenRouteService key is explained; the map-centre control requires zoom level 10; images are stored locally with GPS metadata stripped; places can be filtered and grouped by category and tag; data survives a restart and never enters git. |
 
 **Feature steps**
 
@@ -51,9 +51,9 @@ Bugs (B-) and features (F-) in one list, in work-queue order. Steps: `effort` = 
 
 | Field | Value |
 |---|---|
-| PR / evidence | Steps: F-002-T01: [PR #5](https://github.com/voidbrain/hobo/pull/5) local store service and place model; step review: 2026-11-25 design-reviewer (fresh context, Opus): no blockers; fixed a 500 on a malformed id escape (test first) and added a rollback to a failed migration. Project-only harness edits: package.json (type module, server scripts; npm test also runs the server tests) and a marked CI step. · F-002-T03: [PR #7](https://github.com/voidbrain/hobo/pull/7) content-sniffed place image upload, size limit, EXIF/GPS stripping and thumbnail component; step review: 2026-11-26 Claude (Opus, fresh worktree) reviewed PR #7 written by Gemini. Fixed (test first): an upload announcing a Content-Length over 5 MB is now refused with 413 before its body is read. Added tests: a real decodable JPEG with a well-formed GPS EXIF IFD (stripped, scan data kept; also checked with macOS ImageIO: GPS present before, absent after, image still decodes), deleting a place unlinks its files, and image names that would leave the folder answer 404.. [#1](https://github.com/voidbrain/hobo/pull/1); [#2](https://github.com/voidbrain/hobo/pull/2) (review fixes); [#5](https://github.com/voidbrain/hobo/pull/5) (F-002-T01, CI 45713057220); [#7](https://github.com/voidbrain/hobo/pull/7) (F-002-T03, CI 45721078554); Test: `server/images.test.ts`, `src/app/pages/places/place-images.spec.ts`, `src/app/data/places-api.spec.ts` (`4dbecd4`); Review: 2026-11-26 Claude (Opus), fixed an announced oversized upload being read before its 413; added real GPS EXIF, place deletion and path tests; [#23](https://github.com/voidbrain/hobo/pull/23); [#24](https://github.com/voidbrain/hobo/pull/24); Review: fresh-context design review 2026-11-27, findings fixed in #24; [#25](https://github.com/voidbrain/hobo/pull/25); [#26](https://github.com/voidbrain/hobo/pull/26); fresh-context independent review 2026-11-27: no findings |
+| PR / evidence | Steps: F-002-T01: [PR #5](https://github.com/voidbrain/hobo/pull/5) local store service and place model; step review: 2026-11-25 design-reviewer (fresh context, Opus): no blockers; fixed a 500 on a malformed id escape (test first) and added a rollback to a failed migration. Project-only harness edits: package.json (type module, server scripts; npm test also runs the server tests) and a marked CI step. · F-002-T03: [PR #7](https://github.com/voidbrain/hobo/pull/7) content-sniffed place image upload, size limit, EXIF/GPS stripping and thumbnail component; step review: 2026-11-26 Claude (Opus, fresh worktree) reviewed PR #7 written by Gemini. Fixed (test first): an upload announcing a Content-Length over 5 MB is now refused with 413 before its body is read. Added tests: a real decodable JPEG with a well-formed GPS EXIF IFD (stripped, scan data kept; also checked with macOS ImageIO: GPS present before, absent after, image still decodes), deleting a place unlinks its files, and image names that would leave the folder answer 404.. [#1](https://github.com/voidbrain/hobo/pull/1); [#2](https://github.com/voidbrain/hobo/pull/2) (review fixes); [#5](https://github.com/voidbrain/hobo/pull/5) (F-002-T01, CI 45713057220); [#7](https://github.com/voidbrain/hobo/pull/7) (F-002-T03, CI 45721078554); Test: `server/images.test.ts`, `src/app/pages/places/place-images.spec.ts`, `src/app/data/places-api.spec.ts` (`4dbecd4`); Review: 2026-11-26 Claude (Opus), fixed an announced oversized upload being read before its 413; added real GPS EXIF, place deletion and path tests; [#23](https://github.com/voidbrain/hobo/pull/23); [#24](https://github.com/voidbrain/hobo/pull/24); Review: fresh-context design review 2026-11-27, findings fixed in #24; [#25](https://github.com/voidbrain/hobo/pull/25); [#26](https://github.com/voidbrain/hobo/pull/26); fresh-context independent review 2026-11-27: no findings; PR #NN (F-002-T04 setup guidance and zoom-10 map-centre guard) |
 | Opened | 2026-11-25 |
-| Verification | Unit/integration · 2026-11-27 · F-002-T02 place page 15/15; full suite 68 Angular and 46 server tests passed; PR CI pending; Browser/accessibility · Pending · owner walkthroughs in manual checks |
+| Verification | Unit/integration · 2026-11-27 · F-002-T02 place page 15/15; full suite 68 Angular and 46 server tests passed; T04 regression tests added; PR CI pending; Browser/accessibility · Pending · owner walkthroughs in manual checks |
 | Reviewed | 2026-11-27 |
 
 </details>
@@ -697,7 +697,7 @@ Bugs (B-) and features (F-) in one list, in work-queue order. Steps: `effort` = 
 
 **Plan revision, 2026-11-25 (fresh review relayed by the coordinator).** Storage is a small Node 24 `server/` with SQLite that the app talks to (IndexedDB only as an optional offline cache later); the OpenRouteService key lives in git-ignored `server/` config, never in `public/`; F-007-T01 now waits on F-002-T01; F-011-T01 also waits on F-003-T01 and F-004-T02; F-008-T04 on F-003-T01 and F-004-T03. Estimates unchanged.
 
-**Reconciliation log:** [docs/archive/reconciliation-2026.md](archive/reconciliation-2026.md). Latest: 2026-11-27 against main `e4beef8` (#22–#24 merged on green CI; F-016-T03 closed after #23; F-002-T02/T04 CI passed, owner walkthroughs pending).
+**Reconciliation log:** [docs/archive/reconciliation-2026.md](archive/reconciliation-2026.md). Latest: 2026-11-27 against main `cf2473c` (#25 and #26 merged on green CI; F-002-T02 name-error accessibility fix landed, owner walkthroughs for T02 and T04 pending).
 
 ## How to use this file
 

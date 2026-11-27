@@ -16,6 +16,8 @@ npm run build        # dist/hobo/browser
 
 Node 24 or later. Data and API keys stay on your machine in a small local Node 24 service with SQLite (`server/`, data in the git-ignored `server/data/`); the app talks to it. Settings go in `server/config.local.json` (git-ignored; see `server/config.example.json`). How it fits together: [design](docs/DESIGN.md). The OpenRouteService key goes in `server/config.local.json` (git-ignored), never in `public/`, so it never reaches the browser (F-007).
 
+Place search uses OpenRouteService. Copy `server/config.example.json` to `server/config.local.json`, set `openRouteServiceApiKey` to your key, and restart the local server. The local OSRM provider does not provide place search. Keep the key in the ignored local config; do not commit it.
+
 ## Where things are
 
 ```
