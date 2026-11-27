@@ -253,7 +253,7 @@ describe('trips and settings API (F-003-T01)', () => {
     }
   });
 
-  it('clears a deleted place from home and trip endpoints but keeps their names and locations', async () => {
+  it('refuses deletion when a place is used as home and a trip endpoint', async () => {
     const base = (await (
       await call('/api/places', {
         method: 'POST',
@@ -274,10 +274,14 @@ describe('trips and settings API (F-003-T01)', () => {
     ).json()) as Trip;
     assert.deepEqual(trip.from, endpoint);
 
-    assert.equal((await call(`/api/places/${base.id}`, { method: 'DELETE' })).status, 204);
-    const cleared = { ...endpoint, placeId: null };
-    assert.deepEqual(((await (await call('/api/settings')).json()) as HoboSettings).home, cleared);
+    // The refusal also protects trip endpoints, so deletion cannot silently detach them.
+    const deletion = await call(`/api/places/${base.id}`, { method: 'DELETE' });
+    assert.equal(deletion.status, 409);
+    assert.deepEqual(await deletion.json(), {
+      errors: ['Cannot delete Cedar Lodge because it is used in trip: Lodge Loop.'],
+    });
+    assert.deepEqual(((await (await call('/api/settings')).json()) as HoboSettings).home, endpoint);
     const after = (await (await call(`/api/trips/${trip.id}`)).json()) as Trip;
-    assert.deepEqual([after.from, after.to], [cleared, cleared]);
+    assert.deepEqual([after.from, after.to], [endpoint, endpoint]);
   });
 });
