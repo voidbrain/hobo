@@ -7,3 +7,7 @@
 ## 2026-11-27 — main `cb4d7c0`
 
 PRs #12–#21 merged on green CI (#18, #20 harness reconciles, no record; #21 coordinator:ID prefix on F-007, F-010, F-011). Closed F-001 (#1, #3) and steps F-002-T01 (#5), F-002-T03 (#7), F-003-T01 (#6), F-004-T01 (#4), F-007-T02 (#12), F-016-T01/T02 (#14), F-016-T05 (#15); F-012 closed in #17.
+
+## 2026-11-27 — main `3b7f25d`
+
+PR #22 merged on green CI; it reconciled the backlog through `cb4d7c0`. PRs #12–#22 have green CI. #18 and #20 were harness maintenance with no feature record; #21's record references are present. Token and skills reviews are recorded for F-016-T03.
