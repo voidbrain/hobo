@@ -1,4 +1,6 @@
 import { TestBed } from '@angular/core/testing';
+import { provideHttpClient } from '@angular/common/http';
+import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { By } from '@angular/platform-browser';
 import { of, throwError } from 'rxjs';
 import { PlacesApi } from '../../data/places-api';
@@ -37,17 +39,15 @@ describe('PlacesPage', () => {
     create: vi.fn(() => of(place)),
     update: vi.fn(() => of(place)),
   };
-  const mapsApi = {
-    autocomplete: vi.fn(() => of([candidate])),
-  };
 
   beforeEach(() => {
     vi.clearAllMocks();
     TestBed.configureTestingModule({
       imports: [PlacesPage],
       providers: [
+        provideHttpClient(),
+        provideHttpClientTesting(),
         { provide: PlacesApi, useValue: api },
-        { provide: MapsApi, useValue: mapsApi },
       ],
     });
   });
@@ -87,6 +87,7 @@ describe('PlacesPage', () => {
       tags: [],
       notes: '',
       timeSpent: null,
+      location: null,
     });
   });
 
@@ -102,7 +103,7 @@ describe('PlacesPage', () => {
     await fixture.whenStable();
 
     expect(api.create).not.toHaveBeenCalled();
-    expect(root.textContent).toContain('A name is required.');
+    expect(root.querySelector('[role="alert"]')?.textContent).toContain('A name is required.');
   });
 
   it('updates an existing place from the edit form', async () => {
@@ -170,6 +171,7 @@ describe('PlacesPage', () => {
   });
 
   it('searches autocomplete suggestions, shows the location, and saves it', async () => {
+    vi.spyOn(TestBed.inject(MapsApi), 'autocomplete').mockReturnValue(of([candidate]));
     const fixture = TestBed.createComponent(PlacesPage);
     await fixture.whenStable();
     const root = fixture.nativeElement as HTMLElement;
@@ -182,20 +184,18 @@ describe('PlacesPage', () => {
     await new Promise((resolve) => setTimeout(resolve, 300));
     await fixture.whenStable();
 
-    expect(mapsApi.autocomplete).toHaveBeenCalledWith('Lake Braies', 5);
+    expect(TestBed.inject(MapsApi).autocomplete).toHaveBeenCalledWith('Lake Braies', 5);
     root.querySelector<HTMLButtonElement>('.location-suggestions button')?.click();
     await fixture.whenStable();
     const map = fixture.debugElement.query(By.directive(MapView)).componentInstance as MapView;
-    expect(map.markers()).toEqual([
-      { location: pickedPoint, label: 'Lake Braies, Inventedland' },
-    ]);
+    expect(map.markers()).toEqual([{ location: pickedPoint, label: 'Lake Braies, Inventedland' }]);
 
     const name = root.querySelector<HTMLInputElement>('#place-name')!;
     name.value = 'Lake Braies';
     name.dispatchEvent(new Event('input', { bubbles: true }));
-    root.querySelector<HTMLFormElement>('form')!.dispatchEvent(
-      new Event('submit', { bubbles: true, cancelable: true }),
-    );
+    root
+      .querySelector<HTMLFormElement>('form')!
+      .dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
     await fixture.whenStable();
 
     expect(api.create).toHaveBeenCalledWith(expect.objectContaining({ location: pickedPoint }));
@@ -214,11 +214,36 @@ describe('PlacesPage', () => {
     const name = root.querySelector<HTMLInputElement>('#place-name')!;
     name.value = 'Map picked place';
     name.dispatchEvent(new Event('input', { bubbles: true }));
-    root.querySelector<HTMLFormElement>('form')!.dispatchEvent(
-      new Event('submit', { bubbles: true, cancelable: true }),
-    );
+    root
+      .querySelector<HTMLFormElement>('form')!
+      .dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
     await fixture.whenStable();
 
     expect(api.create).toHaveBeenCalledWith(expect.objectContaining({ location: pickedPoint }));
+  });
+
+  it('connects location search to the local autocomplete endpoint', async () => {
+    const fixture = TestBed.createComponent(PlacesPage);
+    await fixture.whenStable();
+    const root = fixture.nativeElement as HTMLElement;
+    root.querySelector<HTMLButtonElement>('button')?.click();
+    await fixture.whenStable();
+
+    const search = root.querySelector<HTMLInputElement>('#location-search')!;
+    search.value = 'Lake Braies';
+    search.dispatchEvent(new Event('input', { bubbles: true }));
+    await new Promise((resolve) => setTimeout(resolve, 300));
+    const http = TestBed.inject(HttpTestingController);
+    const request = http.expectOne(
+      (req) =>
+        req.url === '/api/maps/autocomplete' &&
+        req.params.get('q') === 'Lake Braies' &&
+        req.params.get('limit') === '5',
+    );
+    request.flush([candidate]);
+    await fixture.whenStable();
+
+    expect(root.textContent).toContain('Lake Braies, Inventedland');
+    http.verify();
   });
 });
