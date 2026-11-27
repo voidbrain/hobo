@@ -104,7 +104,12 @@ describe('PlacesPage', () => {
     await fixture.whenStable();
 
     expect(api.create).not.toHaveBeenCalled();
-    expect(root.querySelector('[role="alert"]')?.textContent).toContain('A name is required.');
+    const name = root.querySelector<HTMLInputElement>('#place-name')!;
+    expect(name.getAttribute('aria-invalid')).toBe('true');
+    expect(name.getAttribute('aria-describedby')).toContain('name-error');
+    const error = root.querySelector('#name-error[role="alert"]');
+    expect(error?.textContent).toContain('A name is required.');
+    expect(error?.querySelector('[aria-hidden="true"]')?.textContent).toBe('!');
   });
 
   it('updates an existing place from the edit form', async () => {
