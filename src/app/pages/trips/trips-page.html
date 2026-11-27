@@ -1,0 +1,229 @@
+<section aria-labelledby="trips-title">
+  <header class="page-header">
+    <div>
+      <h1 #pageTitle id="trips-title" tabindex="-1">Trips</h1>
+      <p class="muted">Build trips from your saved places.</p>
+    </div>
+    @if (!editorOpen()) {
+      <button id="add-trip" type="button" (click)="startNew()">Add trip</button>
+    }
+  </header>
+
+  @if (error()) {
+    <p role="alert">{{ error() }}</p>
+  }
+  @if (status()) {
+    <p role="status" aria-live="polite">{{ status() }}</p>
+  }
+
+  @if (editorOpen()) {
+    <form id="trip-form" (submit)="save($event)" aria-labelledby="trip-form-title">
+      <h2 id="trip-form-title">{{ editingId() ? 'Edit trip' : 'New trip' }}</h2>
+
+      <label for="trip-name">Name</label>
+      <input
+        id="trip-name"
+        type="text"
+        autocomplete="off"
+        aria-describedby="trip-name-error"
+        [attr.aria-invalid]="editorForm.name().touched() && editorForm.name().errors().length ? 'true' : null"
+        [formField]="editorForm.name"
+      />
+      @if (editorForm.name().touched() && editorForm.name().errors().length) {
+        <p id="trip-name-error" class="field-error" role="alert">A trip name is required.</p>
+      }
+
+      <label for="trip-start">Start date</label>
+      <input
+        id="trip-start"
+        type="date"
+        aria-describedby="trip-start-error"
+        [attr.aria-invalid]="editorForm.startDate().touched() && editorForm.startDate().errors().length ? 'true' : null"
+        [formField]="editorForm.startDate"
+      />
+      @if (editorForm.startDate().touched() && editorForm.startDate().errors().length) {
+        <p id="trip-start-error" class="field-error" role="alert">A start date is required.</p>
+      }
+
+      <label for="trip-end">End date</label>
+      <input
+        id="trip-end"
+        type="date"
+        aria-describedby="trip-end-error"
+        [attr.aria-invalid]="editorForm.endDate().touched() && editorForm.endDate().errors().length ? 'true' : null"
+        [formField]="editorForm.endDate"
+      />
+      @if (editorForm.endDate().touched() && editorForm.endDate().errors().length) {
+        <p id="trip-end-error" class="field-error" role="alert">An end date is required.</p>
+      }
+
+      <fieldset>
+        <legend>From</legend>
+        <label for="from-choice">Starting point</label>
+        <select id="from-choice" [formField]="editorForm.fromChoice">
+          <option value="home">Home ({{ settings().home?.name ?? 'not set' }})</option>
+          <option value="none">No starting point</option>
+          <option value="custom">Custom name</option>
+          @for (place of places(); track place.id) {
+            <option [value]="'place:' + place.id">{{ place.name }}</option>
+          }
+        </select>
+        @if (editorForm.fromChoice().value() === 'custom') {
+          <label for="from-custom-name">Starting point name</label>
+          <input
+            id="from-custom-name"
+            type="text"
+            aria-describedby="from-custom-error"
+            [attr.aria-invalid]="editorForm.fromCustomName().touched() && editorForm.fromCustomName().errors().length ? 'true' : null"
+            [formField]="editorForm.fromCustomName"
+          />
+          @if (
+            editorForm.fromCustomName().touched() && editorForm.fromCustomName().errors().length
+          ) {
+            <p id="from-custom-error" class="field-error" role="alert">
+              Enter a starting point name.
+            </p>
+          }
+        }
+      </fieldset>
+
+      <fieldset>
+        <legend>To</legend>
+        <label for="to-choice">Ending point</label>
+        <select id="to-choice" [formField]="editorForm.toChoice">
+          <option value="home">Home ({{ settings().home?.name ?? 'not set' }})</option>
+          <option value="none">No ending point</option>
+          <option value="custom">Custom name</option>
+          @for (place of places(); track place.id) {
+            <option [value]="'place:' + place.id">{{ place.name }}</option>
+          }
+        </select>
+        @if (editorForm.toChoice().value() === 'custom') {
+          <label for="to-custom-name">Ending point name</label>
+          <input
+            id="to-custom-name"
+            type="text"
+            aria-describedby="to-custom-error"
+            [attr.aria-invalid]="editorForm.toCustomName().touched() && editorForm.toCustomName().errors().length ? 'true' : null"
+            [formField]="editorForm.toCustomName"
+          />
+          @if (editorForm.toCustomName().touched() && editorForm.toCustomName().errors().length) {
+            <p id="to-custom-error" class="field-error" role="alert">Enter an ending point name.</p>
+          }
+        }
+      </fieldset>
+
+      <section class="stop-picker" aria-labelledby="stops-title">
+        <h3 id="stops-title">Stops</h3>
+        <label for="stop-date">Add a stop to this day</label>
+        <select id="stop-date" [value]="activeDate()" (change)="setSelectedDate($event)">
+          @for (day of tripDays(); track day.date) {
+            <option [value]="day.date">{{ day.date }}</option>
+          }
+        </select>
+
+        <label for="stop-search">Search places</label>
+        <input
+          id="stop-search"
+          type="search"
+          autocomplete="off"
+          [value]="placeSearch()"
+          (input)="setPlaceSearch($event)"
+        />
+        <label for="stop-category">Category</label>
+        <select id="stop-category" [value]="categoryFilter()" (change)="setCategoryFilter($event)">
+          <option value="">All categories</option>
+          @for (category of categories(); track category) {
+            <option [value]="category">{{ category }}</option>
+          }
+        </select>
+        <label for="stop-tag">Tag</label>
+        <select id="stop-tag" [value]="tagFilter()" (change)="setTagFilter($event)">
+          <option value="">All tags</option>
+          @for (tag of tags(); track tag) {
+            <option [value]="tag">{{ tag }}</option>
+          }
+        </select>
+
+        @if (filteredPlaces().length) {
+          <ul id="place-candidates" class="place-candidates" aria-label="Places to add">
+            @for (place of filteredPlaces(); track place.id) {
+              <li>
+                <span>{{ place.name }}</span>
+                <button type="button" class="secondary" (click)="addStop(place.id)">
+                  Add {{ place.name }}
+                </button>
+              </li>
+            }
+          </ul>
+        } @else {
+          <p class="muted">No places match these filters.</p>
+        }
+
+        <label for="new-place-name">Add a place by name</label>
+        <input
+          id="new-place-name"
+          type="text"
+          autocomplete="off"
+          [formField]="editorForm.newPlaceName"
+        />
+        <button
+          id="create-and-add-place"
+          type="button"
+          class="secondary"
+          [disabled]="!model().newPlaceName.trim() || !activeDate()"
+          (click)="createAndAddPlace()"
+        >
+          Create place and add stop
+        </button>
+      </section>
+
+      <section id="trip-days" class="trip-days" aria-label="Stops by day">
+        @for (day of tripDays(); track day.date) {
+          <section class="trip-day" [attr.aria-labelledby]="'day-' + day.date">
+            <h3 [id]="'day-' + day.date">{{ day.date }}</h3>
+            @if (day.stops.length) {
+              <ol>
+                @for (placeId of day.stops; track $index; let stopIndex = $index) {
+                  <li>
+                    <span>{{ placeName(placeId) }}</span>
+                    <button
+                      type="button"
+                      class="secondary"
+                      (click)="removeStop(day.date, stopIndex)"
+                    >
+                      Remove {{ placeName(placeId) }}
+                    </button>
+                  </li>
+                }
+              </ol>
+            } @else {
+              <p class="muted">No stops for this day.</p>
+            }
+          </section>
+        }
+      </section>
+
+      <div class="form-actions">
+        <button type="submit" [disabled]="editorForm().invalid()">Save trip</button>
+        <button type="button" class="secondary" (click)="cancel()">Cancel</button>
+      </div>
+    </form>
+  } @else if (trips().length) {
+    <ul class="trip-list" aria-label="Saved trips">
+      @for (trip of trips(); track trip.id) {
+        <li>
+          <div>
+            <h2>{{ trip.name }}</h2>
+            <p class="muted">{{ trip.startDate }} – {{ trip.endDate }}</p>
+          </div>
+          <button type="button" class="secondary edit-trip" (click)="editTrip(trip)">
+            Edit {{ trip.name }}
+          </button>
+        </li>
+      }
+    </ul>
+  } @else {
+    <p>No trips yet. Add one with a name and dates to get started.</p>
+  }
+</section>

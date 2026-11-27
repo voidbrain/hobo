@@ -1,74 +1,24 @@
 # <a id="top"></a>Hobo backlog
 
-Current work ledger, reviewed 27 November 2026 against main `d52f88e`. Generated from [record sources](work/records) and [steps](work/tasks) by `npm run work:build`: edit those, not this file. [Rules](BACKLOG-RULES.md) · [Archive](archive/README.md) · [Reading the records](#how-to-use-this-file).
+Current work ledger, reviewed 27 November 2026 against main `32c2b33`. Generated from [record sources](work/records) and [steps](work/tasks) by `npm run work:build`: edit those, not this file. [Rules](BACKLOG-RULES.md) · [Archive](archive/README.md) · [Reading the records](#how-to-use-this-file).
 
 <!-- totals:start -->
-**Remaining effort:** 48 h agent + 2.5 h owner across 37 open steps of 16 features. Generated from the task files.
+**Remaining effort:** 47.75 h agent + 2.5 h owner across 37 open steps of 16 features. Generated from the task files.
 <!-- totals:end -->
 
 ## Work items
 
 Bugs (B-) and features (F-) in one list, in work-queue order. Steps: `effort` = remaining agent time (🟢 up to 1 h · 🟡 4 h · 🔴 8 h · 🟣 more); `h` = agent hours, owner time apart; a step status is not the record's acceptance.
 
-### <a id="f-002"></a>[✨ F-002](#top)
-
-**Places: collect and organise**
-
-| Status | Priority | Effort | Remaining | Depends on | Unlocks | Agent | Procedures | Decisions |
-|---|---|---|---|---|---|:---:|:---:|:---:|
-| 🔴 Open | 🔶 P2 | 🟢 Small | 0.5 h | — | [F-003-T02](#f-003-t02) | 🤖 | 🧑‍🔧 | — |
-
-🧑 **→** Confirm place-location search and selection in the [manual walkthrough](manual-checks/places-and-trips.md#f-002-t04--place-location).
-
-| | |
-|---|---|
-| **Issue** | Places are added at random as they are found, then organised. Each place has a name, description, images, category, tags, notes, a location and the time spent on site (2 h, half day or full day, queues and movement on site included). Deletion must not lose trip references. Data stays on the owner's own machine or base: a small Node 24 `server/` with SQLite (`node:sqlite`) that the Angular app talks to; it also serves the NERV MCP server (F-011), share links (F-008) and keeps API keys off the client. IndexedDB is at most an optional offline cache later. No hosted multi-user backend. |
-| **Reproduce** | Before F-002-T06, deleting a place through the API also removed its matching trip stops, and the places page had no delete control. |
-| **Check** | A place can be added with only a name, then edited to fill every field; an empty name shows an announced danger error and marks the field invalid; a missing OpenRouteService key is explained; the map-centre control requires zoom level 10; images are stored locally with GPS metadata stripped; places can be filtered and grouped by category and tag; deletion requires keyboard-operable confirmation and announces its result; a referenced place is refused with all trip names and its references stay intact; data survives a restart and never enters git. |
-
-**Feature steps**
-
-| Effort | Step | Estimate | Actual | Remaining | Status | Depends on | Unlocks | PRs |
-|---|---|---|---|---|---|---|---|---|
-| 🟢 Small | <a id="f-002-t04"></a>F-002-T04 — Place location | 2 h | 0 h | 0.25 h | Implemented; verification pending | — | — | — |
-| 🟢 Small | <a id="f-002-t06"></a>F-002-T06 — Delete a place | 1 h | 0 h | 0.25 h | Implemented; verification pending | — | [F-003-T02](#f-003-t02) | — |
-| 🟢 Small | **Total** | 12.5 h | 0 h (0 of 6 steps recorded) | 0.5 h | 4 of 6 completed | | | |
-
-<details><summary>Done steps (4)</summary>
-
-| Effort | Step | Estimate | Actual | Status | PRs |
-|---|---|---|---|---|---|
-| — | <a id="f-002-t01"></a>F-002-T01 — Local store service and place model | 3 h | 0 h | Completed | [PR #5](https://github.com/voidbrain/hobo/pull/5) local store service and place model |
-| — | <a id="f-002-t02"></a>F-002-T02 — Place list and form | 2.5 h | 0 h | Completed | [PR #23](https://github.com/voidbrain/hobo/pull/23) place list and form; [PR #26](https://github.com/voidbrain/hobo/pull/26) required-name error accessibility |
-| — | <a id="f-002-t03"></a>F-002-T03 — Place images | 2 h | 0 h | Completed | [PR #7](https://github.com/voidbrain/hobo/pull/7) content-sniffed place image upload, size limit, EXIF/GPS stripping and thumbnail component |
-| 🟢 Small | <a id="f-002-t05"></a>F-002-T05 — Categories and tags | 2 h | 0 h | Verified | — |
-
-</details>
-
-<details>
-<summary>Next action, estimates and PR history</summary>
-
-[Full notes & evidence](work/records/F-002.md)
-
-| Field | Value |
-|---|---|
-| PR / evidence | Steps: F-002-T01: [PR #5](https://github.com/voidbrain/hobo/pull/5) local store service and place model; step review: 2026-11-25 design-reviewer (fresh context, Opus): no blockers; fixed a 500 on a malformed id escape (test first) and added a rollback to a failed migration. Project-only harness edits: package.json (type module, server scripts; npm test also runs the server tests) and a marked CI step. · F-002-T02: [PR #23](https://github.com/voidbrain/hobo/pull/23) place list and form; [PR #26](https://github.com/voidbrain/hobo/pull/26) required-name error accessibility · F-002-T03: [PR #7](https://github.com/voidbrain/hobo/pull/7) content-sniffed place image upload, size limit, EXIF/GPS stripping and thumbnail component; step review: 2026-11-26 Claude (Opus, fresh worktree) reviewed PR #7 written by Gemini. Fixed (test first): an upload announcing a Content-Length over 5 MB is now refused with 413 before its body is read. Added tests: a real decodable JPEG with a well-formed GPS EXIF IFD (stripped, scan data kept; also checked with macOS ImageIO: GPS present before, absent after, image still decodes), deleting a place unlinks its files, and image names that would leave the folder answer 404.. [Earlier T01/T03 and review evidence](archive/evidence-2026.md#f-002); [#23](https://github.com/voidbrain/hobo/pull/23) (T02); [#24](https://github.com/voidbrain/hobo/pull/24) (T04); Review: fresh-context design review 2026-11-27, findings fixed in #24; [#26](https://github.com/voidbrain/hobo/pull/26) (T02 error fix, independent review); [#27](https://github.com/voidbrain/hobo/pull/27) (T04 setup guidance and map-centre zoom guard, CI 45980660890); Test: T05 `src/app/core/place-taxonomy.spec.ts`, `src/app/data/places-api.spec.ts`, `src/app/pages/places/places-page.spec.ts`, `server/api.test.ts` (failing first); [#28](https://github.com/voidbrain/hobo/pull/28), CI 45992151509 green; T06 `server/trips.test.ts`, `src/app/pages/places/places-page.spec.ts` (failing first); [#29](https://github.com/voidbrain/hobo/pull/29) |
-| Opened | 2026-11-25 |
-| Verification | Unit/integration · 2026-11-27 · T05 taxonomy tests 23/23 focused; full suite before T06 had 76 Angular and 48 server tests passed; #28 CI 45992151509 green. T06 local suite 80 Angular and 48 server tests passed; build, fast checks, integrations and conventions pass; PR CI pending. Human · 2026-11-27 · F-002-T02 passed owner walkthrough; F-002-T04 location walkthrough pending |
-| Reviewed | 2026-11-27 |
-
-</details>
-
----
 ### <a id="f-003"></a>[✨ F-003](#top)
 
 **Trips: dates, start and end, stops**
 
 | Status | Priority | Effort | Remaining | Depends on | Unlocks | Agent | Procedures | Decisions |
 |---|---|---|---|---|---|:---:|:---:|:---:|
-| 🔴 Open | 🔶 P2 | 🔴 Large | 5 h | [F-002-T06](#f-002-t06) | [F-004-T02](#f-004-t02) | ⏳ | — | — |
+| 🔴 Open | 🔶 P2 | 🔴 Large | 5 h | — | [F-004-T02](#f-004-t02) | 🤖 | — | — |
 
-💻 **→** Next: F-003-T02 — Trip editor (Planned).
+💻 **→** Next: F-003-T02 — Trip editor (Implemented; verification pending).
 
 | | |
 |---|---|
@@ -80,7 +30,7 @@ Bugs (B-) and features (F-) in one list, in work-queue order. Steps: `effort` = 
 
 | Effort | Step | Estimate | Actual | Remaining | Status | Depends on | Unlocks | PRs |
 |---|---|---|---|---|---|---|---|---|
-| 🟡 Medium | <a id="f-003-t02"></a>F-003-T02 — Trip editor | 3 h | 0 h | 3 h | Planned | [F-002-T06](#f-002-t06) | [F-003-T03](#f-003-t03), [F-004-T02](#f-004-t02) | — |
+| 🟡 Medium | <a id="f-003-t02"></a>F-003-T02 — Trip editor | 3 h | 0 h | 3 h | Implemented; verification pending | — | [F-003-T03](#f-003-t03), [F-004-T02](#f-004-t02) | — |
 | 🟡 Medium | <a id="f-003-t03"></a>F-003-T03 — Reorder stops and move them between days | 2 h | 0 h | 2 h | Planned | [F-003-T02](#f-003-t02) | — | — |
 | 🔴 Large | **Total** | 7 h | 0 h (0 of 3 steps recorded) | 5 h | 1 of 3 completed | | | |
 
@@ -99,9 +49,9 @@ Bugs (B-) and features (F-) in one list, in work-queue order. Steps: `effort` = 
 
 | Field | Value |
 |---|---|
-| PR / evidence | Steps: F-003-T01: [PR #6](https://github.com/voidbrain/hobo/pull/6) trip model, pure helpers, SQLite persistence, home settings and trips API; step review: 2026-11-26 Claude (Opus, fresh worktree) reviewed PR #6 written by Gemini: no blockers. Added API tests for 400/404/405 answers, unknown home and endpoint places, a single day with no home, time-zone independence across a daylight-saving change, and clearing a deleted place from home and trip endpoints; documented that dates carry no time zone and that shrinking a trip drops stops outside the new range.. [#1](https://github.com/voidbrain/hobo/pull/1); [#6](https://github.com/voidbrain/hobo/pull/6) (F-003-T01, CI 45720389688); Test: `src/app/core/trip.spec.ts`, `src/app/data/trips-api.spec.ts`, `server/trips.test.ts` (`193bbca`); Review: 2026-11-26 Claude (Opus), no blockers; added API error, time-zone and deleted-place tests |
+| PR / evidence | Steps: F-003-T01: [PR #6](https://github.com/voidbrain/hobo/pull/6) trip model, pure helpers, SQLite persistence, home settings and trips API; step review: 2026-11-26 Claude (Opus, fresh worktree) reviewed PR #6 written by Gemini: no blockers. Added API tests for 400/404/405 answers, unknown home and endpoint places, a single day with no home, time-zone independence across a daylight-saving change, and clearing a deleted place from home and trip endpoints; documented that dates carry no time zone and that shrinking a trip drops stops outside the new range.. [#1](https://github.com/voidbrain/hobo/pull/1); [#6](https://github.com/voidbrain/hobo/pull/6) (F-003-T01, CI 45720389688); Test: `src/app/core/trip.spec.ts`, `src/app/data/trips-api.spec.ts`, `server/trips.test.ts` (`193bbca`); F-003-T02 tests: `src/app/app.routes.spec.ts`, `src/app/pages/trips/trips-page.spec.ts`; Review: 2026-11-26 Claude (Opus), no blockers; added API error, time-zone and deleted-place tests; [#30](https://github.com/voidbrain/hobo/pull/30) |
 | Opened | 2026-11-25 |
-| Verification | Unit/integration · 2026-11-27 · F-003-T01 (#6 CI 45720389688) green; UI steps pending |
+| Verification | Unit/integration · 2026-11-27 · F-003-T01 (#6 CI 45720389688) green; F-003-T02 targeted Angular tests pass; CI and manual owner check pending |
 | Reviewed | 2026-11-27 |
 
 </details>
@@ -198,6 +148,56 @@ Bugs (B-) and features (F-) in one list, in work-queue order. Steps: `effort` = 
 | PR / evidence | Steps: F-007-T01: [PR #8](https://github.com/voidbrain/hobo/pull/8) MapProvider adapter interface, local config without committed keys, and SQLite leg cache · F-007-T02: [PR #12](https://github.com/voidbrain/hobo/pull/12) MapView: Leaflet, OSM tiles and attribution, markers and route lines from inputs, token classes · F-007-T03: [PR #9](https://github.com/voidbrain/hobo/pull/9) OpenRouteService directions, matrix, geocode and autocomplete via server /api/maps, MapsApi client and recorded fixtures · F-007-T05: [PR #17](https://github.com/voidbrain/hobo/pull/17) plan. [#1](https://github.com/voidbrain/hobo/pull/1); [#2](https://github.com/voidbrain/hobo/pull/2) (review fixes); [#8](https://github.com/voidbrain/hobo/pull/8) (F-007-T01); [#9](https://github.com/voidbrain/hobo/pull/9) (F-007-T03); [#12](https://github.com/voidbrain/hobo/pull/12) (F-007-T02, CI 45784696923); [#17](https://github.com/voidbrain/hobo/pull/17) (plan); [#21](https://github.com/voidbrain/hobo/pull/21) (coordinator prefix); Test: `src/app/maps/map-provider.spec.ts`, `server/config.test.ts`, `server/leg-cache.test.ts` (`47d4b46`), `server/ors.test.ts`, `src/app/maps/maps-api.spec.ts` (`bde43bb`), `src/app/maps/map-view.spec.ts` |
 | Opened | 2026-11-25 |
 | Verification | Unit/integration · 2026-11-27 · F-007-T01 (#8), F-007-T02 (#12 CI 45784696923) and F-007-T03 (#9) green; F-007-T04 owner live key check and F-007-T05 pending |
+| Reviewed | 2026-11-27 |
+
+</details>
+
+---
+### <a id="f-002"></a>[✨ F-002](#top)
+
+**Places: collect and organise**
+
+| Status | Priority | Effort | Remaining | Depends on | Unlocks | Agent | Procedures | Decisions |
+|---|---|---|---|---|---|:---:|:---:|:---:|
+| 🔴 Open | 🔶 P2 | 🟢 Small | 0.25 h | — | — | 🤖 | 🧑‍🔧 | — |
+
+🧑 **→** Confirm place-location search and selection in the [manual walkthrough](manual-checks/places-and-trips.md#f-002-t04--place-location).
+
+| | |
+|---|---|
+| **Issue** | Places are added at random as they are found, then organised. Each place has a name, description, images, category, tags, notes, a location and the time spent on site (2 h, half day or full day, queues and movement on site included). Deletion must not lose trip references. Data stays on the owner's own machine or base: a small Node 24 `server/` with SQLite (`node:sqlite`) that the Angular app talks to; it also serves the NERV MCP server (F-011), share links (F-008) and keeps API keys off the client. IndexedDB is at most an optional offline cache later. No hosted multi-user backend. |
+| **Reproduce** | Before F-002-T06, deleting a place through the API also removed its matching trip stops, and the places page had no delete control. |
+| **Check** | A place can be added with only a name, then edited to fill every field; an empty name shows an announced danger error and marks the field invalid; a missing OpenRouteService key is explained; the map-centre control requires zoom level 10; images are stored locally with GPS metadata stripped; places can be filtered and grouped by category and tag; deletion requires keyboard-operable confirmation and announces its result; a referenced place is refused with all trip names and its references stay intact; data survives a restart and never enters git. |
+
+**Feature steps**
+
+| Effort | Step | Estimate | Actual | Remaining | Status | PRs |
+|---|---|---|---|---|---|---|
+| 🟢 Small | <a id="f-002-t04"></a>F-002-T04 — Place location | 2 h | 0 h | 0.25 h | Implemented; verification pending | — |
+| 🟢 Small | **Total** | 12.5 h | 0 h (0 of 6 steps recorded) | 0.25 h | 5 of 6 completed | |
+
+<details><summary>Done steps (5)</summary>
+
+| Effort | Step | Estimate | Actual | Status | PRs |
+|---|---|---|---|---|---|
+| — | <a id="f-002-t01"></a>F-002-T01 — Local store service and place model | 3 h | 0 h | Completed | [PR #5](https://github.com/voidbrain/hobo/pull/5) local store service and place model |
+| — | <a id="f-002-t02"></a>F-002-T02 — Place list and form | 2.5 h | 0 h | Completed | [PR #23](https://github.com/voidbrain/hobo/pull/23) place list and form; [PR #26](https://github.com/voidbrain/hobo/pull/26) required-name error accessibility |
+| — | <a id="f-002-t03"></a>F-002-T03 — Place images | 2 h | 0 h | Completed | [PR #7](https://github.com/voidbrain/hobo/pull/7) content-sniffed place image upload, size limit, EXIF/GPS stripping and thumbnail component |
+| 🟢 Small | <a id="f-002-t05"></a>F-002-T05 — Categories and tags | 2 h | 0 h | Verified | — |
+| 🟢 Small | <a id="f-002-t06"></a>F-002-T06 — Delete a place | 1 h | 0 h | Verified | — |
+
+</details>
+
+<details>
+<summary>Next action, estimates and PR history</summary>
+
+[Full notes & evidence](work/records/F-002.md)
+
+| Field | Value |
+|---|---|
+| PR / evidence | Steps: F-002-T01: [PR #5](https://github.com/voidbrain/hobo/pull/5) local store service and place model; step review: 2026-11-25 design-reviewer (fresh context, Opus): no blockers; fixed a 500 on a malformed id escape (test first) and added a rollback to a failed migration. Project-only harness edits: package.json (type module, server scripts; npm test also runs the server tests) and a marked CI step. · F-002-T02: [PR #23](https://github.com/voidbrain/hobo/pull/23) place list and form; [PR #26](https://github.com/voidbrain/hobo/pull/26) required-name error accessibility · F-002-T03: [PR #7](https://github.com/voidbrain/hobo/pull/7) content-sniffed place image upload, size limit, EXIF/GPS stripping and thumbnail component; step review: 2026-11-26 Claude (Opus, fresh worktree) reviewed PR #7 written by Gemini. Fixed (test first): an upload announcing a Content-Length over 5 MB is now refused with 413 before its body is read. Added tests: a real decodable JPEG with a well-formed GPS EXIF IFD (stripped, scan data kept; also checked with macOS ImageIO: GPS present before, absent after, image still decodes), deleting a place unlinks its files, and image names that would leave the folder answer 404.. [Earlier T01/T03 and review evidence](archive/evidence-2026.md#f-002); [#23](https://github.com/voidbrain/hobo/pull/23) (T02); [#24](https://github.com/voidbrain/hobo/pull/24) (T04); Review: fresh-context design review 2026-11-27, findings fixed in #24; [#26](https://github.com/voidbrain/hobo/pull/26) (T02 error fix, independent review); [#27](https://github.com/voidbrain/hobo/pull/27) (T04 setup guidance and map-centre zoom guard, CI 45980660890); Test: T05 `src/app/core/place-taxonomy.spec.ts`, `src/app/data/places-api.spec.ts`, `src/app/pages/places/places-page.spec.ts`, `server/api.test.ts` (failing first); [#28](https://github.com/voidbrain/hobo/pull/28), CI 45992151509 green; T06 `server/trips.test.ts`, `src/app/pages/places/places-page.spec.ts` (failing first); [#29](https://github.com/voidbrain/hobo/pull/29) |
+| Opened | 2026-11-25 |
+| Verification | Unit/integration · 2026-11-27 · T05 taxonomy tests 23/23 focused; #28 CI 45992151509 green. T06 local suite 80 Angular and 48 server tests passed; build, fast checks, integrations and conventions pass; #29 CI 45995525201 green. Human · 2026-11-27 · F-002-T02 passed owner walkthrough; F-002-T04 location walkthrough pending |
 | Reviewed | 2026-11-27 |
 
 </details>
@@ -698,7 +698,7 @@ Bugs (B-) and features (F-) in one list, in work-queue order. Steps: `effort` = 
 
 **Plan revision, 2026-11-25 (fresh review relayed by the coordinator).** Storage is a small Node 24 `server/` with SQLite that the app talks to (IndexedDB only as an optional offline cache later); the OpenRouteService key lives in git-ignored `server/` config, never in `public/`; F-007-T01 now waits on F-002-T01; F-011-T01 also waits on F-003-T01 and F-004-T02; F-008-T04 on F-003-T01 and F-004-T03. Estimates unchanged.
 
-**Reconciliation log:** [docs/archive/reconciliation-2026.md](archive/reconciliation-2026.md). Latest: 2026-11-27 against main `d52f88e` (#28 merged green; F-002-T02 owner walkthrough passed, T04 location walkthrough pending; T05 CI green).
+**Reconciliation log:** [docs/archive/reconciliation-2026.md](archive/reconciliation-2026.md). Latest: 2026-11-27 against main `32c2b33` (#29 merged green; F-002-T02 owner walkthrough passed, T04 location walkthrough pending; T05 and T06 CI green).
 
 ## How to use this file
 
