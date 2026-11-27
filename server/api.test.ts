@@ -81,6 +81,79 @@ describe('places API', () => {
     );
   });
 
+  it('renames, merges and clears category and tag uses across saved places', async () => {
+    const create = async (name: string, category: string | null, tags: string[]) =>
+      (await (
+        await call('/api/places', {
+          method: 'POST',
+          body: JSON.stringify({ name, category, tags }),
+        })
+      ).json()) as Place;
+    const harbour = await create('Harbour', 'Outdoors', ['water', 'family']);
+    const shore = await create('Shore', 'Outdoors', ['water']);
+    const museum = await create('Museum', 'Culture', ['history']);
+
+    const rename = await call('/api/places/taxonomy', {
+      method: 'POST',
+      body: JSON.stringify({ kind: 'category', source: 'Outdoors', target: 'Nature' }),
+    });
+    assert.equal(rename.status, 200);
+    const renamed = (await rename.json()) as Place[];
+    assert.deepEqual(
+      renamed.map(({ id, category }) => [id, category]),
+      [
+        [harbour.id, 'Nature'],
+        [shore.id, 'Nature'],
+      ],
+    );
+
+    const merge = await call('/api/places/taxonomy', {
+      method: 'POST',
+      body: JSON.stringify({ kind: 'tag', source: 'water', target: 'family' }),
+    });
+    assert.equal(merge.status, 200);
+    const merged = (await merge.json()) as Place[];
+    assert.deepEqual(
+      merged.map(({ id, tags }) => [id, tags]),
+      [
+        [harbour.id, ['family']],
+        [shore.id, ['family']],
+      ],
+    );
+
+    const remove = await call('/api/places/taxonomy', {
+      method: 'POST',
+      body: JSON.stringify({ kind: 'tag', source: 'family', target: null }),
+    });
+    assert.equal(remove.status, 200);
+    const cleared = (await remove.json()) as Place[];
+    assert.deepEqual(
+      cleared.map(({ id, tags }) => [id, tags]),
+      [
+        [harbour.id, []],
+        [shore.id, []],
+      ],
+    );
+    assert.equal(
+      ((await (await call(`/api/places/${museum.id}`)).json()) as Place).category,
+      'Culture',
+    );
+  });
+
+  it('validates taxonomy changes and rejects a no-op destination', async () => {
+    for (const body of [
+      { kind: 'location', source: 'Old', target: 'New' },
+      { kind: 'tag', source: 'same', target: 'same' },
+      { kind: 'category', source: '', target: null },
+    ]) {
+      const response = await call('/api/places/taxonomy', {
+        method: 'POST',
+        body: JSON.stringify(body),
+      });
+      assert.equal(response.status, 400);
+    }
+  });
+
   it('rejects invalid places with every error', async () => {
     const res = await call('/api/places', {
       method: 'POST',

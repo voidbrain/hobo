@@ -55,6 +55,15 @@ describe('PlacesApi', () => {
       .expectOne({ method: 'DELETE', url: '/api/places/p-1' })
       .flush(null, { status: 204, statusText: 'No Content' });
 
+    api.reassignTaxonomy('category', 'Outdoors', 'Nature').subscribe((v) => seen.push(v));
+    const taxonomy = http.expectOne({ method: 'POST', url: '/api/places/taxonomy' });
+    expect(taxonomy.request.body).toEqual({
+      kind: 'category',
+      source: 'Outdoors',
+      target: 'Nature',
+    });
+    taxonomy.flush([{ ...place, category: 'Nature' }]);
+
     expect(api.imageUrl('p 1', 'img.png')).toBe('/api/places/p%201/images/img.png');
 
     const blob = new Blob([new Uint8Array([1, 2])], { type: 'image/png' });
@@ -74,6 +83,7 @@ describe('PlacesApi', () => {
       place,
       { ...place, timeSpent: '2h' },
       'removed',
+      [{ ...place, category: 'Nature' }],
       { ...place, images: ['img.png'] },
       'img-removed',
     ]);
