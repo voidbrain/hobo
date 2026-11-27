@@ -4,7 +4,7 @@
   "parent": "F-002",
   "title": "Place list and form",
   "goal": "The owner adds a place with just a name and fills the rest later",
-  "status": "implemented",
+  "status": "closed",
   "acceptance": [
     "List of places; add with a name only; edit form for description, category, tags, notes and time spent (2 h, half day, full day)",
     "Signal Forms, keyboard and screen-reader accessible; the empty-name error has a visible danger marker, remains announced, and sets aria-invalid; component tests"
@@ -33,16 +33,26 @@
   "escalation": [
     "A material scope or effort increase goes to the owner"
   ],
+  "prs": [
+    {
+      "pr": 23,
+      "note": "place list and form"
+    },
+    {
+      "pr": 26,
+      "note": "required-name error accessibility"
+    }
+  ],
   "effort": {
     "size": "small",
-    "estimate": "2.5 h agent whole step; 0.25 h remains for PR verification",
-    "basis": "Planned 2026-11-25 in the upfront step plan. Implementation and local checks done 2026-11-27; 0.25 h remains for PR review and CI. No actual: the host job began mid-task and has no event timing coverage.",
+    "estimate": "0 remaining",
+    "basis": "Closed 2026-11-27: implemented in #23 and required-name error fixed in #26 (CI 45979098310); owner walkthrough passed. No actual: session has no linked job timing.",
     "reviewed": "2026-11-27",
-    "agentHours": 0.25,
+    "agentHours": 0,
     "ownerHours": 0.0,
     "baselineAgentHours": 2.5,
     "estimateAgentHours": 2.5,
-    "days": 1.5,
+    "days": 0,
     "baselineDays": 1.5
   }
 }

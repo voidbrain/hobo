@@ -23,3 +23,7 @@ PR #25 merged on green CI. F-002-T02 and F-002-T04 owner walkthroughs remain pen
 ## 2026-11-27 — main `cf2473c`
 
 PRs #25 and #26 merged on green CI. #26 delivered the required-name error accessibility fix and recorded a fresh-context independent review with no findings. F-002-T02 and F-002-T04 owner walkthroughs remain pending. F-016-T04 remains planned; no qualifying scheduled run has been verified.
+
+## 2026-11-27 — main `93370f3`
+
+PR #27 merged on green CI 45980660890; it explains missing OpenRouteService configuration and guards map-centre picks below zoom 10. The owner confirmed F-002-T02 passed; the F-002-T04 location walkthrough remains pending.

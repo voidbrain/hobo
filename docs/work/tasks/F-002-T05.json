@@ -4,7 +4,7 @@
   "parent": "F-002",
   "title": "Categories and tags",
   "goal": "Places added at random can be organised later",
-  "status": "planned",
+  "status": "ready",
   "acceptance": [
     "Manage categories and tags (rename, merge, delete with reassignment)",
     "Filter and group the place list by category and tag"
@@ -35,8 +35,8 @@
   "effort": {
     "size": "medium",
     "estimate": "2 h agent, 1 d",
-    "basis": "Planned 2026-11-25 in the upfront step plan: scoped to one PR, at most 1 focused day(s). Not a measurement.",
-    "reviewed": "2026-11-25",
+    "basis": "Planned 2026-11-25 in the owner-approved upfront plan; ready after F-002-T02 owner acceptance on 2026-11-27. Scoped to one PR, at most 1 focused day. Not a measurement.",
+    "reviewed": "2026-11-27",
     "agentHours": 2,
     "ownerHours": 0.0,
     "baselineAgentHours": 2,
