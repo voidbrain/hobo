@@ -26,7 +26,10 @@
         [formField]="placeForm.name"
       />
       @if (placeForm.name().touched() && placeForm.name().errors().length) {
-        <p class="field-error" id="name-error" role="alert">A name is required.</p>
+        <p class="field-error" id="name-error" role="alert">
+          <span class="field-error-icon" aria-hidden="true">!</span>
+          A name is required.
+        </p>
       }
 
       <label for="place-description">Description</label>

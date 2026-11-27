@@ -28,6 +28,7 @@ This guide governs the application UI and repository writing; [Backlog rules](BA
 | `--color-accent` | `#1d6f72 / dark #5bb8b5` | The one accent: links, primary actions, the route line |
 | `--color-accent-contrast` | `#ffffff / dark #0c1416` | Text on an accent fill |
 | `--color-border` | `#d9d3c7 / dark #2e3a3f` | Dividers and outlines |
+| `--color-danger` | `#b3261e / dark #ff8a80` | Form errors and error markers |
 
 - Use tokens (`var(--…)`), never a new literal colour. A new colour is a new token, added here in the same change.
 - Change fill and foreground as a pair, and check contrast (WCAG AA: 4.5:1 for text, 3:1 for large text and UI parts).
