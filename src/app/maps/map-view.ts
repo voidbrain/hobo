@@ -6,6 +6,7 @@ import {
   afterRenderEffect,
   inject,
   input,
+  output,
   viewChild,
 } from '@angular/core';
 import * as L from 'leaflet';
@@ -33,6 +34,9 @@ const SINGLE_POINT_ZOOM = 14;
   encapsulation: ViewEncapsulation.None,
   template: `
     <div #map class="hobo-map-view__map" role="region" [attr.aria-label]="label()"></div>
+    <button type="button" class="hobo-map-view__center" (click)="pickCenter()">
+      Use map centre
+    </button>
     @if (markers().length > 0) {
       <ol class="hobo-map-view__places" [attr.aria-label]="label() + ': places'">
         @for (marker of markers(); track $index) {
@@ -66,6 +70,23 @@ const SINGLE_POINT_ZOOM = 14;
       clip-path: inset(50%);
       white-space: nowrap;
     }
+    hobo-map-view .hobo-map-view__center {
+      position: absolute;
+      z-index: 1000;
+      top: var(--space-2);
+      right: var(--space-2);
+      padding: var(--space-1) var(--space-2);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius);
+      background: var(--color-surface);
+      color: var(--color-text);
+      font: inherit;
+      cursor: pointer;
+    }
+    hobo-map-view .hobo-map-view__center:focus-visible {
+      outline: 2px solid var(--color-accent);
+      outline-offset: 2px;
+    }
     hobo-map-view .hobo-map-route {
       stroke: var(--color-accent);
       stroke-width: 4;
@@ -87,6 +108,13 @@ export class MapView {
   /** One line per leg, each the leg's `geometry` from `/api/maps/route`. */
   readonly routes = input<readonly (readonly MapPoint[])[]>([]);
   readonly tiles = input<TileLayerConfig>(DEFAULT_OSM_TILES);
+  /** Coordinate picked by clicking the map. */
+  readonly picked = output<MapPoint>();
+
+  protected pickCenter(): void {
+    const point = this.map?.getCenter().wrap();
+    if (point) this.picked.emit({ lat: point.lat, lng: point.lng });
+  }
 
   private readonly host = viewChild.required<ElementRef<HTMLDivElement>>('map');
   private map?: L.Map;
@@ -110,6 +138,10 @@ export class MapView {
       if (!this.map) {
         // An explicit SVG renderer: vector layers stay styleable by class, in every browser.
         this.map = L.map(element, { renderer: new L.SVG() });
+        this.map.on('click', ({ latlng }) => {
+          const point = latlng.wrap();
+          this.picked.emit({ lat: point.lat, lng: point.lng });
+        });
         this.overlays.addTo(this.map);
         if (typeof ResizeObserver !== 'undefined') {
           resize = new ResizeObserver(() => this.map?.invalidateSize());

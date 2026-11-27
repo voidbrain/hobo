@@ -11,6 +11,30 @@
   gap: var(--space-3);
 }
 
+.location-picker {
+  display: grid;
+  gap: var(--space-2);
+  grid-column: 1 / -1;
+}
+
+.location-picker h3,
+.location-picker p {
+  margin-bottom: 0;
+}
+
+.location-suggestions {
+  display: grid;
+  gap: var(--space-1);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.location-suggestions button {
+  width: 100%;
+  text-align: left;
+}
+
 .page-header {
   margin-bottom: var(--space-4);
 }

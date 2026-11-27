@@ -91,7 +91,7 @@ With `mapProvider: "osrm"` (F-013) routes and matrices come from a self-hosted O
 
 Map errors include `{ code, errors }` (`missing_key`, `invalid_key`, `quota_exceeded`, `unreachable_route`, `upstream_error`, `bad_request`) and never echo provider secrets or raw provider text (other provider refusals are logged on the server). A `/api/maps` request whose `Sec-Fetch-Site` is present and not `same-origin` or `none` gets 403, so a cross-site page cannot spend the quota. Geocode and autocomplete answers are reused for 10 minutes. `MapsApi` maps them into user-facing `MapsApiError` instances.
 
-The map itself is `MapView` (`src/app/maps/map-view.ts`, F-007-T02): Leaflet with the provider's tile layer (OpenStreetMap, no key) and visible attribution. It takes markers and route lines as inputs and calls nothing, so pages pass it the `geometry` of the legs `MapsApi` answered (cached legs included). Leaflet's stylesheet loads globally from `angular.json`.
+The map itself is `MapView` (`src/app/maps/map-view.ts`, F-007-T02): Leaflet with the provider's tile layer (OpenStreetMap, no key) and visible attribution. It takes markers and route lines as inputs, emits a wrapped coordinate on map click or from its keyboard-operable centre button, and calls no service; pages pass it the `geometry` of the legs `MapsApi` answered (cached legs included). Leaflet's stylesheet loads globally from `angular.json`.
 
 ## Storage
 

@@ -74,6 +74,44 @@ describe('MapView (F-007-T02)', () => {
     expect(el.querySelectorAll('path.hobo-map-marker').length).toBe(1);
   });
 
+  it('emits a picked map coordinate when the map is clicked', async () => {
+    const { fixture, el } = await render({});
+    const picked: MapPoint[] = [];
+    fixture.componentInstance.picked.subscribe((point) => picked.push(point));
+    el.querySelector<HTMLElement>('.hobo-map-view__map')!.dispatchEvent(
+      new MouseEvent('click', { bubbles: true, clientX: 200, clientY: 200 }),
+    );
+    await fixture.whenStable();
+
+    expect(picked).toHaveLength(1);
+    expect(Number.isFinite(picked[0]?.lat)).toBe(true);
+    expect(Number.isFinite(picked[0]?.lng)).toBe(true);
+  });
+
+  it('emits the map centre when its keyboard-operable control is activated', async () => {
+    const { fixture, el } = await render({});
+    const picked: MapPoint[] = [];
+    fixture.componentInstance.picked.subscribe((point) => picked.push(point));
+    const button = el.querySelector<HTMLButtonElement>('.hobo-map-view__center')!;
+    button.focus();
+    button.click();
+
+    expect(document.activeElement).toBe(button);
+    expect(picked).toHaveLength(1);
+    expect(picked[0]?.lng).toBeGreaterThanOrEqual(-180);
+    expect(picked[0]?.lng).toBeLessThanOrEqual(180);
+  });
+
+  it('wraps a click beyond the antimeridian into a valid longitude', async () => {
+    const { fixture } = await render({});
+    const picked: MapPoint[] = [];
+    fixture.componentInstance.picked.subscribe((point) => picked.push(point));
+    const map = (fixture.componentInstance as unknown as { map: L.Map }).map;
+    map.fire('click', { latlng: L.latLng(4, 200) });
+
+    expect(picked).toEqual([{ lat: 4, lng: -160 }]);
+  });
+
   it('shows a place name with markup as plain text in its tooltip', async () => {
     const label = '<img src="x" onerror="alert(1)">Harbour Quay';
     const { el } = await render({ markers: [{ location: PORTWIND, label }] });

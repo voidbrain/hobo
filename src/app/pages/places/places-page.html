@@ -26,7 +26,7 @@
         [formField]="placeForm.name"
       />
       @if (placeForm.name().touched() && placeForm.name().errors().length) {
-        <p class="field-error" id="name-error">A name is required.</p>
+        <p class="field-error" id="name-error" role="alert">A name is required.</p>
       }
 
       <label for="place-description">Description</label>
@@ -54,6 +54,54 @@
         <option value="half-day">Half day</option>
         <option value="full-day">Full day</option>
       </select>
+
+      <section class="location-picker" aria-labelledby="location-title">
+        <h3 id="location-title">Location</h3>
+        <label for="location-search">Search for a place</label>
+        <input
+          id="location-search"
+          #locationSearch
+          type="search"
+          autocomplete="off"
+          [value]="locationQuery()"
+          aria-describedby="location-help location-search-status"
+          (input)="searchLocation($event)"
+        />
+        <p id="location-help" class="muted">
+          Type at least three characters, or choose a point on the map.
+        </p>
+        <p id="location-search-status" class="muted" aria-live="polite">
+          @if (searchError()) {
+            {{ searchError() }}
+          } @else if (suggestions().length) {
+            {{ suggestions().length }} suggestions found.
+          } @else if (searchComplete() && locationQuery().trim().length >= 3) {
+            No places found.
+          }
+        </p>
+        @if (suggestions().length) {
+          <ul class="location-suggestions" aria-label="Location suggestions">
+            @for (candidate of suggestions(); track $index) {
+              <li>
+                <button type="button" class="secondary" (click)="selectSuggestion(candidate)">
+                  {{ candidate.label }}
+                </button>
+              </li>
+            }
+          </ul>
+        }
+        <hobo-map-view
+          label="Choose a place location"
+          [markers]="locationMarkers()"
+          (picked)="pickLocation($event)"
+        />
+        @if (locationSummary()) {
+          <p id="location-summary" aria-live="polite">
+            Selected coordinates: {{ locationSummary() }}
+          </p>
+          <button type="button" class="secondary" (click)="clearLocation()">Clear location</button>
+        }
+      </section>
 
       <div class="form-actions">
         <button type="submit" [disabled]="placeForm().invalid()">Save place</button>
