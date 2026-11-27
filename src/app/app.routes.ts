@@ -7,5 +7,10 @@ export const routes: Routes = [
     loadComponent: () => import('./pages/places/places-page').then((m) => m.PlacesPage),
     title: 'Places · Hobo',
   },
+  {
+    path: 'trips',
+    loadComponent: () => import('./pages/trips/trips-page').then((m) => m.TripsPage),
+    title: 'Trips · Hobo',
+  },
   { path: '**', redirectTo: '' },
 ];

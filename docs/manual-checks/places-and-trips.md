@@ -61,3 +61,14 @@ Expected: category and tag filters combine, groups include unassigned places, re
 5. Delete the test trip through `DELETE /api/trips/<trip-id>`, then delete `Used deletion check` from the list.
 
 Expected: confirmation is keyboard-operable; successful deletion is announced and returns focus to the page; deletion is refused for a referenced place with the trip name, preserving the place and trip stop.
+
+## F-003-T02 — Trip editor
+
+1. Set a home place in **Settings**, or leave it unset to check the empty home label. Create two saved test places: `Harbour` in category `Coast` with tag `water`, and `Ridge View` in category `Outdoors` with tag `viewpoint`.
+2. Open `http://localhost:4200/trips`, choose **Add trip**, enter `Coast Loop`, and set the start date to `2026-12-02` and end date to `2026-12-03`. Choose `Harbour` as the starting point and **Custom name** as the ending point; enter `Ridge Trailhead`.
+3. Search for `ridge`, select category `Outdoors` and tag `viewpoint`. Choose `2026-12-03` in **Add a stop to this day**, then choose **Add Ridge View**. Confirm it appears on December 3. Clear the search and filters; add `Harbour` to December 2.
+4. In **Add a place by name**, enter `New Lookout` and choose **Create place and add stop**. Confirm it is added to the selected day. Save the trip and confirm **Trip saved.** is announced.
+5. Reload the page. Choose **Edit Coast Loop** and confirm dates, endpoints and stops persist. Change its name to `Coast Loop Extended`, save, and confirm the updated trip is listed.
+6. Repeat the core flow with the keyboard: add a trip, enter its fields, filter and add a stop, create a place, save, and edit. Confirm all controls can receive keyboard focus, validation errors are announced, and save success is announced.
+
+Expected: trips save with their date range, from/to endpoints and selected places; place search and category/tag filters combine; a new place is created and added as a stop; saved trips can be reopened and edited. Reordering and moving stops are checked in F-003-T03.

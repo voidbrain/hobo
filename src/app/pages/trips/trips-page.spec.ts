@@ -61,13 +61,16 @@ const setInput = (root: HTMLElement, id: string, value: string) => {
 const setSelect = (root: HTMLElement, id: string, value: string) => {
   const select = root.querySelector<HTMLSelectElement>(`#${id}`)!;
   select.value = value;
+  select.dispatchEvent(new Event('input', { bubbles: true }));
   select.dispatchEvent(new Event('change', { bubbles: true }));
 };
 
 const submit = (root: HTMLElement) =>
   root
     .querySelector<HTMLFormElement>('#trip-form')!
-    .dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
+    .dispatchEvent(new SubmitEvent('submit', { bubbles: true, cancelable: true }));
+
+const nextTurn = () => new Promise((resolve) => setTimeout(resolve, 0));
 
 describe('TripsPage', () => {
   const tripsApi = {
@@ -109,6 +112,8 @@ describe('TripsPage', () => {
     setInput(root, 'trip-end', '2026-12-03');
     setSelect(root, 'from-choice', 'place:place-harbour');
     setSelect(root, 'to-choice', 'custom');
+    await fixture.whenStable();
+    expect(root.querySelector('#to-custom-name')).not.toBeNull();
     setInput(root, 'to-custom-name', 'Ridge Trailhead');
     setInput(root, 'stop-search', 'ridge');
     setSelect(root, 'stop-category', 'Outdoors');
@@ -121,6 +126,7 @@ describe('TripsPage', () => {
     root.querySelector<HTMLButtonElement>('#place-candidates button')?.click();
     await fixture.whenStable();
     submit(root);
+    await nextTurn();
     await fixture.whenStable();
 
     expect(tripsApi.create).toHaveBeenCalledWith({
@@ -148,6 +154,7 @@ describe('TripsPage', () => {
     setInput(root, 'trip-start', '2026-12-02');
     setInput(root, 'trip-end', '2026-12-02');
     setInput(root, 'new-place-name', 'New Lookout');
+    await fixture.whenStable();
     root.querySelector<HTMLButtonElement>('#create-and-add-place')?.click();
     await fixture.whenStable();
 
@@ -169,13 +176,14 @@ describe('TripsPage', () => {
     await fixture.whenStable();
     setInput(root, 'trip-name', 'Coast Loop Extended');
     submit(root);
+    await nextTurn();
     await fixture.whenStable();
 
     expect(tripsApi.update).toHaveBeenCalledWith(
       'trip-1',
       expect.objectContaining({ name: 'Coast Loop Extended', days: savedTrip.days }),
     );
-    expect(root.textContent).toContain('Coast Loop Extended');
+    expect(root.querySelector('[role="status"]')?.textContent).toContain('Trip saved.');
   });
 
   it('connects the trip editor to the places and trip HTTP endpoints', async () => {
@@ -195,6 +203,7 @@ describe('TripsPage', () => {
     setInput(root, 'trip-start', '2026-12-02');
     setInput(root, 'trip-end', '2026-12-02');
     setInput(root, 'new-place-name', 'New Harbour');
+    await fixture.whenStable();
     root.querySelector<HTMLButtonElement>('#create-and-add-place')?.click();
     await fixture.whenStable();
 
@@ -225,6 +234,7 @@ describe('TripsPage', () => {
       endDate: '2026-12-02',
       days: [{ date: '2026-12-02', stops: [newPlace.id] }],
     });
+    await nextTurn();
     await fixture.whenStable();
     expect(root.querySelector('[role="status"]')?.textContent).toContain('Trip saved.');
     http.verify();

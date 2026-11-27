@@ -31,3 +31,7 @@ PR #27 merged on green CI 45980660890; it explains missing OpenRouteService conf
 ## 2026-11-27 — main `d52f88e`
 
 PR #28 merged on green CI 45992151509; F-002-T05 implemented category/tag filtering, grouping and taxonomy management. F-002-T02 owner walkthrough remains passed; the F-002-T04 location walkthrough remains pending.
+
+## 2026-11-27 — main `32c2b33`
+
+PR #29 merged on green CI 45995525201; F-002-T06 protects trip stops and endpoints from place deletion. F-002-T02 owner walkthrough remains passed; the F-002-T04 location walkthrough remains pending.

@@ -4,7 +4,7 @@
   "parent": "F-003",
   "title": "Trip editor",
   "goal": "The owner builds a trip from places",
-  "status": "planned",
+  "status": "implemented",
   "acceptance": [
     "Create a trip, set dates and from/to",
     "Pick stops from places (search, category and tag filters) or add one on the fly, which creates a place"
