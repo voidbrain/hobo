@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Service, inject } from '@angular/core';
 import type { Observable } from 'rxjs';
 import type { Place, PlaceFields, PlacePatch } from '../core/place';
+import type { TaxonomyKind } from '../core/place-taxonomy';
 
 const BASE = '/api/places';
 
@@ -29,6 +30,10 @@ export class PlacesApi {
 
   remove(id: string): Observable<void> {
     return this.http.delete<void>(`${BASE}/${encodeURIComponent(id)}`);
+  }
+
+  reassignTaxonomy(kind: TaxonomyKind, source: string, target: string | null): Observable<Place[]> {
+    return this.http.post<Place[]>(`${BASE}/taxonomy`, { kind, source, target });
   }
 
   imageUrl(placeId: string, imageName: string): string {

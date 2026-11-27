@@ -1,6 +1,7 @@
 import { randomUUID } from 'node:crypto';
 import { DatabaseSync } from 'node:sqlite';
 import type { Place, PlaceFields, PlacePatch } from '../src/app/core/place.ts';
+import { reassignPlaceTaxonomy, type TaxonomyChange } from '../src/app/core/place-taxonomy.ts';
 import type {
   HoboSettings,
   Trip,
@@ -24,6 +25,7 @@ export interface PlaceStore extends LegCache {
   get(id: string): Place | undefined;
   create(fields: PlaceFields): Place;
   update(id: string, patch: PlacePatch): Place | undefined;
+  reassignTaxonomy(change: TaxonomyChange): Place[];
   remove(id: string): boolean;
   getSettings(): HoboSettings;
   updateSettings(patch: Partial<HoboSettings>): HoboSettings;
@@ -306,6 +308,25 @@ export function openPlaceStore(file: string, now = () => new Date().toISOString(
       const place: Place = { ...current, ...patch, id, updatedAt: now() };
       replacePlace.run(toPlaceParams(place));
       return place;
+    },
+    reassignTaxonomy(change) {
+      db.exec('BEGIN');
+      try {
+        const changed: Place[] = [];
+        for (const row of listAllPlaces.all() as unknown as PlaceRow[]) {
+          const current = toPlace(row);
+          const patch = reassignPlaceTaxonomy(current, change.kind, change.source, change.target);
+          if (!patch) continue;
+          const place = { ...current, ...patch, updatedAt: now() };
+          replacePlace.run(toPlaceParams(place));
+          changed.push(place);
+        }
+        db.exec('COMMIT');
+        return changed;
+      } catch (error) {
+        db.exec('ROLLBACK');
+        throw error;
+      }
     },
     remove(id) {
       db.exec('BEGIN');

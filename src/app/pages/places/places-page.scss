@@ -60,7 +60,9 @@ h2 {
 }
 
 form,
-.place-list li {
+.place-list li,
+.place-tools,
+.taxonomy-manager {
   padding: var(--space-3);
   border: 1px solid var(--color-border);
   border-radius: var(--radius);
@@ -121,6 +123,39 @@ select:focus-visible {
   list-style: none;
 }
 
+.place-tools {
+  display: grid;
+  gap: var(--space-2);
+  margin-bottom: var(--space-4);
+}
+
+.place-tools h2 {
+  margin-bottom: 0;
+}
+
+.taxonomy-status,
+.place-tools .field-error {
+  margin: 0;
+}
+
+.taxonomy-manager summary {
+  cursor: pointer;
+}
+
+.taxonomy-manager summary:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+.taxonomy-manager form {
+  margin: var(--space-3) 0 0;
+}
+
+.place-group h3 {
+  margin: var(--space-3) 0 var(--space-2);
+  font-size: var(--font-size-body);
+}
+
 .place-list li > div {
   min-width: 0;
 }
@@ -157,7 +192,8 @@ select:focus-visible {
   form h2,
   .field-error,
   .form-actions,
-  .muted#tags-hint {
+  .muted#tags-hint,
+  .taxonomy-manager .muted {
     grid-column: 2;
   }
 }

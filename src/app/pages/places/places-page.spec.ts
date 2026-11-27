@@ -63,7 +63,7 @@ describe('PlacesPage', () => {
     root.querySelector<HTMLButtonElement>('button')?.click();
     await fixture.whenStable();
 
-    expect(root.querySelector('form')).not.toBeNull();
+    expect(root.querySelector('#place-form')).not.toBeNull();
     expect(root.querySelector<HTMLInputElement>('#place-name')?.value).toBe('');
   });
 
@@ -151,7 +151,7 @@ describe('PlacesPage', () => {
     name.value = 'Lake Braies';
     name.dispatchEvent(new Event('input', { bubbles: true }));
     root
-      .querySelector<HTMLFormElement>('form')!
+      .querySelector<HTMLFormElement>('#place-form')!
       .dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
     await fixture.whenStable();
 
@@ -173,7 +173,7 @@ describe('PlacesPage', () => {
     root.querySelector<HTMLButtonElement>('button')?.click();
     await fixture.whenStable();
     root
-      .querySelector<HTMLFormElement>('form')!
+      .querySelector<HTMLFormElement>('#place-form')!
       .dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
     await fixture.whenStable();
 
@@ -199,7 +199,7 @@ describe('PlacesPage', () => {
     description.value = 'A mountain fortress';
     description.dispatchEvent(new Event('input', { bubbles: true }));
     root
-      .querySelector<HTMLFormElement>('form')!
+      .querySelector<HTMLFormElement>('#place-form')!
       .dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
     await fixture.whenStable();
 
@@ -235,7 +235,7 @@ describe('PlacesPage', () => {
     name.value = 'Rocca Calascio';
     name.dispatchEvent(new Event('input', { bubbles: true }));
     root
-      .querySelector<HTMLFormElement>('form')!
+      .querySelector<HTMLFormElement>('#place-form')!
       .dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
     await fixture.whenStable();
 
@@ -248,10 +248,10 @@ describe('PlacesPage', () => {
     const root = fixture.nativeElement as HTMLElement;
     root.querySelector<HTMLButtonElement>('button')?.click();
     await fixture.whenStable();
-    root.querySelector<HTMLButtonElement>('form button.secondary')?.click();
+    root.querySelector<HTMLButtonElement>('#place-form button.secondary')?.click();
     await fixture.whenStable();
 
-    expect(root.querySelector('form')).toBeNull();
+    expect(root.querySelector('#place-form')).toBeNull();
   });
 
   it('reports a failed place load', async () => {
@@ -275,7 +275,7 @@ describe('PlacesPage', () => {
     name.value = 'Lake Braies';
     name.dispatchEvent(new Event('input', { bubbles: true }));
     root
-      .querySelector<HTMLFormElement>('form')!
+      .querySelector<HTMLFormElement>('#place-form')!
       .dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
     await fixture.whenStable();
 
@@ -312,7 +312,7 @@ describe('PlacesPage', () => {
     name.value = 'Lake Braies';
     name.dispatchEvent(new Event('input', { bubbles: true }));
     root
-      .querySelector<HTMLFormElement>('form')!
+      .querySelector<HTMLFormElement>('#place-form')!
       .dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
     await fixture.whenStable();
 
@@ -333,7 +333,7 @@ describe('PlacesPage', () => {
     name.value = 'Map picked place';
     name.dispatchEvent(new Event('input', { bubbles: true }));
     root
-      .querySelector<HTMLFormElement>('form')!
+      .querySelector<HTMLFormElement>('#place-form')!
       .dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
     await fixture.whenStable();
 
