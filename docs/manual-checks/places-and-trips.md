@@ -21,7 +21,7 @@ Expected: Angular serves the app at `http://localhost:4200` and proxies `/api` t
 3. Confirm the place appears in the list. Choose **Edit Test place 01**.
 4. Enter a description, category `Test`, tags `day trip, lake`, notes `Manual check`, and choose **2 h** for time on site. Save.
 5. Reload the page, edit the place again, and confirm those values remain. Confirm the list shows the description, category and tags.
-6. Repeat with the keyboard: tab to **Add place**, submit an empty form, and confirm the name error is announced and the form remains open. Enter a name and save; confirm focus can reach the edit button and all fields.
+6. Repeat with the keyboard: tab to **Add place**, submit an empty form, and confirm the name field has an invalid state and the required-name error is announced with the danger colour and icon; the form remains open. Enter a name and save; confirm focus can reach the edit button and all fields.
 
 Expected: a name alone creates a place; optional fields save and reload; the name is required; keyboard users can operate the form and receive the validation error.
 

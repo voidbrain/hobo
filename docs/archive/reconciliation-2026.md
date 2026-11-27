@@ -15,3 +15,7 @@ PR #22 merged on green CI; it reconciled the backlog through `cb4d7c0`. PRs #12�
 ## 2026-11-27 — main `e4beef8`
 
 PRs #22–#24 merged on green CI. #22 reconciled through `cb4d7c0` and had no feature record; #23 delivered F-002-T02 and F-016-T03, now closed on CI 45964356626; #24 delivered F-002-T04 and its review fixes (CI 45969402653). F-002-T02 and F-002-T04 owner walkthroughs remain pending. F-016-T04 remains planned because run 45879436183 was scheduled before its acceptance date.
+
+## 2026-11-27 — main `1d7727d`
+
+PR #25 merged on green CI. F-002-T02 and F-002-T04 owner walkthroughs remain pending; F-016-T03 closed on #23's CI, while F-016-T04 remains planned because its latest scheduled run predates its acceptance date.

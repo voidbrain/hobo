@@ -7,7 +7,7 @@
   "status": "implemented",
   "acceptance": [
     "List of places; add with a name only; edit form for description, category, tags, notes and time spent (2 h, half day, full day)",
-    "Signal Forms, keyboard and screen-reader accessible; component tests"
+    "Signal Forms, keyboard and screen-reader accessible; the empty-name error has a visible danger marker, remains announced, and sets aria-invalid; component tests"
   ],
   "dependsOn": [
     "F-002-T01"
@@ -15,7 +15,9 @@
   "resources": [
     "src/app/pages/places/**",
     "src/app/core/**",
-    "docs/work/records/F-002.md"
+    "docs/work/records/F-002.md",
+    "docs/manual-checks/places-and-trips.md",
+    "docs/STYLE-GUIDE.md"
   ],
   "capabilities": [
     "typescript",
