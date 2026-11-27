@@ -1,73 +1,24 @@
 # <a id="top"></a>Hobo backlog
 
-Current work ledger, reviewed 26 November 2026 against main `8eff54d`. Generated from [record sources](work/records) and [steps](work/tasks) by `npm run work:build`: edit those, not this file. [Rules](BACKLOG-RULES.md) · [Archive](archive/README.md) · [Reading the records](#how-to-use-this-file).
+Current work ledger, reviewed 27 November 2026 against main `cb4d7c0`. Generated from [record sources](work/records) and [steps](work/tasks) by `npm run work:build`: edit those, not this file. [Rules](BACKLOG-RULES.md) · [Archive](archive/README.md) · [Reading the records](#how-to-use-this-file).
 
 <!-- totals:start -->
-**Remaining effort:** 55.25 h agent + 2.5 h owner across 47 open steps of 17 features. Generated from the task files.
+**Remaining effort:** 55 h agent + 2.5 h owner across 38 open steps of 16 features. Generated from the task files.
 <!-- totals:end -->
 
 ## Work items
 
 Bugs (B-) and features (F-) in one list, in work-queue order. Steps: `effort` = remaining agent time (🟢 up to 1 h · 🟡 4 h · 🔴 8 h · 🟣 more); `h` = agent hours, owner time apart; a step status is not the record's acceptance.
 
-### <a id="f-007"></a>[✨ F-007](#top)
-
-**Map provider adapter: Leaflet and OpenRouteService**
-
-| Status | Priority | Effort | Remaining | Depends on | Unlocks | Agent | Procedures | Decisions |
-|---|---|---|---|---|---|:---:|:---:|:---:|
-| 🔴 Open | 🔶 P2 | 🟢 Small | 0.5 h agent + 0.25 h owner | — | [F-002-T04](#f-002-t04), [F-004-T03](#f-004-t03) | 🤖 | 🧑‍🔧 | — |
-
-💻 **→** Next: F-007-T02 — Leaflet map component (Implemented; verification pending).
-
-| | |
-|---|---|
-| **Issue** | Maps, routing, the distance/time matrix and geocoding go through one adapter, so providers can change. Start with Leaflet (OpenStreetMap tiles) and OpenRouteService (routing, matrix, geocoding and autocomplete, free key). Leg results are cached so what-if comparisons do not re-query. Routing and geocoding calls go through `server/`, which holds the key in git-ignored `server/config.local.json`; the key never reaches `public/` or the browser. |
-| **Reproduce** | Copy `server/config.example.json` to `server/config.local.json`, set `openRouteServiceApiKey`, run `npm run server`, and call `POST http://127.0.0.1:4310/api/maps/route` with two invented `{ lat, lng }` points. |
-| **Check** | One `MapProvider` interface; an OpenRouteService implementation tested against recorded fixtures; a Leaflet map component with attribution; a leg cache keyed by provider, profile, from and to; the key read only by `server/` from git-ignored `server/config.local.json`; a live route works with the owner's key. |
-
-**Feature steps**
-
-| Effort | Step | Estimate | Actual | Remaining | Status | Depends on | Unlocks | Who | PRs |
-|---|---|---|---|---|---|---|---|:---:|---|
-| 🟢 Small | <a id="f-007-t02"></a>F-007-T02 — Leaflet map component | 2 h | 0 h | 0 h | Implemented; verification pending | — | [F-002-T04](#f-002-t04), [F-004-T03](#f-004-t03), [F-007-T05](#f-007-t05) | 🤖 | [PR #12](https://github.com/voidbrain/hobo/pull/12) MapView: Leaflet, OSM tiles and attribution, markers and route lines from inputs, token classes |
-| 🟢 Small | <a id="f-007-t04"></a>F-007-T04 — Owner adds an OpenRouteService key and checks a live route | 0 h | 0 h | 0 h agent + 0.25 h owner | Planned | — | — | [🧑‍🔧](work/records/F-007.md) | — |
-| 🟢 Small | <a id="f-007-t05"></a>F-007-T05 — One &#91;lng, lat&#93; pair parser and one point type for both routing providers | 0.5 h | 0 h | 0.5 h | Planned | [F-007-T02](#f-007-t02) | — | ⏳ 🤖 | [PR #17](https://github.com/voidbrain/hobo/pull/17) plan |
-| 🟢 Small | **Total** | 7.5 h | 0 h (0 of 5 steps recorded) | 0.5 h agent + 0.25 h owner | 2 of 5 completed | | | | |
-
-<details><summary>Done steps (2)</summary>
-
-| Effort | Step | Estimate | Actual | Status | PRs |
-|---|---|---|---|---|---|
-| — | <a id="f-007-t01"></a>F-007-T01 — Adapter interface, local config and leg cache | 2 h | 0 h | Completed | [PR #8](https://github.com/voidbrain/hobo/pull/8) MapProvider adapter interface, local config without committed keys, and SQLite leg cache |
-| — | <a id="f-007-t03"></a>F-007-T03 — OpenRouteService provider | 3 h | 0 h | Completed | [PR #9](https://github.com/voidbrain/hobo/pull/9) OpenRouteService directions, matrix, geocode and autocomplete via server /api/maps, MapsApi client and recorded fixtures |
-
-</details>
-
-<details>
-<summary>Next action, estimates and PR history</summary>
-
-[Full notes & evidence](work/records/F-007.md)
-
-| Field | Value |
-|---|---|
-| PR / evidence | Steps: F-007-T01: [PR #8](https://github.com/voidbrain/hobo/pull/8) MapProvider adapter interface, local config without committed keys, and SQLite leg cache · F-007-T02: [PR #12](https://github.com/voidbrain/hobo/pull/12) MapView: Leaflet, OSM tiles and attribution, markers and route lines from inputs, token classes · F-007-T03: [PR #9](https://github.com/voidbrain/hobo/pull/9) OpenRouteService directions, matrix, geocode and autocomplete via server /api/maps, MapsApi client and recorded fixtures · F-007-T05: [PR #17](https://github.com/voidbrain/hobo/pull/17) plan. [#1](https://github.com/voidbrain/hobo/pull/1); [#2](https://github.com/voidbrain/hobo/pull/2) (review fixes); [#8](https://github.com/voidbrain/hobo/pull/8) (F-007-T01); [#9](https://github.com/voidbrain/hobo/pull/9) (F-007-T03); [#12](https://github.com/voidbrain/hobo/pull/12) (F-007-T02); Test: `src/app/maps/map-provider.spec.ts`, `server/config.test.ts`, `server/leg-cache.test.ts` (`47d4b46`), `server/ors.test.ts`, `src/app/maps/maps-api.spec.ts` (`bde43bb`), `src/app/maps/map-view.spec.ts`; [#17](https://github.com/voidbrain/hobo/pull/17) (plan) |
-| Opened | 2026-11-25 |
-| Verification | Pending |
-| Reviewed | 2026-11-26 |
-
-</details>
-
----
 ### <a id="f-002"></a>[✨ F-002](#top)
 
 **Places: collect and organise**
 
 | Status | Priority | Effort | Remaining | Depends on | Unlocks | Agent | Procedures | Decisions |
 |---|---|---|---|---|---|:---:|:---:|:---:|
-| 🔴 Open | 🔶 P2 | 🔴 Large | 6.5 h | [F-007-T02](#f-007-t02) | [F-003-T01](#f-003-t01), [F-003-T02](#f-003-t02), [F-011-T01](#f-011-t01) | 🤖 | — | — |
+| 🔴 Open | 🔶 P2 | 🔴 Large | 6.5 h | — | [F-003-T02](#f-003-t02) | 🤖 | — | — |
 
-💻 **→** Next: F-002-T01 — Local store service and place model (Implemented; verification pending).
+💻 **→** Next: F-002-T02 — Place list and form (Planned).
 
 | | |
 |---|---|
@@ -79,12 +30,19 @@ Bugs (B-) and features (F-) in one list, in work-queue order. Steps: `effort` = 
 
 | Effort | Step | Estimate | Actual | Remaining | Status | Depends on | Unlocks | PRs |
 |---|---|---|---|---|---|---|---|---|
-| 🟢 Small | <a id="f-002-t01"></a>F-002-T01 — Local store service and place model | 3 h | 0 h | 0 h | Implemented; verification pending | — | [F-002-T02](#f-002-t02), [F-002-T03](#f-002-t03), [F-003-T01](#f-003-t01), [F-011-T01](#f-011-t01) | — |
-| 🟢 Small | <a id="f-002-t03"></a>F-002-T03 — Place images | 2 h | 0 h | 0 h | Implemented; verification pending | [F-002-T01](#f-002-t01) | — | [PR #7](https://github.com/voidbrain/hobo/pull/7) content-sniffed place image upload, size limit, EXIF/GPS stripping and thumbnail component |
-| 🟡 Medium | <a id="f-002-t02"></a>F-002-T02 — Place list and form | 2.5 h | 0 h | 2.5 h | Planned | [F-002-T01](#f-002-t01) | [F-002-T04](#f-002-t04), [F-002-T05](#f-002-t05), [F-003-T02](#f-003-t02) | — |
-| 🟡 Medium | <a id="f-002-t04"></a>F-002-T04 — Place location | 2 h | 0 h | 2 h | Planned | [F-002-T02](#f-002-t02), [F-007-T02](#f-007-t02) | — | — |
+| 🟡 Medium | <a id="f-002-t02"></a>F-002-T02 — Place list and form | 2.5 h | 0 h | 2.5 h | Planned | — | [F-002-T04](#f-002-t04), [F-002-T05](#f-002-t05), [F-003-T02](#f-003-t02) | — |
+| 🟡 Medium | <a id="f-002-t04"></a>F-002-T04 — Place location | 2 h | 0 h | 2 h | Planned | [F-002-T02](#f-002-t02) | — | — |
 | 🟡 Medium | <a id="f-002-t05"></a>F-002-T05 — Categories and tags | 2 h | 0 h | 2 h | Planned | [F-002-T02](#f-002-t02) | — | — |
-| 🔴 Large | **Total** | 11.5 h | 0 h (0 of 5 steps recorded) | 6.5 h | 0 of 5 completed | | | |
+| 🔴 Large | **Total** | 11.5 h | 0 h (0 of 5 steps recorded) | 6.5 h | 2 of 5 completed | | | |
+
+<details><summary>Done steps (2)</summary>
+
+| Effort | Step | Estimate | Actual | Status | PRs |
+|---|---|---|---|---|---|
+| — | <a id="f-002-t01"></a>F-002-T01 — Local store service and place model | 3 h | 0 h | Completed | [PR #5](https://github.com/voidbrain/hobo/pull/5) local store service and place model |
+| — | <a id="f-002-t03"></a>F-002-T03 — Place images | 2 h | 0 h | Completed | [PR #7](https://github.com/voidbrain/hobo/pull/7) content-sniffed place image upload, size limit, EXIF/GPS stripping and thumbnail component |
+
+</details>
 
 <details>
 <summary>Next action, estimates and PR history</summary>
@@ -93,10 +51,10 @@ Bugs (B-) and features (F-) in one list, in work-queue order. Steps: `effort` = 
 
 | Field | Value |
 |---|---|
-| PR / evidence | Steps: F-002-T01: step review: 2026-11-25 design-reviewer (fresh context, Opus): no blockers; fixed a 500 on a malformed id escape (test first) and added a rollback to a failed migration. Project-only harness edits: package.json (type module, server scripts; npm test also runs the server tests) and a marked CI step. · F-002-T03: [PR #7](https://github.com/voidbrain/hobo/pull/7) content-sniffed place image upload, size limit, EXIF/GPS stripping and thumbnail component; step review: 2026-11-26 Claude (Opus, fresh worktree) reviewed PR #7 written by Gemini. Fixed (test first): an upload announcing a Content-Length over 5 MB is now refused with 413 before its body is read. Added tests: a real decodable JPEG with a well-formed GPS EXIF IFD (stripped, scan data kept; also checked with macOS ImageIO: GPS present before, absent after, image still decodes), deleting a place unlinks its files, and image names that would leave the folder answer 404.. [#1](https://github.com/voidbrain/hobo/pull/1); [#2](https://github.com/voidbrain/hobo/pull/2) (review fixes); [#5](https://github.com/voidbrain/hobo/pull/5); [#7](https://github.com/voidbrain/hobo/pull/7) (F-002-T03); Test: `server/images.test.ts`, `src/app/pages/places/place-images.spec.ts`, `src/app/data/places-api.spec.ts` (`4dbecd4`); Review: 2026-11-26 Claude (Opus), fixed an announced oversized upload being read before its 413; added real GPS EXIF, place deletion and path tests |
+| PR / evidence | Steps: F-002-T01: [PR #5](https://github.com/voidbrain/hobo/pull/5) local store service and place model; step review: 2026-11-25 design-reviewer (fresh context, Opus): no blockers; fixed a 500 on a malformed id escape (test first) and added a rollback to a failed migration. Project-only harness edits: package.json (type module, server scripts; npm test also runs the server tests) and a marked CI step. · F-002-T03: [PR #7](https://github.com/voidbrain/hobo/pull/7) content-sniffed place image upload, size limit, EXIF/GPS stripping and thumbnail component; step review: 2026-11-26 Claude (Opus, fresh worktree) reviewed PR #7 written by Gemini. Fixed (test first): an upload announcing a Content-Length over 5 MB is now refused with 413 before its body is read. Added tests: a real decodable JPEG with a well-formed GPS EXIF IFD (stripped, scan data kept; also checked with macOS ImageIO: GPS present before, absent after, image still decodes), deleting a place unlinks its files, and image names that would leave the folder answer 404.. [#1](https://github.com/voidbrain/hobo/pull/1); [#2](https://github.com/voidbrain/hobo/pull/2) (review fixes); [#5](https://github.com/voidbrain/hobo/pull/5) (F-002-T01, CI 45713057220); [#7](https://github.com/voidbrain/hobo/pull/7) (F-002-T03, CI 45721078554); Test: `server/images.test.ts`, `src/app/pages/places/place-images.spec.ts`, `src/app/data/places-api.spec.ts` (`4dbecd4`); Review: 2026-11-26 Claude (Opus), fixed an announced oversized upload being read before its 413; added real GPS EXIF, place deletion and path tests |
 | Opened | 2026-11-25 |
-| Verification | Pending |
-| Reviewed | 2026-11-25 |
+| Verification | Unit/integration · 2026-11-27 · F-002-T01 (#5 CI 45713057220) and F-002-T03 (#7 CI 45721078554) green; UI steps pending |
+| Reviewed | 2026-11-27 |
 
 </details>
 
@@ -107,9 +65,9 @@ Bugs (B-) and features (F-) in one list, in work-queue order. Steps: `effort` = 
 
 | Status | Priority | Effort | Remaining | Depends on | Unlocks | Agent | Procedures | Decisions |
 |---|---|---|---|---|---|:---:|:---:|:---:|
-| 🔴 Open | 🔶 P2 | 🔴 Large | 5 h | [F-002-T01](#f-002-t01), [F-002-T02](#f-002-t02) | [F-004-T02](#f-004-t02), [F-006-T01](#f-006-t01), [F-008-T04](#f-008-t04), [F-011-T01](#f-011-t01) | 🤖 | — | — |
+| 🔴 Open | 🔶 P2 | 🔴 Large | 5 h | [F-002-T02](#f-002-t02) | [F-004-T02](#f-004-t02) | ⏳ | — | — |
 
-💻 **→** Next: F-003-T01 — Trip model and API (Implemented; verification pending).
+💻 **→** Next: F-003-T02 — Trip editor (Planned).
 
 | | |
 |---|---|
@@ -121,10 +79,17 @@ Bugs (B-) and features (F-) in one list, in work-queue order. Steps: `effort` = 
 
 | Effort | Step | Estimate | Actual | Remaining | Status | Depends on | Unlocks | PRs |
 |---|---|---|---|---|---|---|---|---|
-| 🟢 Small | <a id="f-003-t01"></a>F-003-T01 — Trip model and API | 2 h | 0 h | 0 h | Implemented; verification pending | [F-002-T01](#f-002-t01) | [F-003-T02](#f-003-t02), [F-006-T01](#f-006-t01), [F-008-T04](#f-008-t04), [F-011-T01](#f-011-t01) | [PR #6](https://github.com/voidbrain/hobo/pull/6) trip model, pure helpers, SQLite persistence, home settings and trips API |
-| 🟡 Medium | <a id="f-003-t02"></a>F-003-T02 — Trip editor | 3 h | 0 h | 3 h | Planned | [F-003-T01](#f-003-t01), [F-002-T02](#f-002-t02) | [F-003-T03](#f-003-t03), [F-004-T02](#f-004-t02) | — |
+| 🟡 Medium | <a id="f-003-t02"></a>F-003-T02 — Trip editor | 3 h | 0 h | 3 h | Planned | [F-002-T02](#f-002-t02) | [F-003-T03](#f-003-t03), [F-004-T02](#f-004-t02) | — |
 | 🟡 Medium | <a id="f-003-t03"></a>F-003-T03 — Reorder stops and move them between days | 2 h | 0 h | 2 h | Planned | [F-003-T02](#f-003-t02) | — | — |
-| 🔴 Large | **Total** | 7 h | 0 h (0 of 3 steps recorded) | 5 h | 0 of 3 completed | | | |
+| 🔴 Large | **Total** | 7 h | 0 h (0 of 3 steps recorded) | 5 h | 1 of 3 completed | | | |
+
+<details><summary>Done steps (1)</summary>
+
+| Effort | Step | Estimate | Actual | Status | PRs |
+|---|---|---|---|---|---|
+| — | <a id="f-003-t01"></a>F-003-T01 — Trip model and API | 2 h | 0 h | Completed | [PR #6](https://github.com/voidbrain/hobo/pull/6) trip model, pure helpers, SQLite persistence, home settings and trips API |
+
+</details>
 
 <details>
 <summary>Next action, estimates and PR history</summary>
@@ -133,10 +98,10 @@ Bugs (B-) and features (F-) in one list, in work-queue order. Steps: `effort` = 
 
 | Field | Value |
 |---|---|
-| PR / evidence | Steps: F-003-T01: [PR #6](https://github.com/voidbrain/hobo/pull/6) trip model, pure helpers, SQLite persistence, home settings and trips API; step review: 2026-11-26 Claude (Opus, fresh worktree) reviewed PR #6 written by Gemini: no blockers. Added API tests for 400/404/405 answers, unknown home and endpoint places, a single day with no home, time-zone independence across a daylight-saving change, and clearing a deleted place from home and trip endpoints; documented that dates carry no time zone and that shrinking a trip drops stops outside the new range.. [#1](https://github.com/voidbrain/hobo/pull/1); [#6](https://github.com/voidbrain/hobo/pull/6) (F-003-T01); Test: `src/app/core/trip.spec.ts`, `src/app/data/trips-api.spec.ts`, `server/trips.test.ts` (`193bbca`); Review: 2026-11-26 Claude (Opus), no blockers; added API error, time-zone and deleted-place tests |
+| PR / evidence | Steps: F-003-T01: [PR #6](https://github.com/voidbrain/hobo/pull/6) trip model, pure helpers, SQLite persistence, home settings and trips API; step review: 2026-11-26 Claude (Opus, fresh worktree) reviewed PR #6 written by Gemini: no blockers. Added API tests for 400/404/405 answers, unknown home and endpoint places, a single day with no home, time-zone independence across a daylight-saving change, and clearing a deleted place from home and trip endpoints; documented that dates carry no time zone and that shrinking a trip drops stops outside the new range.. [#1](https://github.com/voidbrain/hobo/pull/1); [#6](https://github.com/voidbrain/hobo/pull/6) (F-003-T01, CI 45720389688); Test: `src/app/core/trip.spec.ts`, `src/app/data/trips-api.spec.ts`, `server/trips.test.ts` (`193bbca`); Review: 2026-11-26 Claude (Opus), no blockers; added API error, time-zone and deleted-place tests |
 | Opened | 2026-11-25 |
-| Verification | Pending |
-| Reviewed | 2026-11-25 |
+| Verification | Unit/integration · 2026-11-27 · F-003-T01 (#6 CI 45720389688) green; UI steps pending |
+| Reviewed | 2026-11-27 |
 
 </details>
 
@@ -147,9 +112,9 @@ Bugs (B-) and features (F-) in one list, in work-queue order. Steps: `effort` = 
 
 | Status | Priority | Effort | Remaining | Depends on | Unlocks | Agent | Procedures | Decisions |
 |---|---|---|---|---|---|:---:|:---:|:---:|
-| 🔴 Open | 🔶 P2 | 🔴 Large | 4.25 h | [F-003-T02](#f-003-t02), [F-007-T02](#f-007-t02) | [F-005-T01](#f-005-t01), [F-006-T02](#f-006-t02), [F-008-T01](#f-008-t01), [F-008-T02](#f-008-t02), [F-008-T04](#f-008-t04), [F-011-T01](#f-011-t01) | 🤖 | — | — |
+| 🔴 Open | 🔶 P2 | 🟡 Medium | 4 h | [F-003-T02](#f-003-t02) | [F-005-T01](#f-005-t01), [F-006-T02](#f-006-t02), [F-008-T01](#f-008-t01), [F-008-T02](#f-008-t02), [F-008-T04](#f-008-t04), [F-011-T01](#f-011-t01) | ⏳ | — | — |
 
-💻 **→** Next: F-004-T01 — Pure totals (Implemented; verification pending).
+💻 **→** Next: F-004-T02 — Legs through the adapter (Planned).
 
 | | |
 |---|---|
@@ -161,10 +126,17 @@ Bugs (B-) and features (F-) in one list, in work-queue order. Steps: `effort` = 
 
 | Effort | Step | Estimate | Actual | Remaining | Status | Depends on | Unlocks | PRs |
 |---|---|---|---|---|---|---|---|---|
-| 🟢 Small | <a id="f-004-t01"></a>F-004-T01 — Pure totals | 1.5 h | 0 h | 0.25 h | Implemented; verification pending | — | [F-004-T02](#f-004-t02), [F-011-T01](#f-011-t01) | [PR #4](https://github.com/voidbrain/hobo/pull/4) pure route totals in src/app/core/route-totals.ts |
-| 🟡 Medium | <a id="f-004-t02"></a>F-004-T02 — Legs through the adapter | 2 h | 0 h | 2 h | Planned | [F-004-T01](#f-004-t01), [F-003-T02](#f-003-t02) | [F-004-T03](#f-004-t03), [F-005-T01](#f-005-t01), [F-008-T01](#f-008-t01), [F-011-T01](#f-011-t01) | — |
-| 🟡 Medium | <a id="f-004-t03"></a>F-004-T03 — Day filter, summary and route on the map | 2 h | 0 h | 2 h | Planned | [F-004-T02](#f-004-t02), [F-007-T02](#f-007-t02) | [F-006-T02](#f-006-t02), [F-008-T02](#f-008-t02), [F-008-T04](#f-008-t04) | — |
-| 🔴 Large | **Total** | 5.5 h | 0 h (0 of 3 steps recorded) | 4.25 h | 0 of 3 completed | | | |
+| 🟡 Medium | <a id="f-004-t02"></a>F-004-T02 — Legs through the adapter | 2 h | 0 h | 2 h | Planned | [F-003-T02](#f-003-t02) | [F-004-T03](#f-004-t03), [F-005-T01](#f-005-t01), [F-008-T01](#f-008-t01), [F-011-T01](#f-011-t01) | — |
+| 🟡 Medium | <a id="f-004-t03"></a>F-004-T03 — Day filter, summary and route on the map | 2 h | 0 h | 2 h | Planned | [F-004-T02](#f-004-t02) | [F-006-T02](#f-006-t02), [F-008-T02](#f-008-t02), [F-008-T04](#f-008-t04) | — |
+| 🟡 Medium | **Total** | 5.5 h | 0 h (0 of 3 steps recorded) | 4 h | 1 of 3 completed | | | |
+
+<details><summary>Done steps (1)</summary>
+
+| Effort | Step | Estimate | Actual | Status | PRs |
+|---|---|---|---|---|---|
+| — | <a id="f-004-t01"></a>F-004-T01 — Pure totals | 1.5 h | 0 h | Completed | [PR #4](https://github.com/voidbrain/hobo/pull/4) pure route totals in src/app/core/route-totals.ts |
+
+</details>
 
 <details>
 <summary>Next action, estimates and PR history</summary>
@@ -173,56 +145,59 @@ Bugs (B-) and features (F-) in one list, in work-queue order. Steps: `effort` = 
 
 | Field | Value |
 |---|---|
-| PR / evidence | Steps: F-004-T01: [PR #4](https://github.com/voidbrain/hobo/pull/4) pure route totals in src/app/core/route-totals.ts. [#1](https://github.com/voidbrain/hobo/pull/1); [#4](https://github.com/voidbrain/hobo/pull/4) |
+| PR / evidence | Steps: F-004-T01: [PR #4](https://github.com/voidbrain/hobo/pull/4) pure route totals in src/app/core/route-totals.ts. [#1](https://github.com/voidbrain/hobo/pull/1); [#4](https://github.com/voidbrain/hobo/pull/4) (F-004-T01, CI 45717300407) |
 | Opened | 2026-11-25 |
-| Verification | Unit/integration: 2026-11-25 passed locally (`src/app/core/route-totals.spec.ts`); adapter/UI steps pending. |
-| Reviewed | 2026-11-25 |
+| Verification | Unit/integration · 2026-11-27 · F-004-T01 (#4 CI 45717300407) green; adapter/UI steps pending |
+| Reviewed | 2026-11-27 |
 
 </details>
 
 ---
-### <a id="f-001"></a>[✨ F-001](#top)
+### <a id="f-007"></a>[✨ F-007](#top)
 
-**Angular scaffold and project harness**
+**Map provider adapter: Leaflet and OpenRouteService**
 
 | Status | Priority | Effort | Remaining | Depends on | Unlocks | Agent | Procedures | Decisions |
 |---|---|---|---|---|---|:---:|:---:|:---:|
-| 🟡 Implemented | 🔶 P2 | 🟢 Small | 0 h | — | — | 🤖 | — | — |
+| 🔴 Open | 🔶 P2 | 🟢 Small | 0.5 h agent + 0.25 h owner | — | — | 🤖 | 🧑‍🔧 | — |
 
-💻 **→** Next: F-001-T01 — Scaffold the app and apply harness v10.21.3 (Implemented; verification pending).
+💻 **→** Next: F-007-T05 — One &#91;lng, lat&#93; pair parser and one point type for both routing providers (Planned).
 
 | | |
 |---|---|
-| **Issue** | Hobo needs an Angular 22 app (standalone components, signals, strict TypeScript and templates) and the 🦺 project harness (core + angular) before feature work starts. Approved by the owner on 2026-11-25. |
-| **Reproduce** | `npm ci && npm run check:fast && npm test && npm run build` on a fresh clone. |
-| **Check** | The first PR's CI (`check` job) is green: harness checks, lint, format, unit tests with coverage, type check and build. Branch protection and auto-merge are set by the owner. |
+| **Issue** | Maps, routing, the distance/time matrix and geocoding go through one adapter, so providers can change. Start with Leaflet (OpenStreetMap tiles) and OpenRouteService (routing, matrix, geocoding and autocomplete, free key). Leg results are cached so what-if comparisons do not re-query. Routing and geocoding calls go through `server/`, which holds the key in git-ignored `server/config.local.json`; the key never reaches `public/` or the browser. |
+| **Reproduce** | Copy `server/config.example.json` to `server/config.local.json`, set `openRouteServiceApiKey`, run `npm run server`, and call `POST http://127.0.0.1:4310/api/maps/route` with two invented `{ lat, lng }` points. |
+| **Check** | One `MapProvider` interface; an OpenRouteService implementation tested against recorded fixtures; a Leaflet map component with attribution; a leg cache keyed by provider, profile, from and to; the key read only by `server/` from git-ignored `server/config.local.json`; a live route works with the owner's key. |
 
 **Feature steps**
 
 | Effort | Step | Estimate | Actual | Remaining | Status | Who | PRs |
 |---|---|---|---|---|---|:---:|---|
-| 🟢 Small | <a id="f-001-t01"></a>F-001-T01 — Scaffold the app and apply harness v10.21.3 | 3 h | 0 h | 0 h | Implemented; verification pending | 🤖 | [PR #1](https://github.com/voidbrain/hobo/pull/1) scaffold and harness |
-| 🟢 Small | **Total** | 3 h | 0 h (0 of 2 steps recorded) | 0 h | 1 of 2 completed | | |
+| 🟢 Small | <a id="f-007-t04"></a>F-007-T04 — Owner adds an OpenRouteService key and checks a live route | 0 h | 0 h | 0 h agent + 0.25 h owner | Planned | [🧑‍🔧](work/records/F-007.md) | — |
+| 🟢 Small | <a id="f-007-t05"></a>F-007-T05 — One &#91;lng, lat&#93; pair parser and one point type for both routing providers | 0.5 h | 0 h | 0.5 h | Planned | 🤖 | [PR #17](https://github.com/voidbrain/hobo/pull/17) plan |
+| 🟢 Small | **Total** | 7.5 h | 0 h (0 of 5 steps recorded) | 0.5 h agent + 0.25 h owner | 3 of 5 completed | | |
 
-<details><summary>Done steps (1)</summary>
+<details><summary>Done steps (3)</summary>
 
 | Effort | Step | Estimate | Actual | Status | PRs |
 |---|---|---|---|---|---|
-| — | <a id="f-001-t02"></a>F-001-T02 — Owner sets branch protection and auto-merge | 0 h | 0 h | Completed | — |
+| — | <a id="f-007-t01"></a>F-007-T01 — Adapter interface, local config and leg cache | 2 h | 0 h | Completed | [PR #8](https://github.com/voidbrain/hobo/pull/8) MapProvider adapter interface, local config without committed keys, and SQLite leg cache |
+| — | <a id="f-007-t02"></a>F-007-T02 — Leaflet map component | 2 h | 0 h | Completed | [PR #12](https://github.com/voidbrain/hobo/pull/12) MapView: Leaflet, OSM tiles and attribution, markers and route lines from inputs, token classes |
+| — | <a id="f-007-t03"></a>F-007-T03 — OpenRouteService provider | 3 h | 0 h | Completed | [PR #9](https://github.com/voidbrain/hobo/pull/9) OpenRouteService directions, matrix, geocode and autocomplete via server /api/maps, MapsApi client and recorded fixtures |
 
 </details>
 
 <details>
 <summary>Next action, estimates and PR history</summary>
 
-[Full notes & evidence](work/records/F-001.md)
+[Full notes & evidence](work/records/F-007.md)
 
 | Field | Value |
 |---|---|
-| PR / evidence | Steps: F-001-T01: [PR #1](https://github.com/voidbrain/hobo/pull/1) scaffold and harness. [#1](https://github.com/voidbrain/hobo/pull/1); [#3](https://github.com/voidbrain/hobo/pull/3) |
+| PR / evidence | Steps: F-007-T01: [PR #8](https://github.com/voidbrain/hobo/pull/8) MapProvider adapter interface, local config without committed keys, and SQLite leg cache · F-007-T02: [PR #12](https://github.com/voidbrain/hobo/pull/12) MapView: Leaflet, OSM tiles and attribution, markers and route lines from inputs, token classes · F-007-T03: [PR #9](https://github.com/voidbrain/hobo/pull/9) OpenRouteService directions, matrix, geocode and autocomplete via server /api/maps, MapsApi client and recorded fixtures · F-007-T05: [PR #17](https://github.com/voidbrain/hobo/pull/17) plan. [#1](https://github.com/voidbrain/hobo/pull/1); [#2](https://github.com/voidbrain/hobo/pull/2) (review fixes); [#8](https://github.com/voidbrain/hobo/pull/8) (F-007-T01); [#9](https://github.com/voidbrain/hobo/pull/9) (F-007-T03); [#12](https://github.com/voidbrain/hobo/pull/12) (F-007-T02, CI 45784696923); [#17](https://github.com/voidbrain/hobo/pull/17) (plan); [#21](https://github.com/voidbrain/hobo/pull/21) (coordinator prefix); Test: `src/app/maps/map-provider.spec.ts`, `server/config.test.ts`, `server/leg-cache.test.ts` (`47d4b46`), `server/ors.test.ts`, `src/app/maps/maps-api.spec.ts` (`bde43bb`), `src/app/maps/map-view.spec.ts` |
 | Opened | 2026-11-25 |
-| Verification | Pending |
-| Reviewed | 2026-11-25 |
+| Verification | Unit/integration · 2026-11-27 · F-007-T01 (#8), F-007-T02 (#12 CI 45784696923) and F-007-T03 (#9) green; F-007-T04 owner live key check and F-007-T05 pending |
+| Reviewed | 2026-11-27 |
 
 </details>
 
@@ -233,7 +208,7 @@ Bugs (B-) and features (F-) in one list, in work-queue order. Steps: `effort` = 
 
 | Status | Priority | Effort | Remaining | Depends on | Unlocks | Agent | Procedures | Decisions |
 |---|---|---|---|---|---|:---:|:---:|:---:|
-| 🔴 Open | 🔹 P3 | 🔴 Large | 4.25 h agent + 0.25 h owner | [F-002-T01](#f-002-t01), [F-003-T01](#f-003-t01), [F-004-T01](#f-004-t01), [F-004-T02](#f-004-t02) | [F-018-T01](#f-018-t01), [F-018-T05](#f-018-t05) | ⏳ | — | — |
+| 🔴 Open | 🔹 P3 | 🔴 Large | 4.25 h agent + 0.25 h owner | [F-004-T02](#f-004-t02) | [F-018-T01](#f-018-t01), [F-018-T05](#f-018-t05) | ⏳ | — | — |
 
 💻 **→** Next: F-011-T01 — MCP endpoint in the local service (Planned).
 
@@ -247,7 +222,7 @@ Bugs (B-) and features (F-) in one list, in work-queue order. Steps: `effort` = 
 
 | Effort | Step | Estimate | Actual | Remaining | Status | Depends on | Unlocks | Who | PRs |
 |---|---|---|---|---|---|---|---|:---:|---|
-| 🟡 Medium | <a id="f-011-t01"></a>F-011-T01 — MCP endpoint in the local service | 2.5 h | 0 h | 2.5 h | Planned | [F-002-T01](#f-002-t01), [F-003-T01](#f-003-t01), [F-004-T01](#f-004-t01), [F-004-T02](#f-004-t02) | [F-011-T02](#f-011-t02), [F-011-T03](#f-011-t03), [F-018-T01](#f-018-t01) | ⏳ 🤖 | — |
+| 🟡 Medium | <a id="f-011-t01"></a>F-011-T01 — MCP endpoint in the local service | 2.5 h | 0 h | 2.5 h | Planned | [F-004-T02](#f-004-t02) | [F-011-T02](#f-011-t02), [F-011-T03](#f-011-t03), [F-018-T01](#f-018-t01) | ⏳ 🤖 | — |
 | 🟢 Small | <a id="f-011-t02"></a>F-011-T02 — Owner connects Hobo to NERV and checks it from chat | 0 h | 0 h | 0 h agent + 0.25 h owner | Planned | [F-011-T01](#f-011-t01) | — | ⏳ 🧑‍🔧 | — |
 | 🟡 Medium | <a id="f-011-t03"></a>F-011-T03 — Gauntlet cases for the MCP tools (hobo-v1), Italian and English | 1.75 h | 0 h | 1.75 h | Planned | [F-011-T01](#f-011-t01) | [F-018-T05](#f-018-t05) | ⏳ 🤖 | [PR #17](https://github.com/voidbrain/hobo/pull/17) plan |
 | 🔴 Large | **Total** | 4.25 h | 0 h (0 of 3 steps recorded) | 4.25 h agent + 0.25 h owner | 0 of 3 completed | | | | |
@@ -259,10 +234,10 @@ Bugs (B-) and features (F-) in one list, in work-queue order. Steps: `effort` = 
 
 | Field | Value |
 |---|---|
-| PR / evidence | Steps: F-011-T03: [PR #17](https://github.com/voidbrain/hobo/pull/17) plan. [#1](https://github.com/voidbrain/hobo/pull/1); [#2](https://github.com/voidbrain/hobo/pull/2) (review fixes); [#17](https://github.com/voidbrain/hobo/pull/17) (plan) |
+| PR / evidence | Steps: F-011-T03: [PR #17](https://github.com/voidbrain/hobo/pull/17) plan. [#1](https://github.com/voidbrain/hobo/pull/1); [#2](https://github.com/voidbrain/hobo/pull/2) (review fixes); [#17](https://github.com/voidbrain/hobo/pull/17) (plan); [#19](https://github.com/voidbrain/hobo/pull/19) (write-tools link); [#21](https://github.com/voidbrain/hobo/pull/21) (coordinator prefix) |
 | Opened | 2026-11-25 |
 | Verification | Pending |
-| Reviewed | 2026-11-25 |
+| Reviewed | 2026-11-27 |
 
 </details>
 
@@ -273,7 +248,7 @@ Bugs (B-) and features (F-) in one list, in work-queue order. Steps: `effort` = 
 
 | Status | Priority | Effort | Remaining | Depends on | Unlocks | Agent | Procedures | Decisions |
 |---|---|---|---|---|---|:---:|:---:|:---:|
-| 🔴 Open | 🔹 P3 | 🔴 Large | 6.5 h agent + 0.5 h owner | [F-004-T02](#f-004-t02), [F-004-T03](#f-004-t03), [F-003-T01](#f-003-t01) | [F-009-T01](#f-009-t01) | ⏳ | — | 🤔 |
+| 🔴 Open | 🔹 P3 | 🔴 Large | 6.5 h agent + 0.5 h owner | [F-004-T02](#f-004-t02), [F-004-T03](#f-004-t03) | [F-009-T01](#f-009-t01) | ⏳ | — | 🤔 |
 
 🧑 **→** Next: [🤔](work/records/F-008.md) F-008-T03 — Owner decides how a read-only link is served (Ready).
 
@@ -290,7 +265,7 @@ Bugs (B-) and features (F-) in one list, in work-queue order. Steps: `effort` = 
 | 🟢 Small | <a id="f-008-t03"></a>F-008-T03 — Owner decides how a read-only link is served | 0 h | 0 h | 0 h agent + 0.5 h owner | Ready | — | [F-008-T04](#f-008-t04) | [🤔](work/records/F-008.md) |
 | 🟡 Medium | <a id="f-008-t01"></a>F-008-T01 — GPX and KML export | 2 h | 0 h | 2 h | Planned | [F-004-T02](#f-004-t02) | — | ⏳ 🤖 |
 | 🟡 Medium | <a id="f-008-t02"></a>F-008-T02 — PDF itinerary | 2 h | 0 h | 2 h | Planned | [F-004-T03](#f-004-t03) | — | ⏳ 🤖 |
-| 🟡 Medium | <a id="f-008-t04"></a>F-008-T04 — Read-only share link | 2.5 h | 0 h | 2.5 h | Planned | [F-008-T03](#f-008-t03), [F-003-T01](#f-003-t01), [F-004-T03](#f-004-t03) | [F-009-T01](#f-009-t01) | ⏳ 🤖 |
+| 🟡 Medium | <a id="f-008-t04"></a>F-008-T04 — Read-only share link | 2.5 h | 0 h | 2.5 h | Planned | [F-008-T03](#f-008-t03), [F-004-T03](#f-004-t03) | [F-009-T01](#f-009-t01) | ⏳ 🤖 |
 | 🔴 Large | **Total** | 6.5 h | 0 h (0 of 4 steps recorded) | 6.5 h agent + 0.5 h owner | 0 of 4 completed | | | |
 
 <details>
@@ -391,7 +366,7 @@ Bugs (B-) and features (F-) in one list, in work-queue order. Steps: `effort` = 
 
 | Status | Priority | Effort | Remaining | Depends on | Unlocks | Agent | Procedures | Decisions |
 |---|---|---|---|---|---|:---:|:---:|:---:|
-| 🔴 Open | 🔹 P3 | 🟡 Medium | 3.5 h | [F-003-T01](#f-003-t01), [F-004-T03](#f-004-t03) | — | ⏳ | — | — |
+| 🔴 Open | 🔹 P3 | 🟡 Medium | 3.5 h | [F-004-T03](#f-004-t03) | — | 🤖 | — | — |
 
 💻 **→** Next: F-006-T01 — Variant model (Planned).
 
@@ -405,7 +380,7 @@ Bugs (B-) and features (F-) in one list, in work-queue order. Steps: `effort` = 
 
 | Effort | Step | Estimate | Actual | Remaining | Status | Depends on | Unlocks |
 |---|---|---|---|---|---|---|---|
-| 🟡 Medium | <a id="f-006-t01"></a>F-006-T01 — Variant model | 1.5 h | 0 h | 1.5 h | Planned | [F-003-T01](#f-003-t01) | [F-006-T02](#f-006-t02) |
+| 🟡 Medium | <a id="f-006-t01"></a>F-006-T01 — Variant model | 1.5 h | 0 h | 1.5 h | Planned | — | [F-006-T02](#f-006-t02) |
 | 🟡 Medium | <a id="f-006-t02"></a>F-006-T02 — Variant tabs and comparison | 2 h | 0 h | 2 h | Planned | [F-006-T01](#f-006-t01), [F-004-T03](#f-004-t03) | — |
 | 🟡 Medium | **Total** | 3.5 h | 0 h (0 of 2 steps recorded) | 3.5 h | 0 of 2 completed | | |
 
@@ -455,10 +430,10 @@ Bugs (B-) and features (F-) in one list, in work-queue order. Steps: `effort` = 
 
 | Field | Value |
 |---|---|
-| PR / evidence | [#1](https://github.com/voidbrain/hobo/pull/1); [#2](https://github.com/voidbrain/hobo/pull/2) (review fixes) |
+| PR / evidence | [#1](https://github.com/voidbrain/hobo/pull/1); [#2](https://github.com/voidbrain/hobo/pull/2) (review fixes); [#13](https://github.com/voidbrain/hobo/pull/13) (dependency update); [#21](https://github.com/voidbrain/hobo/pull/21) (coordinator prefix) |
 | Opened | 2026-11-25 |
 | Verification | Pending |
-| Reviewed | 2026-11-25 |
+| Reviewed | 2026-11-27 |
 
 </details>
 
@@ -557,7 +532,7 @@ Bugs (B-) and features (F-) in one list, in work-queue order. Steps: `effort` = 
 |---|---|---|---|---|---|:---:|:---:|:---:|
 | 🔴 Open | 🔹 P3 | 🟡 Medium | 1.25 h | — | — | 🤖 | — | — |
 
-💻 **→** Next: F-016-T01 — Reviews, coverage enforcement, work usage and behaviour runner settings (Implemented; verification pending).
+💻 **→** Next: F-016-T03 — First token and skills reviews (Planned).
 
 | | |
 |---|---|
@@ -567,14 +542,21 @@ Bugs (B-) and features (F-) in one list, in work-queue order. Steps: `effort` = 
 
 **Feature steps**
 
-| Effort | Step | Estimate | Actual | Remaining | Status | Depends on | Unlocks | PRs |
-|---|---|---|---|---|---|---|---|---|
-| 🟢 Small | <a id="f-016-t01"></a>F-016-T01 — Reviews, coverage enforcement, work usage and behaviour runner settings | 0.25 h | 0 h | 0 h | Implemented; verification pending | — | [F-016-T05](#f-016-t05) | [PR #14](https://github.com/voidbrain/hobo/pull/14) settings on |
-| 🟢 Small | <a id="f-016-t02"></a>F-016-T02 — First architecture review with outside-landscape comparison | 0.5 h | 0 h | 0 h | Implemented; verification pending | — | — | [PR #14](https://github.com/voidbrain/hobo/pull/14) first architecture review |
-| 🟢 Small | <a id="f-016-t03"></a>F-016-T03 — First token and skills reviews | 1 h | 0 h | 1 h | Planned | — | — | — |
-| 🟢 Small | <a id="f-016-t04"></a>F-016-T04 — Confirm the scheduled maintenance run | 0.25 h | 0 h | 0.25 h | Planned | — | — | — |
-| 🟢 Small | <a id="f-016-t05"></a>F-016-T05 — Turn coverage.enforce on | 0.25 h | 0 h | 0 h | Implemented; verification pending | [F-016-T01](#f-016-t01) | — | [PR #15](https://github.com/voidbrain/hobo/pull/15) coverage.enforce on |
-| 🟡 Medium | **Total** | 2.25 h | 0 h (0 of 5 steps recorded) | 1.25 h | 0 of 5 completed | | | |
+| Effort | Step | Estimate | Actual | Remaining | Status | PRs |
+|---|---|---|---|---|---|---|
+| 🟢 Small | <a id="f-016-t03"></a>F-016-T03 — First token and skills reviews | 1 h | 0 h | 1 h | Planned | — |
+| 🟢 Small | <a id="f-016-t04"></a>F-016-T04 — Confirm the scheduled maintenance run | 0.25 h | 0 h | 0.25 h | Planned | — |
+| 🟡 Medium | **Total** | 2.25 h | 0 h (0 of 5 steps recorded) | 1.25 h | 3 of 5 completed | |
+
+<details><summary>Done steps (3)</summary>
+
+| Effort | Step | Estimate | Actual | Status | PRs |
+|---|---|---|---|---|---|
+| — | <a id="f-016-t01"></a>F-016-T01 — Reviews, coverage enforcement, work usage and behaviour runner settings | 0.25 h | 0 h | Completed | [PR #14](https://github.com/voidbrain/hobo/pull/14) settings on |
+| — | <a id="f-016-t02"></a>F-016-T02 — First architecture review with outside-landscape comparison | 0.5 h | 0 h | Completed | [PR #14](https://github.com/voidbrain/hobo/pull/14) first architecture review |
+| — | <a id="f-016-t05"></a>F-016-T05 — Turn coverage.enforce on | 0.25 h | 0 h | Completed | [PR #15](https://github.com/voidbrain/hobo/pull/15) coverage.enforce on |
+
+</details>
 
 <details>
 <summary>Next action, estimates and PR history</summary>
@@ -583,10 +565,10 @@ Bugs (B-) and features (F-) in one list, in work-queue order. Steps: `effort` = 
 
 | Field | Value |
 |---|---|
-| PR / evidence | Steps: F-016-T01: [PR #14](https://github.com/voidbrain/hobo/pull/14) settings on · F-016-T02: [PR #14](https://github.com/voidbrain/hobo/pull/14) first architecture review · F-016-T05: [PR #15](https://github.com/voidbrain/hobo/pull/15) coverage.enforce on. [#14](https://github.com/voidbrain/hobo/pull/14); [#15](https://github.com/voidbrain/hobo/pull/15) |
+| PR / evidence | Steps: F-016-T01: [PR #14](https://github.com/voidbrain/hobo/pull/14) settings on · F-016-T02: [PR #14](https://github.com/voidbrain/hobo/pull/14) first architecture review · F-016-T05: [PR #15](https://github.com/voidbrain/hobo/pull/15) coverage.enforce on. [#14](https://github.com/voidbrain/hobo/pull/14) (F-016-T01, F-016-T02, CI 45801540013); [#15](https://github.com/voidbrain/hobo/pull/15) (F-016-T05, CI 45802414492) |
 | Opened | 2026-11-26 |
-| Verification | Pending |
-| Reviewed | 2026-11-26 |
+| Verification | Unit/integration · 2026-11-27 · F-016-T01 and F-016-T02 (#14 CI 45801540013) and F-016-T05 (#15 CI 45802414492) green; F-016-T03 and F-016-T04 pending |
+| Reviewed | 2026-11-27 |
 
 </details>
 
@@ -622,10 +604,10 @@ Bugs (B-) and features (F-) in one list, in work-queue order. Steps: `effort` = 
 
 | Field | Value |
 |---|---|
-| PR / evidence | Steps: F-017-T01: [PR #16](https://github.com/voidbrain/hobo/pull/16) plan · F-017-T02: [PR #16](https://github.com/voidbrain/hobo/pull/16) plan. [#16](https://github.com/voidbrain/Hobo/pull/16) (plan); [report](https://github.com/voidbrain/coordinator/blob/main/docs/reviews/2026-11-26-nerv-practices-transfer.md); owner decision 2026-11-26 |
+| PR / evidence | Steps: F-017-T01: [PR #16](https://github.com/voidbrain/hobo/pull/16) plan · F-017-T02: [PR #16](https://github.com/voidbrain/hobo/pull/16) plan. [#16](https://github.com/voidbrain/hobo/pull/16) (plan); [report](https://github.com/voidbrain/coordinator/blob/main/docs/reviews/2026-11-26-nerv-practices-transfer.md); owner decision 2026-11-26 |
 | Opened | 2026-11-26 |
 | Verification | Pending |
-| Reviewed | 2026-11-26 |
+| Reviewed | 2026-11-27 |
 
 </details>
 
@@ -715,7 +697,7 @@ Bugs (B-) and features (F-) in one list, in work-queue order. Steps: `effort` = 
 
 **Plan revision, 2026-11-25 (fresh review relayed by the coordinator).** Storage is a small Node 24 `server/` with SQLite that the app talks to (IndexedDB only as an optional offline cache later); the OpenRouteService key lives in git-ignored `server/` config, never in `public/`; F-007-T01 now waits on F-002-T01; F-011-T01 also waits on F-003-T01 and F-004-T02; F-008-T04 on F-003-T01 and F-004-T03. Estimates unchanged.
 
-**Reconciliation, 2026-11-26 (main `975baa8`).** PRs #1-#9 merged on green PR CI and green main runs; F-007-T01 (#8) and F-007-T03 (#9) closed. Harness reconciled from v10.21.3 to v10.21.4 (#10) and to v10.24.1 (#18, 2026-11-26; the owner authorised it in chat, "ok to all", although the template backlog is not empty). F-013-T01 (#11) closed on green CI.
+**Reconciliation log:** [docs/archive/reconciliation-2026.md](archive/reconciliation-2026.md). Latest: 2026-11-27 against main `cb4d7c0` (#12–#21 merged on green CI; harness reconciled to v10.24.2 in #20).
 
 ## How to use this file
 

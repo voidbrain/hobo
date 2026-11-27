@@ -4,7 +4,7 @@
   "parent": "F-001",
   "title": "Scaffold the app and apply harness v10.21.3",
   "goal": "An Angular 22 app with the harness checks green in CI",
-  "status": "implemented",
+  "status": "closed",
   "acceptance": [
     "Angular 22 app `hobo`: standalone components, signals, strict TypeScript and strict templates, lazy routes, design tokens in src/styles.scss",
     "Harness v10.21.3 core + angular applied and adapted: AGENTS, areas, style guide, backlog rules, tools, CI",
@@ -38,10 +38,10 @@
   "effort": {
     "size": "small",
     "estimate": "0 remaining",
-    "basis": "Done 2026-11-25: Angular 22 scaffold (strict TypeScript and templates), harness v10.21.3 core + angular, first unit tests; verification is the PR's CI.",
-    "reviewed": "2026-11-25",
+    "basis": "Done 2026-11-25 in #1 (CI 45701898058 green): Angular 22 scaffold (strict TypeScript and templates), harness v10.21.3 core + angular, first unit tests. No actual: reconciled in a later session without job timing. Closed 2026-11-27.",
+    "reviewed": "2026-11-27",
     "agentHours": 0,
-    "ownerHours": 0.0,
+    "ownerHours": 0,
     "baselineAgentHours": 3,
     "estimateAgentHours": 3,
     "days": 0,

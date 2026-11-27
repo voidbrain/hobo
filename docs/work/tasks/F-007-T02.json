@@ -4,7 +4,7 @@
   "parent": "F-007",
   "title": "Leaflet map component",
   "goal": "Places and routes show on a map",
-  "status": "implemented",
+  "status": "closed",
   "acceptance": [
     "Leaflet with OpenStreetMap tiles and visible attribution",
     "Markers and a route polyline from inputs; tokens only, no app services (bricks-ready)"
@@ -41,8 +41,8 @@
   "effort": {
     "size": "medium",
     "estimate": "0 remaining",
-    "basis": "Done 2026-11-26: MapView (Leaflet, OSM tiles and attribution, markers and route lines from inputs, token classes), its spec and a MapsApi-to-MapView join test. No actual: start time not recorded.",
-    "reviewed": "2026-11-26",
+    "basis": "Done 2026-11-26 in #12 (CI 45784696923 green): MapView (Leaflet, OSM tiles and attribution, markers and route lines from inputs, token classes), its spec and a MapsApi-to-MapView join test. No actual: start time not recorded.",
+    "reviewed": "2026-11-27",
     "agentHours": 0,
     "ownerHours": 0.0,
     "baselineAgentHours": 2,

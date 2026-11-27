@@ -4,7 +4,7 @@
   "parent": "F-003",
   "title": "Trip model and API",
   "goal": "Trips persist with their days and stops",
-  "status": "implemented",
+  "status": "closed",
   "acceptance": [
     "Trip: name, start and end dates, from and to (home by default, from a home setting), stops per day referencing places",
     "Validated API and pure helpers in src/app/core with tests"
@@ -41,8 +41,8 @@
   "effort": {
     "size": "medium",
     "estimate": "0 remaining",
-    "basis": "Implemented 2026-11-25 in PR #6; verification is green CI on PR #6 and merge.",
-    "reviewed": "2026-11-25",
+    "basis": "Done 2026-11-25 in #6 (CI 45720389688 green). No actual: reconciled in a later session without job timing.",
+    "reviewed": "2026-11-27",
     "agentHours": 0,
     "ownerHours": 0.0,
     "baselineAgentHours": 2,

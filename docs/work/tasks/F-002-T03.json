@@ -4,7 +4,7 @@
   "parent": "F-002",
   "title": "Place images",
   "goal": "Each place keeps its photos locally",
-  "status": "implemented",
+  "status": "closed",
   "acceptance": [
     "Attach images to a place; thumbnails; files in the git-ignored data folder",
     "GPS and other EXIF metadata stripped on import; tests with an invented image"
@@ -40,8 +40,8 @@
   "effort": {
     "size": "medium",
     "estimate": "0 remaining",
-    "basis": "Implemented 2026-11-25 in PR #7; verification is green CI on PR #7 and merge.",
-    "reviewed": "2026-11-25",
+    "basis": "Done 2026-11-25 in #7 (CI 45721078554 green). No actual: reconciled in a later session without job timing.",
+    "reviewed": "2026-11-27",
     "agentHours": 0,
     "ownerHours": 0.0,
     "baselineAgentHours": 2,
