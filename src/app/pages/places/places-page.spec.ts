@@ -130,6 +130,38 @@ describe('PlacesPage', () => {
     expect(root.textContent).toContain('A mountain fortress');
   });
 
+  it('shows an existing location on the edit map and displays its coordinates', async () => {
+    api.list.mockReturnValueOnce(of([{ ...place, location: pickedPoint }]));
+    const fixture = TestBed.createComponent(PlacesPage);
+    await fixture.whenStable();
+    const root = fixture.nativeElement as HTMLElement;
+    root.querySelector<HTMLButtonElement>('.place-list button')?.click();
+    await fixture.whenStable();
+
+    expect(root.textContent).toContain('Selected coordinates: 45.20000, 9.30000');
+    const map = fixture.debugElement.query(By.directive(MapView)).componentInstance as MapView;
+    expect(map.markers()).toEqual([{ location: pickedPoint, label: place.name }]);
+  });
+
+  it('clears a saved location by sending null when the edited place is saved', async () => {
+    api.list.mockReturnValueOnce(of([{ ...place, location: pickedPoint }]));
+    const fixture = TestBed.createComponent(PlacesPage);
+    await fixture.whenStable();
+    const root = fixture.nativeElement as HTMLElement;
+    root.querySelector<HTMLButtonElement>('.place-list button')?.click();
+    await fixture.whenStable();
+    root.querySelector<HTMLButtonElement>('button.secondary')!.click();
+    const name = root.querySelector<HTMLInputElement>('#place-name')!;
+    name.value = 'Rocca Calascio';
+    name.dispatchEvent(new Event('input', { bubbles: true }));
+    root
+      .querySelector<HTMLFormElement>('form')!
+      .dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
+    await fixture.whenStable();
+
+    expect(api.update).toHaveBeenCalledWith('place-1', expect.objectContaining({ location: null }));
+  });
+
   it('closes the form when editing is cancelled', async () => {
     const fixture = TestBed.createComponent(PlacesPage);
     await fixture.whenStable();
@@ -185,8 +217,14 @@ describe('PlacesPage', () => {
     await fixture.whenStable();
 
     expect(TestBed.inject(MapsApi).autocomplete).toHaveBeenCalledWith('Lake Braies', 5);
-    root.querySelector<HTMLButtonElement>('.location-suggestions button')?.click();
+    const suggestion = root.querySelector<HTMLButtonElement>('.location-suggestions button')!;
+    suggestion.focus();
+    suggestion.click();
     await fixture.whenStable();
+    expect(document.activeElement).toBe(root.querySelector('#location-search'));
+    expect(root.querySelector('[aria-live="polite"]')?.textContent).toContain(
+      'Selected coordinates: 45.20000, 9.30000',
+    );
     const map = fixture.debugElement.query(By.directive(MapView)).componentInstance as MapView;
     expect(map.markers()).toEqual([{ location: pickedPoint, label: 'Lake Braies, Inventedland' }]);
 
@@ -245,5 +283,54 @@ describe('PlacesPage', () => {
 
     expect(root.textContent).toContain('Lake Braies, Inventedland');
     http.verify();
+  });
+
+  it('shows a message when search returns no places', async () => {
+    vi.spyOn(TestBed.inject(MapsApi), 'autocomplete').mockReturnValue(of([]));
+    const fixture = TestBed.createComponent(PlacesPage);
+    await fixture.whenStable();
+    const root = fixture.nativeElement as HTMLElement;
+    root.querySelector<HTMLButtonElement>('button')?.click();
+    await fixture.whenStable();
+    const search = root.querySelector<HTMLInputElement>('#location-search')!;
+    search.value = 'Unknown Place';
+    search.dispatchEvent(new Event('input', { bubbles: true }));
+    await new Promise((resolve) => setTimeout(resolve, 300));
+    await fixture.whenStable();
+
+    expect(root.textContent).toContain('No places found.');
+  });
+
+  it('shows the autocomplete error when a search fails', async () => {
+    vi.spyOn(TestBed.inject(MapsApi), 'autocomplete').mockReturnValue(
+      throwError(() => new Error('offline')),
+    );
+    const fixture = TestBed.createComponent(PlacesPage);
+    await fixture.whenStable();
+    const root = fixture.nativeElement as HTMLElement;
+    root.querySelector<HTMLButtonElement>('button')?.click();
+    await fixture.whenStable();
+    const search = root.querySelector<HTMLInputElement>('#location-search')!;
+    search.value = 'Unknown Place';
+    search.dispatchEvent(new Event('input', { bubbles: true }));
+    await new Promise((resolve) => setTimeout(resolve, 300));
+    await fixture.whenStable();
+
+    expect(root.textContent).toContain('Could not search for places. Check map settings and try again.');
+  });
+
+  it('does not request autocomplete for a query shorter than three characters', async () => {
+    const autocomplete = vi.spyOn(TestBed.inject(MapsApi), 'autocomplete');
+    const fixture = TestBed.createComponent(PlacesPage);
+    await fixture.whenStable();
+    const root = fixture.nativeElement as HTMLElement;
+    root.querySelector<HTMLButtonElement>('button')?.click();
+    await fixture.whenStable();
+    const search = root.querySelector<HTMLInputElement>('#location-search')!;
+    search.value = 'ab';
+    search.dispatchEvent(new Event('input', { bubbles: true }));
+    await new Promise((resolve) => setTimeout(resolve, 300));
+
+    expect(autocomplete).not.toHaveBeenCalled();
   });
 });

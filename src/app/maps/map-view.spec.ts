@@ -88,6 +88,16 @@ describe('MapView (F-007-T02)', () => {
     expect(Number.isFinite(picked[0]?.lng)).toBe(true);
   });
 
+  it('wraps a click beyond the antimeridian into a valid longitude', async () => {
+    const { fixture } = await render({});
+    const picked: MapPoint[] = [];
+    fixture.componentInstance.picked.subscribe((point) => picked.push(point));
+    const map = (fixture.componentInstance as unknown as { map: L.Map }).map;
+    map.fire('click', { latlng: L.latLng(4, 200) });
+
+    expect(picked).toEqual([{ lat: 4, lng: -160 }]);
+  });
+
   it('shows a place name with markup as plain text in its tooltip', async () => {
     const label = '<img src="x" onerror="alert(1)">Harbour Quay';
     const { el } = await render({ markers: [{ location: PORTWIND, label }] });
