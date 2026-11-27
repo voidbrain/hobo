@@ -106,9 +106,9 @@ export class TripsPage {
       startDate: trip.startDate,
       endDate: trip.endDate,
       fromChoice: this.endpointChoice(trip.from),
-      fromCustomName: this.isCustomEndpoint(trip.from) ? (trip.from?.name ?? '') : '',
+      fromCustomName: this.isCustomEndpoint(trip.from) ? trip.from.name : '',
       toChoice: this.endpointChoice(trip.to),
-      toCustomName: this.isCustomEndpoint(trip.to) ? (trip.to?.name ?? '') : '',
+      toCustomName: this.isCustomEndpoint(trip.to) ? trip.to.name : '',
       newPlaceName: '',
     });
     this.savedDays.set(trip.days);
@@ -159,7 +159,6 @@ export class TripsPage {
   protected async createAndAddPlace(): Promise<void> {
     const name = this.model().newPlaceName.trim();
     const date = this.activeDate();
-    if (!name || !date) return;
     this.error.set('');
     this.status.set('');
     try {
@@ -211,13 +210,9 @@ export class TripsPage {
     if (choice === 'home') return this.settings().home;
     if (choice === 'none') return null;
     if (choice === 'custom') return { name: customName.trim(), location: null, placeId: null };
-    if (choice.startsWith('place:')) {
-      const place = this.places().find(
-        (candidate) => candidate.id === choice.slice('place:'.length),
-      );
-      if (place) return { name: place.name, location: place.location, placeId: place.id };
-    }
-    return null;
+    const placeId = choice.slice('place:'.length);
+    const place = this.places().find((candidate) => candidate.id === placeId)!;
+    return { name: place.name, location: place.location, placeId: place.id };
   }
 
   private endpointChoice(endpoint: TripEndpoint | null): string {
@@ -229,7 +224,7 @@ export class TripsPage {
     return 'custom';
   }
 
-  private isCustomEndpoint(endpoint: TripEndpoint | null): boolean {
+  private isCustomEndpoint(endpoint: TripEndpoint | null): endpoint is TripEndpoint {
     return endpoint !== null && this.endpointChoice(endpoint) === 'custom';
   }
 

@@ -6,9 +6,9 @@ How much of the code the unit tests run, per folder. It says what ran, not that 
 
 | Folder | Files | Lines | Statements | Branches | Functions |
 |---|---|---|---|---|---|
-| `src/app/` | 14 | 90.9 % | 87.5 % | 82.9 % | 92.1 % |
-| **all** | 15 | 90.8 % | 87.3 % | 82.9 % | 91.4 % |
+| `src/app/` | 17 | 92.3 % | 89.6 % | 83.0 % | 93.3 % |
+| **all** | 18 | 92.2 % | 89.5 % | 83.0 % | 92.9 % |
 
 ## Files no unit test runs
 
-- `src/app/`: `app.config.ts`, `app.routes.ts`
+- `src/app/`: `app.config.ts`
