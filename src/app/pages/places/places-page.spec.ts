@@ -7,7 +7,7 @@ import autocompleteFixture from '../../../../server/fixtures/ors/geocode-autocom
 import { PlacesApi } from '../../data/places-api';
 import type { Place } from '../../core/place';
 import type { GeocodeCandidate, MapPoint } from '../../maps/map-provider';
-import { MapsApi } from '../../maps/maps-api';
+import { MapsApi, MapsApiError } from '../../maps/maps-api';
 import { MapView } from '../../maps/map-view';
 import { PlacesPage } from './places-page';
 
@@ -334,6 +334,31 @@ describe('PlacesPage', () => {
 
     expect(root.textContent).toContain(
       'Could not search for places. Check map settings and try again.',
+    );
+  });
+
+  it('explains how to configure OpenRouteService when its key is missing', async () => {
+    vi.spyOn(TestBed.inject(MapsApi), 'autocomplete').mockReturnValue(
+      throwError(
+        () =>
+          new MapsApiError(503, 'missing_key', [
+            'OpenRouteService API key is not configured. Add openRouteServiceApiKey to server/config.local.json.',
+          ]),
+      ),
+    );
+    const fixture = TestBed.createComponent(PlacesPage);
+    await fixture.whenStable();
+    const root = fixture.nativeElement as HTMLElement;
+    root.querySelector<HTMLButtonElement>('button')?.click();
+    await fixture.whenStable();
+    const search = root.querySelector<HTMLInputElement>('#location-search')!;
+    search.value = 'Treviso';
+    search.dispatchEvent(new Event('input', { bubbles: true }));
+    await new Promise((resolve) => setTimeout(resolve, 300));
+    await fixture.whenStable();
+
+    expect(root.textContent).toContain(
+      'Place search needs an OpenRouteService key. Add openRouteServiceApiKey to server/config.local.json; see README for setup.',
     );
   });
 
