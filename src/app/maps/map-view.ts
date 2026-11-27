@@ -6,6 +6,7 @@ import {
   afterRenderEffect,
   inject,
   input,
+  output,
   viewChild,
 } from '@angular/core';
 import * as L from 'leaflet';
@@ -87,6 +88,8 @@ export class MapView {
   /** One line per leg, each the leg's `geometry` from `/api/maps/route`. */
   readonly routes = input<readonly (readonly MapPoint[])[]>([]);
   readonly tiles = input<TileLayerConfig>(DEFAULT_OSM_TILES);
+  /** Coordinate picked by clicking the map. */
+  readonly picked = output<MapPoint>();
 
   private readonly host = viewChild.required<ElementRef<HTMLDivElement>>('map');
   private map?: L.Map;
@@ -110,6 +113,9 @@ export class MapView {
       if (!this.map) {
         // An explicit SVG renderer: vector layers stay styleable by class, in every browser.
         this.map = L.map(element, { renderer: new L.SVG() });
+        this.map.on('click', ({ latlng }) =>
+          this.picked.emit({ lat: latlng.lat, lng: latlng.lng }),
+        );
         this.overlays.addTo(this.map);
         if (typeof ResizeObserver !== 'undefined') {
           resize = new ResizeObserver(() => this.map?.invalidateSize());

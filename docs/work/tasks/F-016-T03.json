@@ -4,7 +4,7 @@
   "parent": "F-016",
   "title": "First token and skills reviews",
   "goal": "docs/reviews/token/<date>.md and docs/reviews/skills/<date>.md",
-  "status": "implemented",
+  "status": "closed",
   "acceptance": [
     "Token review per rule-review \"Periodic token review\"",
     "Skills review per skills \"Skill discovery review\""
@@ -25,10 +25,10 @@
   ],
   "effort": {
     "size": "small",
-    "estimate": "1 h agent whole step; 0.25 h remains for PR verification",
-    "basis": "Estimated 2026-11-26. Both reviews completed 2026-11-27; 0.25 h remains for PR review and CI. No actual: the host job began mid-task and has no event timing coverage.",
+    "estimate": "0 remaining",
+    "basis": "Done 2026-11-27 in #23 (CI 45964356626 green): both dated reviews are present and check:freshness reports neither missing. No actual: the host job began mid-task and has no event timing coverage.",
     "reviewed": "2026-11-27",
-    "agentHours": 0.25,
+    "agentHours": 0,
     "ownerHours": 0,
     "baselineAgentHours": 1,
     "estimateAgentHours": 1,

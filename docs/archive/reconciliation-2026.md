@@ -11,3 +11,7 @@ PRs #12–#21 merged on green CI (#18, #20 harness reconciles, no record; #21 co
 ## 2026-11-27 — main `3b7f25d`
 
 PR #22 merged on green CI; it reconciled the backlog through `cb4d7c0`. PRs #12–#22 have green CI. #18 and #20 were harness maintenance with no feature record; #21's record references are present. Token and skills reviews are recorded for F-016-T03.
+
+## 2026-11-27 — main `1ff8293`
+
+PRs #22 and #23 merged on green CI. #22 was a backlog-only reconciliation with no feature record; #23 implemented F-002-T02 and the first F-016-T03 reviews. F-016-T03 closed on #23 CI; F-002-T02 remains implemented pending the owner walkthrough.

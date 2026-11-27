@@ -24,3 +24,12 @@ Expected: Angular serves the app at `http://localhost:4200` and proxies `/api` t
 6. Repeat with the keyboard: tab to **Add place**, submit an empty form, and confirm the name error is announced and the form remains open. Enter a name and save; confirm focus can reach the edit button and all fields.
 
 Expected: a name alone creates a place; optional fields save and reload; the name is required; keyboard users can operate the form and receive the validation error.
+
+## F-002-T04 — Place location
+
+1. Edit `Test place 01` and enter at least three characters of a known place name in **Search for a place**.
+2. Choose a result. Confirm the map shows its marker and the selected coordinates.
+3. Save, reload the page, and edit the place again. Confirm the marker and coordinates remain.
+4. Click a different point on the map. Confirm the marker moves and the selected coordinates change; save and reload once more.
+
+Expected: autocomplete suggestions come from the configured local map provider, a result or map click sets the place location, and the selected coordinates persist. Search requires a working geocoding provider in the local server configuration.
