@@ -2,7 +2,7 @@
 
 Hobo is a personal trip planner. Add places as you find them (name, description, images, category, tags, notes, location and time on site), organise them later by category and tag, then build trips from them: dates, a start and an end (home by default), and stops in order. Hobo computes kilometres and time per leg, per day and for the whole trip, lets you try another order or set of stops without touching the saved plan, and keeps variants of a trip side by side. Data stays on your own machine.
 
-Status: in development. The plan, in steps with estimates, is the [backlog](docs/BACKLOG.md).
+Status: scaffold. The plan, in steps with estimates, is the [backlog](docs/BACKLOG.md).
 
 ## Run it
 

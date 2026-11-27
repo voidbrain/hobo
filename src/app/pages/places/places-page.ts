@@ -1,4 +1,4 @@
-import { Component, computed, inject, signal } from '@angular/core';
+import { Component, computed, ElementRef, inject, signal, viewChild } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormField, form, required, submit } from '@angular/forms/signals';
 import {
@@ -56,6 +56,8 @@ export class PlacesPage {
   protected readonly locationQuery = signal('');
   protected readonly suggestions = signal<GeocodeCandidate[]>([]);
   protected readonly searchError = signal('');
+  protected readonly searchComplete = signal(false);
+  protected readonly locationSearch = viewChild<ElementRef<HTMLInputElement>>('locationSearch');
   protected readonly locationSummary = computed(() => {
     const point = this.location();
     return point ? `${point.lat.toFixed(5)}, ${point.lng.toFixed(5)}` : '';
@@ -89,6 +91,7 @@ export class PlacesPage {
       .subscribe(({ candidates, error }) => {
         this.suggestions.set(candidates);
         this.searchError.set(error);
+        this.searchComplete.set(true);
       });
   }
 
@@ -101,6 +104,7 @@ export class PlacesPage {
     this.locationLabel.set('');
     this.locationQuery.set('');
     this.suggestions.set([]);
+    this.searchComplete.set(false);
     this.locationQueries.next('');
   }
 
@@ -112,6 +116,7 @@ export class PlacesPage {
     this.locationLabel.set(place.name);
     this.locationQuery.set('');
     this.suggestions.set([]);
+    this.searchComplete.set(false);
     this.locationQueries.next('');
     this.model.set({
       name: place.name,
@@ -133,6 +138,7 @@ export class PlacesPage {
   protected searchLocation(event: Event): void {
     const query = (event.target as HTMLInputElement).value;
     this.locationQuery.set(query);
+    this.searchComplete.set(false);
     this.locationQueries.next(query);
   }
 
@@ -142,7 +148,9 @@ export class PlacesPage {
     this.locationQuery.set(candidate.label);
     this.suggestions.set([]);
     this.searchError.set('');
+    this.searchComplete.set(false);
     this.locationQueries.next('');
+    this.locationSearch()?.nativeElement.focus();
   }
 
   protected pickLocation(point: MapPoint): void {
@@ -150,6 +158,7 @@ export class PlacesPage {
     this.locationLabel.set(this.model().name || 'Selected location');
     this.suggestions.set([]);
     this.searchError.set('');
+    this.searchComplete.set(false);
     this.locationQueries.next('');
   }
 

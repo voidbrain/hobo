@@ -8,6 +8,7 @@
   "acceptance": [
     "Search by name with autocomplete through the provider adapter, or click on the map",
     "Location shown on the map; tests with recorded provider fixtures",
+    "Keyboard users can select the map centre, return focus to search after choosing a result, and hear selected coordinates",
     "Owner confirms a provider result and map click display and persist the selected location (manual check in docs/manual-checks/places-and-trips.md)"
   ],
   "dependsOn": [

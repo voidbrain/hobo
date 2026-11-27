@@ -27,9 +27,8 @@ Expected: a name alone creates a place; optional fields save and reload; the nam
 
 ## F-002-T04 — Place location
 
-1. Edit `Test place 01` and enter at least three characters of a known place name in **Search for a place**.
-2. Choose a result. Confirm the map shows its marker and the selected coordinates.
+1. Edit `Test place 01` and enter at least three characters of a known place name in **Search for a place**. With the keyboard, choose a result and confirm focus returns to search and the selected coordinates are announced.
 3. Save, reload the page, and edit the place again. Confirm the marker and coordinates remain.
-4. Click a different point on the map. Confirm the marker moves and the selected coordinates change; save and reload once more.
+4. Choose **Use map centre** with the keyboard. Confirm the marker moves and the selected coordinates change; save and reload once more. A pointer click on another map point should also update the marker and coordinates.
 
 Expected: autocomplete suggestions come from the configured local map provider, a result or map click sets the place location, and the selected coordinates persist. Search requires a working geocoding provider in the local server configuration.

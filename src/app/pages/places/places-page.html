@@ -60,6 +60,7 @@
         <label for="location-search">Search for a place</label>
         <input
           id="location-search"
+          #locationSearch
           type="search"
           autocomplete="off"
           [value]="locationQuery()"
@@ -74,11 +75,13 @@
             {{ searchError() }}
           } @else if (suggestions().length) {
             {{ suggestions().length }} suggestions found.
+          } @else if (searchComplete() && locationQuery().trim().length >= 3) {
+            No places found.
           }
         </p>
         @if (suggestions().length) {
           <ul class="location-suggestions" aria-label="Location suggestions">
-            @for (candidate of suggestions(); track candidate.label) {
+            @for (candidate of suggestions(); track $index) {
               <li>
                 <button type="button" class="secondary" (click)="selectSuggestion(candidate)">
                   {{ candidate.label }}
@@ -93,7 +96,9 @@
           (picked)="pickLocation($event)"
         />
         @if (locationSummary()) {
-          <p>Selected coordinates: {{ locationSummary() }}</p>
+          <p id="location-summary" aria-live="polite">
+            Selected coordinates: {{ locationSummary() }}
+          </p>
           <button type="button" class="secondary" (click)="clearLocation()">Clear location</button>
         }
       </section>

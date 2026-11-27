@@ -53,7 +53,7 @@ Scale `--space-1` 0.25rem, `--space-2` 0.5rem, `--space-3` 1rem, `--space-4` 1.5
 
 Each shared component gets an entry here and is built to move to 🧱 bricks (coordinator coordinator:F-012; Hobo's F-010 tracks the move): no app services injected, tokens only. Bricks (0.3.0) has no map component yet, so the map is Hobo's own until F-010 moves it.
 
-- **Map view** (`hobo-map-view`, [`src/app/maps/map-view.ts`](../src/app/maps/map-view.ts)): Leaflet with OpenStreetMap tiles; the attribution stays visible. Inputs `markers` (`{ location, label }`), `routes` (one line per leg, the `geometry` from `/api/maps/route`), `tiles` and `label` (the region's accessible name); output `picked` emits `{ lat, lng }` when the map is clicked. Route lines in `--color-accent`; markers are `--color-accent` dots with a `--color-surface` ring and the place name as tooltip; a visually hidden list reads the places out. A 1px `--color-border` frame with `--radius`, at least 16rem tall. It fits its view to the markers and lines.
+- **Map view** (`hobo-map-view`, [`src/app/maps/map-view.ts`](../src/app/maps/map-view.ts)): Leaflet with OpenStreetMap tiles; the attribution stays visible. Inputs `markers` (`{ location, label }`), `routes` (one line per leg, the `geometry` from `/api/maps/route`), `tiles` and `label` (the region's accessible name); output `picked` emits a wrapped `{ lat, lng }` when the map is clicked or the keyboard-operable **Use map centre** button is activated. Route lines in `--color-accent`; markers are `--color-accent` dots with a `--color-surface` ring and the place name as tooltip; a visually hidden list reads the places out. A 1px `--color-border` frame with `--radius`, at least 16rem tall. It fits its view to the markers and lines.
 
 ## Accessibility
 

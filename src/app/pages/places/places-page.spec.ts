@@ -3,6 +3,7 @@ import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { By } from '@angular/platform-browser';
 import { of, throwError } from 'rxjs';
+import autocompleteFixture from '../../../../server/fixtures/ors/geocode-autocomplete.json';
 import { PlacesApi } from '../../data/places-api';
 import type { Place } from '../../core/place';
 import type { GeocodeCandidate, MapPoint } from '../../maps/map-provider';
@@ -222,7 +223,7 @@ describe('PlacesPage', () => {
     suggestion.click();
     await fixture.whenStable();
     expect(document.activeElement).toBe(root.querySelector('#location-search'));
-    expect(root.querySelector('[aria-live="polite"]')?.textContent).toContain(
+    expect(root.querySelector('#location-summary')?.textContent).toContain(
       'Selected coordinates: 45.20000, 9.30000',
     );
     const map = fixture.debugElement.query(By.directive(MapView)).componentInstance as MapView;
@@ -278,10 +279,20 @@ describe('PlacesPage', () => {
         req.params.get('q') === 'Lake Braies' &&
         req.params.get('limit') === '5',
     );
-    request.flush([candidate]);
+    const feature = autocompleteFixture.features[0]!;
+    const [lng, lat] = feature.geometry.coordinates;
+    request.flush([
+      {
+        label: feature.properties.label,
+        location: { lat, lng },
+        country: feature.properties.country,
+        region: null,
+        locality: feature.properties.locality,
+      },
+    ]);
     await fixture.whenStable();
 
-    expect(root.textContent).toContain('Lake Braies, Inventedland');
+    expect(root.textContent).toContain('Harbour Quay, Portwind');
     http.verify();
   });
 
@@ -316,7 +327,9 @@ describe('PlacesPage', () => {
     await new Promise((resolve) => setTimeout(resolve, 300));
     await fixture.whenStable();
 
-    expect(root.textContent).toContain('Could not search for places. Check map settings and try again.');
+    expect(root.textContent).toContain(
+      'Could not search for places. Check map settings and try again.',
+    );
   });
 
   it('does not request autocomplete for a query shorter than three characters', async () => {

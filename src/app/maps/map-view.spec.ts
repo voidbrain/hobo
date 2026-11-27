@@ -88,6 +88,20 @@ describe('MapView (F-007-T02)', () => {
     expect(Number.isFinite(picked[0]?.lng)).toBe(true);
   });
 
+  it('emits the map centre when its keyboard-operable control is activated', async () => {
+    const { fixture, el } = await render({});
+    const picked: MapPoint[] = [];
+    fixture.componentInstance.picked.subscribe((point) => picked.push(point));
+    const button = el.querySelector<HTMLButtonElement>('.hobo-map-view__center')!;
+    button.focus();
+    button.click();
+
+    expect(document.activeElement).toBe(button);
+    expect(picked).toHaveLength(1);
+    expect(picked[0]?.lng).toBeGreaterThanOrEqual(-180);
+    expect(picked[0]?.lng).toBeLessThanOrEqual(180);
+  });
+
   it('wraps a click beyond the antimeridian into a valid longitude', async () => {
     const { fixture } = await render({});
     const picked: MapPoint[] = [];

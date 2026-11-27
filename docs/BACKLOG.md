@@ -1,9 +1,9 @@
 # <a id="top"></a>Hobo backlog
 
-Current work ledger, reviewed 27 November 2026 against main `1ff8293`. Generated from [record sources](work/records) and [steps](work/tasks) by `npm run work:build`: edit those, not this file. [Rules](BACKLOG-RULES.md) · [Archive](archive/README.md) · [Reading the records](#how-to-use-this-file).
+Current work ledger, reviewed 27 November 2026 against main `cb4d7c0`. Generated from [record sources](work/records) and [steps](work/tasks) by `npm run work:build`: edit those, not this file. [Rules](BACKLOG-RULES.md) · [Archive](archive/README.md) · [Reading the records](#how-to-use-this-file).
 
 <!-- totals:start -->
-**Remaining effort:** 50 h agent + 2.5 h owner across 37 open steps of 16 features. Generated from the task files.
+**Remaining effort:** 50.25 h agent + 2.5 h owner across 38 open steps of 16 features. Generated from the task files.
 <!-- totals:end -->
 
 ## Work items
@@ -51,7 +51,7 @@ Bugs (B-) and features (F-) in one list, in work-queue order. Steps: `effort` = 
 
 | Field | Value |
 |---|---|
-| PR / evidence | Steps: F-002-T01: [PR #5](https://github.com/voidbrain/hobo/pull/5) local store service and place model; step review: 2026-11-25 design-reviewer (fresh context, Opus): no blockers; fixed a 500 on a malformed id escape (test first) and added a rollback to a failed migration. Project-only harness edits: package.json (type module, server scripts; npm test also runs the server tests) and a marked CI step. · F-002-T03: [PR #7](https://github.com/voidbrain/hobo/pull/7) content-sniffed place image upload, size limit, EXIF/GPS stripping and thumbnail component; step review: 2026-11-26 Claude (Opus, fresh worktree) reviewed PR #7 written by Gemini. Fixed (test first): an upload announcing a Content-Length over 5 MB is now refused with 413 before its body is read. Added tests: a real decodable JPEG with a well-formed GPS EXIF IFD (stripped, scan data kept; also checked with macOS ImageIO: GPS present before, absent after, image still decodes), deleting a place unlinks its files, and image names that would leave the folder answer 404.. [#1](https://github.com/voidbrain/hobo/pull/1); [#2](https://github.com/voidbrain/hobo/pull/2) (review fixes); [#5](https://github.com/voidbrain/hobo/pull/5) (F-002-T01, CI 45713057220); [#7](https://github.com/voidbrain/hobo/pull/7) (F-002-T03, CI 45721078554); Test: `server/images.test.ts`, `src/app/pages/places/place-images.spec.ts`, `src/app/data/places-api.spec.ts` (`4dbecd4`); Review: 2026-11-26 Claude (Opus), fixed an announced oversized upload being read before its 413; added real GPS EXIF, place deletion and path tests; [#23](https://github.com/voidbrain/hobo/pull/23); [#24](https://github.com/voidbrain/hobo/pull/24) |
+| PR / evidence | Steps: F-002-T01: [PR #5](https://github.com/voidbrain/hobo/pull/5) local store service and place model; step review: 2026-11-25 design-reviewer (fresh context, Opus): no blockers; fixed a 500 on a malformed id escape (test first) and added a rollback to a failed migration. Project-only harness edits: package.json (type module, server scripts; npm test also runs the server tests) and a marked CI step. · F-002-T03: [PR #7](https://github.com/voidbrain/hobo/pull/7) content-sniffed place image upload, size limit, EXIF/GPS stripping and thumbnail component; step review: 2026-11-26 Claude (Opus, fresh worktree) reviewed PR #7 written by Gemini. Fixed (test first): an upload announcing a Content-Length over 5 MB is now refused with 413 before its body is read. Added tests: a real decodable JPEG with a well-formed GPS EXIF IFD (stripped, scan data kept; also checked with macOS ImageIO: GPS present before, absent after, image still decodes), deleting a place unlinks its files, and image names that would leave the folder answer 404.. [#1](https://github.com/voidbrain/hobo/pull/1); [#2](https://github.com/voidbrain/hobo/pull/2) (review fixes); [#5](https://github.com/voidbrain/hobo/pull/5) (F-002-T01, CI 45713057220); [#7](https://github.com/voidbrain/hobo/pull/7) (F-002-T03, CI 45721078554); Test: `server/images.test.ts`, `src/app/pages/places/place-images.spec.ts`, `src/app/data/places-api.spec.ts` (`4dbecd4`); Review: 2026-11-26 Claude (Opus), fixed an announced oversized upload being read before its 413; added real GPS EXIF, place deletion and path tests; [#23](https://github.com/voidbrain/hobo/pull/23); [#24](https://github.com/voidbrain/hobo/pull/24); Review: fresh-context design review 2026-11-27, findings fixed in #24 |
 | Opened | 2026-11-25 |
 | Verification | Unit/integration · 2026-11-27 · F-002-T01 (#5 CI 45713057220), F-002-T03 (#7 CI 45721078554) and F-002-T02 (#23 CI 45964356626) green; F-002-T04 local tests pass, PR CI pending; Browser/accessibility · Pending · owner walkthrough in manual check |
 | Reviewed | 2026-11-27 |
@@ -327,9 +327,9 @@ Bugs (B-) and features (F-) in one list, in work-queue order. Steps: `effort` = 
 
 | Status | Priority | Effort | Remaining | Depends on | Unlocks | Agent | Procedures | Decisions |
 |---|---|---|---|---|---|:---:|:---:|:---:|
-| 🔴 Open | 🔹 P3 | 🟢 Small | 0.25 h | — | — | 🤖 | — | — |
+| 🔴 Open | 🔹 P3 | 🟢 Small | 0.5 h | — | — | 🤖 | — | — |
 
-💻 **→** Next: F-016-T04 — Confirm the scheduled maintenance run (Planned).
+💻 **→** Next: F-016-T03 — First token and skills reviews (Implemented; verification pending).
 
 | | |
 |---|---|
@@ -341,16 +341,16 @@ Bugs (B-) and features (F-) in one list, in work-queue order. Steps: `effort` = 
 
 | Effort | Step | Estimate | Actual | Remaining | Status | PRs |
 |---|---|---|---|---|---|---|
+| 🟢 Small | <a id="f-016-t03"></a>F-016-T03 — First token and skills reviews | 1 h | 0 h | 0.25 h | Implemented; verification pending | — |
 | 🟢 Small | <a id="f-016-t04"></a>F-016-T04 — Confirm the scheduled maintenance run | 0.25 h | 0 h | 0.25 h | Planned | — |
-| 🟢 Small | **Total** | 2.25 h | 0 h (0 of 5 steps recorded) | 0.25 h | 4 of 5 completed | |
+| 🟢 Small | **Total** | 2.25 h | 0 h (0 of 5 steps recorded) | 0.5 h | 3 of 5 completed | |
 
-<details><summary>Done steps (4)</summary>
+<details><summary>Done steps (3)</summary>
 
 | Effort | Step | Estimate | Actual | Status | PRs |
 |---|---|---|---|---|---|
 | — | <a id="f-016-t01"></a>F-016-T01 — Reviews, coverage enforcement, work usage and behaviour runner settings | 0.25 h | 0 h | Completed | [PR #14](https://github.com/voidbrain/hobo/pull/14) settings on |
 | — | <a id="f-016-t02"></a>F-016-T02 — First architecture review with outside-landscape comparison | 0.5 h | 0 h | Completed | [PR #14](https://github.com/voidbrain/hobo/pull/14) first architecture review |
-| — | <a id="f-016-t03"></a>F-016-T03 — First token and skills reviews | 1 h | 0 h | Completed | — |
 | — | <a id="f-016-t05"></a>F-016-T05 — Turn coverage.enforce on | 0.25 h | 0 h | Completed | [PR #15](https://github.com/voidbrain/hobo/pull/15) coverage.enforce on |
 
 </details>
@@ -362,9 +362,9 @@ Bugs (B-) and features (F-) in one list, in work-queue order. Steps: `effort` = 
 
 | Field | Value |
 |---|---|
-| PR / evidence | Steps: F-016-T01: [PR #14](https://github.com/voidbrain/hobo/pull/14) settings on · F-016-T02: [PR #14](https://github.com/voidbrain/hobo/pull/14) first architecture review · F-016-T05: [PR #15](https://github.com/voidbrain/hobo/pull/15) coverage.enforce on. [#14](https://github.com/voidbrain/hobo/pull/14) (F-016-T01, F-016-T02, CI 45801540013); [#15](https://github.com/voidbrain/hobo/pull/15) (F-016-T05, CI 45802414492); [#23](https://github.com/voidbrain/hobo/pull/23); [#24](https://github.com/voidbrain/hobo/pull/24) |
+| PR / evidence | Steps: F-016-T01: [PR #14](https://github.com/voidbrain/hobo/pull/14) settings on · F-016-T02: [PR #14](https://github.com/voidbrain/hobo/pull/14) first architecture review · F-016-T05: [PR #15](https://github.com/voidbrain/hobo/pull/15) coverage.enforce on. [#14](https://github.com/voidbrain/hobo/pull/14) (F-016-T01, F-016-T02, CI 45801540013); [#15](https://github.com/voidbrain/hobo/pull/15) (F-016-T05, CI 45802414492); [#23](https://github.com/voidbrain/hobo/pull/23) |
 | Opened | 2026-11-26 |
-| Verification | Unit/integration · 2026-11-27 · F-016-T01 and F-016-T02 (#14 CI 45801540013), F-016-T05 (#15 CI 45802414492) and F-016-T03 (#23 CI 45964356626) green; F-016-T04 scheduled run verified |
+| Verification | Unit/integration · 2026-11-27 · F-016-T01 and F-016-T02 (#14 CI 45801540013) and F-016-T05 (#15 CI 45802414492) green; F-016-T03 local review files complete, PR CI pending; F-016-T04 pending |
 | Reviewed | 2026-11-27 |
 
 </details>
