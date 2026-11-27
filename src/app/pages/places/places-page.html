@@ -14,7 +14,7 @@
   }
 
   @if (formOpen()) {
-    <form (submit)="save($event)" aria-labelledby="form-title">
+    <form id="place-form" (submit)="save($event)" aria-labelledby="form-title">
       <h2 id="form-title">{{ editingId() === null ? 'Add a place' : 'Edit place' }}</h2>
       <label for="place-name">Name</label>
       <input
@@ -116,30 +116,144 @@
   @if (places().length === 0) {
     <p>No places yet. Add one with a name to get started.</p>
   } @else {
-    <ul class="place-list" aria-label="Saved places">
-      @for (place of places(); track place.id) {
-        <li>
-          <div>
-            <h2>{{ place.name }}</h2>
-            @if (place.description) {
-              <p>{{ place.description }}</p>
-            }
-            @if (place.category || place.tags.length) {
-              <p class="muted">
-                @if (place.category) {
-                  {{ place.category }}
-                }
-                @if (place.tags.length) {
-                  · {{ place.tags.join(', ') }}
-                }
-              </p>
-            }
-          </div>
-          <button type="button" class="secondary" (click)="edit(place)">
-            Edit {{ place.name }}
-          </button>
-        </li>
+    <section class="place-tools" aria-labelledby="place-tools-title">
+      <h2 id="place-tools-title">Filter places</h2>
+      <label for="filter-category">Category</label>
+      <select id="filter-category" [value]="categoryFilter()" (change)="setCategoryFilter($event)">
+        <option value="">All categories</option>
+        @for (category of categories(); track category) {
+          <option [value]="category">{{ category }}</option>
+        }
+      </select>
+
+      <label for="filter-tag">Tag</label>
+      <select id="filter-tag" [value]="tagFilter()" (change)="setTagFilter($event)">
+        <option value="">All tags</option>
+        @for (tag of tags(); track tag) {
+          <option [value]="tag">{{ tag }}</option>
+        }
+      </select>
+
+      <label for="group-places">Group by</label>
+      <select id="group-places" [value]="groupBy()" (change)="setGroupBy($event)">
+        <option value="none">No grouping</option>
+        <option value="category">Category</option>
+        <option value="tag">Tag</option>
+      </select>
+
+      <p class="taxonomy-status" role="status" aria-live="polite">{{ taxonomyStatus() }}</p>
+      @if (taxonomyError()) {
+        <p class="field-error" role="alert">{{ taxonomyError() }}</p>
       }
-    </ul>
+
+      <details class="taxonomy-manager">
+        <summary>Manage categories and tags</summary>
+        <form id="taxonomy-form" (submit)="applyTaxonomy($event)">
+          <label for="taxonomy-kind">Type</label>
+          <select id="taxonomy-kind" [value]="taxonomyKind()" (change)="setTaxonomyKind($event)">
+            <option value="category">Category</option>
+            <option value="tag">Tag</option>
+          </select>
+
+          <label for="taxonomy-source">Current {{ taxonomyKind() }}</label>
+          <select
+            id="taxonomy-source"
+            [value]="taxonomySource()"
+            (change)="setTaxonomySource($event)"
+          >
+            <option value="">Choose a {{ taxonomyKind() }}</option>
+            @for (value of taxonomySources(); track value) {
+              <option [value]="value">{{ value }}</option>
+            }
+          </select>
+
+          <label for="taxonomy-action">Action</label>
+          <select
+            id="taxonomy-action"
+            [value]="taxonomyAction()"
+            (change)="setTaxonomyAction($event)"
+          >
+            <option value="rename">Rename</option>
+            <option value="merge">Merge</option>
+            <option value="delete">Delete and reassign</option>
+          </select>
+
+          @if (taxonomyAction() === 'rename') {
+            <label for="taxonomy-target-name">New {{ taxonomyKind() }} name</label>
+            <input
+              id="taxonomy-target-name"
+              type="text"
+              [value]="taxonomyTarget()"
+              (input)="setTaxonomyTarget($event)"
+            />
+            <p class="muted">Rename this value on every place that uses it.</p>
+          } @else if (taxonomyAction() === 'merge') {
+            <label for="taxonomy-target">Merge into</label>
+            <select
+              id="taxonomy-target"
+              [value]="taxonomyTarget()"
+              (change)="setTaxonomyTarget($event)"
+            >
+              <option value="">Choose an existing {{ taxonomyKind() }}</option>
+              @for (value of taxonomyTargets(); track value) {
+                <option [value]="value">{{ value }}</option>
+              }
+            </select>
+            <p class="muted">Move every use of this value into the selected value.</p>
+          } @else {
+            <label for="taxonomy-target">Reassign uses to</label>
+            <select
+              id="taxonomy-target"
+              [value]="taxonomyTarget()"
+              (change)="setTaxonomyTarget($event)"
+            >
+              <option value="">Remove this {{ taxonomyKind() }} from places</option>
+              @for (value of taxonomyTargets(); track value) {
+                <option [value]="value">{{ value }}</option>
+              }
+            </select>
+            <p class="muted">Choose another value to reassign places before deleting this one.</p>
+          }
+          <button type="submit" [disabled]="!taxonomySource()">Apply to places</button>
+        </form>
+      </details>
+    </section>
+
+    @if (visibleGroups().length === 0) {
+      <p>No places match these filters.</p>
+    } @else {
+      @for (group of visibleGroups(); track group.label) {
+        <section class="place-group">
+          @if (group.label) {
+            <h3>{{ group.label }}</h3>
+          }
+          <ul class="place-list" aria-label="Saved places">
+            @for (place of group.places; track place.id) {
+              <li>
+                <div>
+                  <h2>{{ place.name }}</h2>
+                  @if (place.description) {
+                    <p>{{ place.description }}</p>
+                  }
+                  @if (place.category || place.tags.length) {
+                    <p class="muted">
+                      @if (place.category) {
+                        {{ place.category }}
+                      }
+                      @if (place.tags.length) {
+                        · {{ place.tags.join(', ') }}
+                      }
+                    </p>
+                  }
+                </div>
+                <button type="button" class="secondary" (click)="edit(place)">
+                  Edit {{ place.name }}
+                </button>
+              </li>
+            }
+          </ul>
+        </section>
+      }
+    }
   }
 </section>

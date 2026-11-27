@@ -4,10 +4,10 @@
   "parent": "F-002",
   "title": "Categories and tags",
   "goal": "Places added at random can be organised later",
-  "status": "planned",
+  "status": "implemented",
   "acceptance": [
-    "Manage categories and tags (rename, merge, delete with reassignment)",
-    "Filter and group the place list by category and tag"
+    "Filter by category and tag together, and group places by category or tag, including places with no value",
+    "Rename a category or tag across every affected place, merge into an existing value, or delete and reassign to another value or clear it; the server applies the change in one transaction and merged tags are de-duplicated"
   ],
   "dependsOn": [
     "F-002-T02"
@@ -16,6 +16,10 @@
     "src/app/pages/places/**",
     "src/app/core/**",
     "server/**",
+    "src/app/data/places-api.ts",
+    "docs/DESIGN.md",
+    "docs/manual-checks/places-and-trips.md",
+    "README.md",
     "docs/work/records/F-002.md"
   ],
   "capabilities": [
@@ -34,10 +38,10 @@
   ],
   "effort": {
     "size": "medium",
-    "estimate": "2 h agent, 1 d",
-    "basis": "Planned 2026-11-25 in the upfront step plan: scoped to one PR, at most 1 focused day(s). Not a measurement.",
-    "reviewed": "2026-11-25",
-    "agentHours": 2,
+    "estimate": "2 h agent whole step; 0.25 h remains for PR verification",
+    "basis": "Planned 2026-11-25 in the owner-approved upfront plan; implementation and local checks passed 2026-11-27. 0.25 h remains for PR review and CI. No actual: job timing is unavailable.",
+    "reviewed": "2026-11-27",
+    "agentHours": 0.25,
     "ownerHours": 0.0,
     "baselineAgentHours": 2,
     "estimateAgentHours": 2,

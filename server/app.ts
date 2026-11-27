@@ -4,6 +4,7 @@ import { createServer, type IncomingMessage, type ServerResponse } from 'node:ht
 import type { AddressInfo } from 'node:net';
 import { join, resolve, sep } from 'node:path';
 import { PLACE_LIMITS, validateNewPlace, validatePlacePatch } from '../src/app/core/place.ts';
+import { validateTaxonomyChange } from '../src/app/core/place-taxonomy.ts';
 import {
   tripPlaceIds,
   validateNewTrip,
@@ -159,6 +160,24 @@ export function placesHandler(store: PlaceStore, imagesDir?: string, maps?: MapP
         throw new HttpError(421, ['this service answers only on localhost']);
       const url = new URL(req.url ?? '/', 'http://localhost');
       const path = url.pathname;
+
+      if (/^\/api\/places\/taxonomy\/?$/.test(path)) {
+        if (req.method !== 'POST') throw new HttpError(405, ['use POST']);
+        const checked = validateTaxonomyChange(await readJson(req));
+        if (!checked.ok) throw new HttpError(400, checked.errors);
+        const valueErrors = [
+          checked.value.source,
+          ...(checked.value.target ? [checked.value.target] : []),
+        ].flatMap((value) => {
+          const checkedValue =
+            checked.value.kind === 'category'
+              ? validatePlacePatch({ category: value })
+              : validatePlacePatch({ tags: [value] });
+          return checkedValue.ok ? [] : checkedValue.errors;
+        });
+        if (valueErrors.length) throw new HttpError(400, valueErrors);
+        return send(res, 200, store.reassignTaxonomy(checked.value));
+      }
 
       if (maps && path.startsWith('/api/maps/')) {
         // A GET needs no preflight, so a cross-site page could spend the provider quota.

@@ -39,6 +39,7 @@ describe('PlacesPage', () => {
     list: vi.fn(() => of([place])),
     create: vi.fn(() => of(place)),
     update: vi.fn(() => of(place)),
+    reassignTaxonomy: vi.fn(() => of([] as Place[])),
   };
 
   beforeEach(() => {
@@ -62,8 +63,81 @@ describe('PlacesPage', () => {
     root.querySelector<HTMLButtonElement>('button')?.click();
     await fixture.whenStable();
 
-    expect(root.querySelector('form')).not.toBeNull();
+    expect(root.querySelector('#place-form')).not.toBeNull();
     expect(root.querySelector<HTMLInputElement>('#place-name')?.value).toBe('');
+  });
+
+  it('filters by category and tag, and groups the visible places by tag', async () => {
+    const places: Place[] = [
+      {
+        ...place,
+        id: 'place-outdoors',
+        name: 'Harbour',
+        category: 'Outdoors',
+        tags: ['water', 'family'],
+      },
+      { ...place, id: 'place-culture', name: 'Museum', category: 'Culture', tags: ['family'] },
+      { ...place, id: 'place-unassigned', name: 'Picnic', category: null, tags: [] },
+    ];
+    api.list.mockReturnValueOnce(of(places));
+    const fixture = TestBed.createComponent(PlacesPage);
+    await fixture.whenStable();
+    const root = fixture.nativeElement as HTMLElement;
+    const category = root.querySelector<HTMLSelectElement>('#filter-category')!;
+    category.value = 'Outdoors';
+    category.dispatchEvent(new Event('change', { bubbles: true }));
+    const tag = root.querySelector<HTMLSelectElement>('#filter-tag')!;
+    tag.value = 'family';
+    tag.dispatchEvent(new Event('change', { bubbles: true }));
+    fixture.detectChanges();
+
+    expect(root.querySelectorAll('.place-list li h2')).toHaveLength(1);
+    expect(root.querySelector('.place-list li h2')?.textContent).toContain('Harbour');
+
+    category.value = '';
+    category.dispatchEvent(new Event('change', { bubbles: true }));
+    tag.value = '';
+    tag.dispatchEvent(new Event('change', { bubbles: true }));
+    const groupBy = root.querySelector<HTMLSelectElement>('#group-places')!;
+    groupBy.value = 'tag';
+    groupBy.dispatchEvent(new Event('change', { bubbles: true }));
+    fixture.detectChanges();
+
+    expect(
+      [...root.querySelectorAll('.place-group h3')].map((heading) => heading.textContent?.trim()),
+    ).toEqual(['family', 'No tags', 'water']);
+  });
+
+  it('renames a category across its places and announces the result', async () => {
+    const places: Place[] = [
+      { ...place, id: 'place-one', name: 'Harbour', category: 'Outdoors' },
+      { ...place, id: 'place-two', name: 'Shore', category: 'Outdoors' },
+    ];
+    const renamed = places.map((item) => ({ ...item, category: 'Nature' }));
+    api.list.mockReturnValueOnce(of(places));
+    api.reassignTaxonomy.mockReturnValueOnce(of(renamed));
+    const fixture = TestBed.createComponent(PlacesPage);
+    await fixture.whenStable();
+    const root = fixture.nativeElement as HTMLElement;
+
+    const kind = root.querySelector<HTMLSelectElement>('#taxonomy-kind')!;
+    kind.value = 'category';
+    kind.dispatchEvent(new Event('change', { bubbles: true }));
+    const source = root.querySelector<HTMLSelectElement>('#taxonomy-source')!;
+    source.value = 'Outdoors';
+    source.dispatchEvent(new Event('change', { bubbles: true }));
+    const action = root.querySelector<HTMLSelectElement>('#taxonomy-action')!;
+    action.value = 'rename';
+    action.dispatchEvent(new Event('change', { bubbles: true }));
+    const target = root.querySelector<HTMLInputElement>('#taxonomy-target-name')!;
+    target.value = 'Nature';
+    target.dispatchEvent(new Event('input', { bubbles: true }));
+    root.querySelector<HTMLFormElement>('#taxonomy-form')!.requestSubmit();
+    await fixture.whenStable();
+
+    expect(api.reassignTaxonomy).toHaveBeenCalledWith('category', 'Outdoors', 'Nature');
+    expect(root.textContent).toContain('Updated 2 places.');
+    expect(root.textContent).toContain('Nature');
   });
 
   it('creates a place from its name and optional details', async () => {
@@ -77,7 +151,7 @@ describe('PlacesPage', () => {
     name.value = 'Lake Braies';
     name.dispatchEvent(new Event('input', { bubbles: true }));
     root
-      .querySelector<HTMLFormElement>('form')!
+      .querySelector<HTMLFormElement>('#place-form')!
       .dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
     await fixture.whenStable();
 
@@ -99,7 +173,7 @@ describe('PlacesPage', () => {
     root.querySelector<HTMLButtonElement>('button')?.click();
     await fixture.whenStable();
     root
-      .querySelector<HTMLFormElement>('form')!
+      .querySelector<HTMLFormElement>('#place-form')!
       .dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
     await fixture.whenStable();
 
@@ -125,7 +199,7 @@ describe('PlacesPage', () => {
     description.value = 'A mountain fortress';
     description.dispatchEvent(new Event('input', { bubbles: true }));
     root
-      .querySelector<HTMLFormElement>('form')!
+      .querySelector<HTMLFormElement>('#place-form')!
       .dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
     await fixture.whenStable();
 
@@ -161,7 +235,7 @@ describe('PlacesPage', () => {
     name.value = 'Rocca Calascio';
     name.dispatchEvent(new Event('input', { bubbles: true }));
     root
-      .querySelector<HTMLFormElement>('form')!
+      .querySelector<HTMLFormElement>('#place-form')!
       .dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
     await fixture.whenStable();
 
@@ -174,10 +248,10 @@ describe('PlacesPage', () => {
     const root = fixture.nativeElement as HTMLElement;
     root.querySelector<HTMLButtonElement>('button')?.click();
     await fixture.whenStable();
-    root.querySelector<HTMLButtonElement>('form button.secondary')?.click();
+    root.querySelector<HTMLButtonElement>('#place-form button.secondary')?.click();
     await fixture.whenStable();
 
-    expect(root.querySelector('form')).toBeNull();
+    expect(root.querySelector('#place-form')).toBeNull();
   });
 
   it('reports a failed place load', async () => {
@@ -201,7 +275,7 @@ describe('PlacesPage', () => {
     name.value = 'Lake Braies';
     name.dispatchEvent(new Event('input', { bubbles: true }));
     root
-      .querySelector<HTMLFormElement>('form')!
+      .querySelector<HTMLFormElement>('#place-form')!
       .dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
     await fixture.whenStable();
 
@@ -238,7 +312,7 @@ describe('PlacesPage', () => {
     name.value = 'Lake Braies';
     name.dispatchEvent(new Event('input', { bubbles: true }));
     root
-      .querySelector<HTMLFormElement>('form')!
+      .querySelector<HTMLFormElement>('#place-form')!
       .dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
     await fixture.whenStable();
 
@@ -259,7 +333,7 @@ describe('PlacesPage', () => {
     name.value = 'Map picked place';
     name.dispatchEvent(new Event('input', { bubbles: true }));
     root
-      .querySelector<HTMLFormElement>('form')!
+      .querySelector<HTMLFormElement>('#place-form')!
       .dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
     await fixture.whenStable();
 

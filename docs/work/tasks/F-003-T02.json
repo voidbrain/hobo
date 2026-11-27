@@ -11,7 +11,9 @@
   ],
   "dependsOn": [
     "F-003-T01",
-    "F-002-T02"
+    "F-002-T02",
+    "F-002-T05",
+    "F-002-T06"
   ],
   "resources": [
     "src/app/pages/trips/**",

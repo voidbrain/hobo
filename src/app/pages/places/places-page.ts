@@ -12,6 +12,14 @@ import {
   timer,
 } from 'rxjs';
 import type { Place, PlaceFields, PlacePatch } from '../../core/place';
+import {
+  filterPlaces,
+  groupPlaces,
+  taxonomyValues,
+  validateTaxonomyChange,
+  type PlaceGroupBy,
+  type TaxonomyKind,
+} from '../../core/place-taxonomy';
 import { PlacesApi } from '../../data/places-api';
 import type { GeocodeCandidate, MapPoint } from '../../maps/map-provider';
 import { MapsApi, MapsApiError } from '../../maps/maps-api';
@@ -46,6 +54,29 @@ export class PlacesPage {
   private readonly mapsApi = inject(MapsApi);
   private readonly locationQueries = new Subject<string>();
   protected readonly places = signal<Place[]>([]);
+  protected readonly categoryFilter = signal('');
+  protected readonly tagFilter = signal('');
+  protected readonly groupBy = signal<PlaceGroupBy>('none');
+  protected readonly visibleGroups = computed(() =>
+    groupPlaces(
+      filterPlaces(this.places(), this.categoryFilter(), this.tagFilter()),
+      this.groupBy(),
+    ),
+  );
+  protected readonly categories = computed(() => taxonomyValues(this.places(), 'category'));
+  protected readonly tags = computed(() => taxonomyValues(this.places(), 'tag'));
+  protected readonly taxonomyKind = signal<TaxonomyKind>('category');
+  protected readonly taxonomySource = signal('');
+  protected readonly taxonomyAction = signal<'rename' | 'merge' | 'delete'>('rename');
+  protected readonly taxonomyTarget = signal('');
+  protected readonly taxonomySources = computed(() =>
+    taxonomyValues(this.places(), this.taxonomyKind()),
+  );
+  protected readonly taxonomyTargets = computed(() =>
+    this.taxonomySources().filter((value) => value !== this.taxonomySource()),
+  );
+  protected readonly taxonomyStatus = signal('');
+  protected readonly taxonomyError = signal('');
   protected readonly formOpen = signal(false);
   protected readonly editingId = signal<string | null>(null);
   protected readonly error = signal('');
@@ -168,6 +199,97 @@ export class PlacesPage {
   protected clearLocation(): void {
     this.location.set(null);
     this.locationLabel.set('');
+  }
+
+  protected setCategoryFilter(event: Event): void {
+    this.categoryFilter.set((event.target as HTMLSelectElement).value);
+  }
+
+  protected setTagFilter(event: Event): void {
+    this.tagFilter.set((event.target as HTMLSelectElement).value);
+  }
+
+  protected setGroupBy(event: Event): void {
+    this.groupBy.set((event.target as HTMLSelectElement).value as PlaceGroupBy);
+  }
+
+  protected setTaxonomyKind(event: Event): void {
+    this.taxonomyKind.set((event.target as HTMLSelectElement).value as TaxonomyKind);
+    this.taxonomySource.set('');
+    this.taxonomyTarget.set('');
+    this.taxonomyStatus.set('');
+    this.taxonomyError.set('');
+  }
+
+  protected setTaxonomySource(event: Event): void {
+    this.taxonomySource.set((event.target as HTMLSelectElement).value);
+    this.taxonomyTarget.set('');
+  }
+
+  protected setTaxonomyAction(event: Event): void {
+    this.taxonomyAction.set(
+      (event.target as HTMLSelectElement).value as 'rename' | 'merge' | 'delete',
+    );
+    this.taxonomyTarget.set('');
+  }
+
+  protected setTaxonomyTarget(event: Event): void {
+    this.taxonomyTarget.set((event.target as HTMLInputElement | HTMLSelectElement).value);
+  }
+
+  protected async applyTaxonomy(event: SubmitEvent): Promise<void> {
+    event.preventDefault();
+    const kind = this.taxonomyKind();
+    const source = this.taxonomySource();
+    const action = this.taxonomyAction();
+    const target = this.taxonomyTarget().trim();
+    if (!source) {
+      this.taxonomyError.set(`Choose a ${kind} to update.`);
+      return;
+    }
+    if (
+      action === 'rename' &&
+      (!target || target === source || this.taxonomySources().includes(target))
+    ) {
+      this.taxonomyError.set(
+        this.taxonomySources().includes(target)
+          ? 'That value already exists. Choose Merge instead.'
+          : 'Enter a different name.',
+      );
+      return;
+    }
+    if (action === 'merge' && (!target || !this.taxonomyTargets().includes(target))) {
+      this.taxonomyError.set(`Choose an existing ${kind} to merge into.`);
+      return;
+    }
+    if (action === 'delete' && target && !this.taxonomyTargets().includes(target)) {
+      this.taxonomyError.set(`Choose an existing ${kind} or leave the destination empty.`);
+      return;
+    }
+    const checked = validateTaxonomyChange({ kind, source, target: target || null });
+    if (!checked.ok) {
+      this.taxonomyError.set(checked.errors.join('. '));
+      return;
+    }
+
+    this.taxonomyError.set('');
+    this.taxonomyStatus.set('');
+    try {
+      const changed = await firstValueFrom(
+        this.api.reassignTaxonomy(checked.value.kind, checked.value.source, checked.value.target),
+      );
+      const updates = new Map(changed.map((place) => [place.id, place]));
+      this.places.update((places) => places.map((place) => updates.get(place.id) ?? place));
+      if (kind === 'category' && this.categoryFilter() === source) {
+        this.categoryFilter.set(target);
+      }
+      if (kind === 'tag' && this.tagFilter() === source) this.tagFilter.set(target);
+      this.taxonomySource.set('');
+      this.taxonomyTarget.set('');
+      this.taxonomyStatus.set(`Updated ${changed.length} places.`);
+    } catch {
+      this.taxonomyError.set(`Could not update ${kind}s. Try again.`);
+    }
   }
 
   protected save(event: SubmitEvent): void {

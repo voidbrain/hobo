@@ -1,0 +1,49 @@
+{
+  "version": 1,
+  "id": "F-002-T06",
+  "parent": "F-002",
+  "title": "Delete a place",
+  "goal": "The owner can remove an unused place without losing trip stops",
+  "status": "planned",
+  "acceptance": [
+    "Delete a place from the saved-place list or edit form only after a keyboard-operable confirmation; announce success and errors, with focus returned to the places page",
+    "The existing DELETE /api/places/:id endpoint refuses with HTTP 409 when the place is used as a trip stop; the clear error names every affected trip and leaves the place and stops unchanged",
+    "Deleting a place that is not a trip stop removes it from the service and list; regression tests cover the API and the UI/service join"
+  ],
+  "dependsOn": [
+    "F-002-T05"
+  ],
+  "resources": [
+    "server/app.ts",
+    "server/store.ts",
+    "src/app/data/places-api.ts",
+    "src/app/pages/places/**",
+    "docs/work/records/F-002.md"
+  ],
+  "capabilities": [
+    "typescript",
+    "angular"
+  ],
+  "privacy": "Neutral, invented test data only; no owner places, home address, photos, routes or API keys in Git.",
+  "validation": [
+    "npm run check:fast",
+    "npm test",
+    "npm run build",
+    "npm run check:work"
+  ],
+  "escalation": [
+    "A material scope or effort increase goes to the owner"
+  ],
+  "effort": {
+    "size": "small",
+    "estimate": "1 h agent, 0.5 d",
+    "basis": "Added 2026-11-27 after the owner walkthrough. The DELETE endpoint and client already exist; the step adds confirmed, accessible UI and refusal when trip stops reference the place. Not a measurement.",
+    "reviewed": "2026-11-27",
+    "agentHours": 1,
+    "ownerHours": 0.0,
+    "baselineAgentHours": 1,
+    "estimateAgentHours": 1,
+    "days": 0.5,
+    "baselineDays": 0.5
+  }
+}

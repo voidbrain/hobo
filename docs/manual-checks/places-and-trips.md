@@ -34,3 +34,13 @@ Expected: a name alone creates a place; optional fields save and reload; the nam
 5. On the untouched world view, choose **Use map centre** with the keyboard. Confirm no location is selected and the message says to zoom in to a local area first. Zoom to level 10 or closer and choose the button again; confirm the marker moves and the selected coordinates change. Save and reload once more. A pointer click on another map point should also update the marker and coordinates.
 
 Expected: autocomplete suggestions come from OpenRouteService, the missing-key message identifies the setting to configure, a result or map click sets the place location, and the selected coordinates persist. The map-centre control refuses world-scale coordinates until zoom level 10.
+
+## F-002-T05 — Categories and tags
+
+1. Create or edit three test places: set two to category `Culture`, give one of those the tags `family, outdoors`, give the other `museum`, and leave the third without a category or tags.
+2. Set **Category** to `Culture` and **Tag** to `family`. Confirm only the matching place remains. Choose **All tags**, then set **Group by** to **Tag**. Confirm places appear under their tag names and the untagged place appears under **No tags**.
+3. Open **Manage categories and tags**. Choose **Category**, select `Culture`, choose **Rename**, enter `Arts`, and choose **Apply to places**. Confirm both places now show `Arts` and the success message announces the number updated.
+4. Choose **Tag**, select `museum`, choose **Merge**, and select `family`. Confirm the affected place now has `family` once. Choose **Delete and reassign**, select `outdoors`, and reassign it to `family`. Confirm that place now has `family` once.
+5. Reload the page and confirm category and tag changes remain. Repeat the controls with the keyboard and confirm the success message is announced.
+
+Expected: category and tag filters combine, groups include unassigned places, rename and merge update all uses, tag merges do not duplicate values, and clearing a value removes it from every affected place.
