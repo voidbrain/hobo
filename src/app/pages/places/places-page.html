@@ -1,7 +1,7 @@
 <section aria-labelledby="places-title">
   <header class="page-header">
     <div>
-      <h1 id="places-title">Places</h1>
+      <h1 #placesTitle id="places-title" tabindex="-1">Places</h1>
       <p class="muted">Collect places to use in your trips.</p>
     </div>
     @if (editingId() === null) {
@@ -11,6 +11,9 @@
 
   @if (error()) {
     <p role="alert">{{ error() }}</p>
+  }
+  @if (placeStatus()) {
+    <p role="status" aria-live="polite">{{ placeStatus() }}</p>
   }
 
   @if (formOpen()) {
@@ -107,6 +110,11 @@
       </section>
 
       <div class="form-actions">
+        @if (editingPlace(); as place) {
+          <button id="delete-place" type="button" class="secondary" (click)="deletePlace(place)">
+            Delete place
+          </button>
+        }
         <button type="submit" [disabled]="placeForm().invalid()">Save place</button>
         <button type="button" class="secondary" (click)="cancel()">Cancel</button>
       </div>
@@ -246,9 +254,14 @@
                     </p>
                   }
                 </div>
-                <button type="button" class="secondary" (click)="edit(place)">
-                  Edit {{ place.name }}
-                </button>
+                <div class="place-actions">
+                  <button type="button" class="secondary edit-place" (click)="edit(place)">
+                    Edit {{ place.name }}
+                  </button>
+                  <button type="button" class="secondary delete-place" (click)="deletePlace(place)">
+                    Delete {{ place.name }}
+                  </button>
+                </div>
               </li>
             }
           </ul>

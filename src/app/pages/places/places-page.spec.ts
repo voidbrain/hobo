@@ -299,7 +299,9 @@ describe('PlacesPage', () => {
           new HttpErrorResponse({
             status: 409,
             error: {
-              errors: ['Cannot delete Rocca Calascio because it is used in trips: Ridge Weekend, Bay Trail.'],
+              errors: [
+                'Cannot delete Rocca Calascio because it is used in trips: Ridge Weekend, Bay Trail.',
+              ],
             },
           }),
       ),
@@ -312,9 +314,7 @@ describe('PlacesPage', () => {
     root.querySelector<HTMLButtonElement>('.delete-place')?.click();
     await fixture.whenStable();
 
-    expect(root.querySelector('[role="alert"]')?.textContent).toContain(
-      'Ridge Weekend, Bay Trail',
-    );
+    expect(root.querySelector('[role="alert"]')?.textContent).toContain('Ridge Weekend, Bay Trail');
     expect(root.querySelector('.place-list')).not.toBeNull();
   });
 
@@ -337,6 +337,7 @@ describe('PlacesPage', () => {
       { errors: ['Cannot delete Rocca Calascio because it is used in trips: Ridge Weekend.'] },
       { status: 409, statusText: 'Conflict' },
     );
+    await Promise.resolve();
     await fixture.whenStable();
 
     expect(root.querySelector('[role="alert"]')?.textContent).toContain('Ridge Weekend');

@@ -4,10 +4,10 @@
   "parent": "F-002",
   "title": "Delete a place",
   "goal": "The owner can remove an unused place without losing trip stops",
-  "status": "planned",
+  "status": "implemented",
   "acceptance": [
     "Delete a place from the saved-place list or edit form only after a keyboard-operable confirmation; announce success and errors, with focus returned to the places page",
-    "The existing DELETE /api/places/:id endpoint refuses with HTTP 409 when the place is used as a trip stop; the clear error names every affected trip and leaves the place and stops unchanged",
+    "The existing DELETE /api/places/:id endpoint refuses with HTTP 409 when a trip endpoint or stop references the place; the clear error names every affected trip and leaves the place and trip references unchanged",
     "Deleting a place that is not a trip stop removes it from the service and list; regression tests cover the API and the UI/service join"
   ],
   "dependsOn": [
@@ -16,8 +16,12 @@
   "resources": [
     "server/app.ts",
     "server/store.ts",
+    "server/trips.test.ts",
     "src/app/data/places-api.ts",
     "src/app/pages/places/**",
+    "docs/DESIGN.md",
+    "docs/manual-checks/places-and-trips.md",
+    "README.md",
     "docs/work/records/F-002.md"
   ],
   "capabilities": [
@@ -36,10 +40,10 @@
   ],
   "effort": {
     "size": "small",
-    "estimate": "1 h agent, 0.5 d",
-    "basis": "Added 2026-11-27 after the owner walkthrough. The DELETE endpoint and client already exist; the step adds confirmed, accessible UI and refusal when trip stops reference the place. Not a measurement.",
+    "estimate": "1 h agent whole step; 0.25 h remains for PR verification",
+    "basis": "Added 2026-11-27 after the owner walkthrough. Implementation and local checks passed; 0.25 h remains for PR review and CI. No actual: job timing is unavailable.",
     "reviewed": "2026-11-27",
-    "agentHours": 1,
+    "agentHours": 0.25,
     "ownerHours": 0.0,
     "baselineAgentHours": 1,
     "estimateAgentHours": 1,

@@ -27,3 +27,7 @@ PRs #25 and #26 merged on green CI. #26 delivered the required-name error access
 ## 2026-11-27 — main `93370f3`
 
 PR #27 merged on green CI 45980660890; it explains missing OpenRouteService configuration and guards map-centre picks below zoom 10. The owner confirmed F-002-T02 passed; the F-002-T04 location walkthrough remains pending.
+
+## 2026-11-27 — main `d52f88e`
+
+PR #28 merged on green CI 45992151509; F-002-T05 implemented category/tag filtering, grouping and taxonomy management. F-002-T02 owner walkthrough remains passed; the F-002-T04 location walkthrough remains pending.
