@@ -3,7 +3,7 @@
 Current work ledger, reviewed 27 November 2026 against main `cb4d7c0`. Generated from [record sources](work/records) and [steps](work/tasks) by `npm run work:build`: edit those, not this file. [Rules](BACKLOG-RULES.md) · [Archive](archive/README.md) · [Reading the records](#how-to-use-this-file).
 
 <!-- totals:start -->
-**Remaining effort:** 55 h agent + 2.5 h owner across 38 open steps of 16 features. Generated from the task files.
+**Remaining effort:** 52 h agent + 2.5 h owner across 38 open steps of 16 features. Generated from the task files.
 <!-- totals:end -->
 
 ## Work items
@@ -16,9 +16,9 @@ Bugs (B-) and features (F-) in one list, in work-queue order. Steps: `effort` = 
 
 | Status | Priority | Effort | Remaining | Depends on | Unlocks | Agent | Procedures | Decisions |
 |---|---|---|---|---|---|:---:|:---:|:---:|
-| 🔴 Open | 🔶 P2 | 🔴 Large | 6.5 h | — | [F-003-T02](#f-003-t02) | 🤖 | — | — |
+| 🔴 Open | 🔶 P2 | 🔴 Large | 4.25 h | — | [F-003-T02](#f-003-t02) | 🤖 | — | — |
 
-💻 **→** Next: F-002-T02 — Place list and form (Planned).
+💻 **→** Next: F-002-T02 — Place list and form (Implemented; verification pending).
 
 | | |
 |---|---|
@@ -30,10 +30,10 @@ Bugs (B-) and features (F-) in one list, in work-queue order. Steps: `effort` = 
 
 | Effort | Step | Estimate | Actual | Remaining | Status | Depends on | Unlocks | PRs |
 |---|---|---|---|---|---|---|---|---|
-| 🟡 Medium | <a id="f-002-t02"></a>F-002-T02 — Place list and form | 2.5 h | 0 h | 2.5 h | Planned | — | [F-002-T04](#f-002-t04), [F-002-T05](#f-002-t05), [F-003-T02](#f-003-t02) | — |
+| 🟢 Small | <a id="f-002-t02"></a>F-002-T02 — Place list and form | 2.5 h | 0 h | 0.25 h | Implemented; verification pending | — | [F-002-T04](#f-002-t04), [F-002-T05](#f-002-t05), [F-003-T02](#f-003-t02) | — |
 | 🟡 Medium | <a id="f-002-t04"></a>F-002-T04 — Place location | 2 h | 0 h | 2 h | Planned | [F-002-T02](#f-002-t02) | — | — |
 | 🟡 Medium | <a id="f-002-t05"></a>F-002-T05 — Categories and tags | 2 h | 0 h | 2 h | Planned | [F-002-T02](#f-002-t02) | — | — |
-| 🔴 Large | **Total** | 11.5 h | 0 h (0 of 5 steps recorded) | 6.5 h | 2 of 5 completed | | | |
+| 🔴 Large | **Total** | 11.5 h | 0 h (0 of 5 steps recorded) | 4.25 h | 2 of 5 completed | | | |
 
 <details><summary>Done steps (2)</summary>
 
@@ -53,7 +53,7 @@ Bugs (B-) and features (F-) in one list, in work-queue order. Steps: `effort` = 
 |---|---|
 | PR / evidence | Steps: F-002-T01: [PR #5](https://github.com/voidbrain/hobo/pull/5) local store service and place model; step review: 2026-11-25 design-reviewer (fresh context, Opus): no blockers; fixed a 500 on a malformed id escape (test first) and added a rollback to a failed migration. Project-only harness edits: package.json (type module, server scripts; npm test also runs the server tests) and a marked CI step. · F-002-T03: [PR #7](https://github.com/voidbrain/hobo/pull/7) content-sniffed place image upload, size limit, EXIF/GPS stripping and thumbnail component; step review: 2026-11-26 Claude (Opus, fresh worktree) reviewed PR #7 written by Gemini. Fixed (test first): an upload announcing a Content-Length over 5 MB is now refused with 413 before its body is read. Added tests: a real decodable JPEG with a well-formed GPS EXIF IFD (stripped, scan data kept; also checked with macOS ImageIO: GPS present before, absent after, image still decodes), deleting a place unlinks its files, and image names that would leave the folder answer 404.. [#1](https://github.com/voidbrain/hobo/pull/1); [#2](https://github.com/voidbrain/hobo/pull/2) (review fixes); [#5](https://github.com/voidbrain/hobo/pull/5) (F-002-T01, CI 45713057220); [#7](https://github.com/voidbrain/hobo/pull/7) (F-002-T03, CI 45721078554); Test: `server/images.test.ts`, `src/app/pages/places/place-images.spec.ts`, `src/app/data/places-api.spec.ts` (`4dbecd4`); Review: 2026-11-26 Claude (Opus), fixed an announced oversized upload being read before its 413; added real GPS EXIF, place deletion and path tests |
 | Opened | 2026-11-25 |
-| Verification | Unit/integration · 2026-11-27 · F-002-T01 (#5 CI 45713057220) and F-002-T03 (#7 CI 45721078554) green; UI steps pending |
+| Verification | Unit/integration · 2026-11-27 · F-002-T01 (#5 CI 45713057220) and F-002-T03 (#7 CI 45721078554) green; F-002-T02 local tests pass, PR CI pending; Browser/accessibility · Pending · owner walkthrough in manual check |
 | Reviewed | 2026-11-27 |
 
 </details>
@@ -321,6 +321,55 @@ Bugs (B-) and features (F-) in one list, in work-queue order. Steps: `effort` = 
 </details>
 
 ---
+### <a id="f-016"></a>[✨ F-016](#top)
+
+**Turn on the dormant procedure settings and prove the maintenance workflow runs**
+
+| Status | Priority | Effort | Remaining | Depends on | Unlocks | Agent | Procedures | Decisions |
+|---|---|---|---|---|---|:---:|:---:|:---:|
+| 🔴 Open | 🔹 P3 | 🟢 Small | 0.5 h | — | — | 🤖 | — | — |
+
+💻 **→** Next: F-016-T03 — First token and skills reviews (Implemented; verification pending).
+
+| | |
+|---|---|
+| **Issue** | The 2026-11-26 dormant-checks sweep (coordinator `docs/audits/2026-11-26-dormant-checks.md`, rows S1, S2, S3, S5, W1) found no periodic reviews (`reviews` unset), coverage regressions that only warn (`coverage.enforce` unset), work-usage measurement off, no `behaviour.runner`, and a daily maintenance workflow that had never run (the repository was created on 2026-11-25). |
+| **Reproduce** | `.harness.json` on `main` `fc67aa3`: no `reviews`, no `coverage.enforce`, `workUsage.enabled: false`, `behaviour` `{times: 3}`; `gh run list --workflow maintenance.yml`: no runs. |
+| **Check** | `.harness.json` sets `reviews` (token, architecture, skills at 30 days), `coverage.enforce: true` (switched on by F-016-T05 once a current baseline is on `main`: under enforce the check reads the baseline from `origin/main`, so the PR that refreshes it cannot enforce it), `workUsage.enabled: true` and `behaviour.runner`; the first architecture review with its outside-landscape comparison is `docs/reviews/architecture/2026-11-26.md`; CI passes with enforcement on (or a real drop is fixed or recorded); a manual maintenance run passed (run 45798434567, 2026-11-26) and a scheduled one runs on 2026-11-27 (F-016-T04). First token and skills reviews are in `docs/reviews/token/2026-11-27.md` and `docs/reviews/skills/2026-11-27.md` (F-016-T03). |
+
+**Feature steps**
+
+| Effort | Step | Estimate | Actual | Remaining | Status | PRs |
+|---|---|---|---|---|---|---|
+| 🟢 Small | <a id="f-016-t03"></a>F-016-T03 — First token and skills reviews | 1 h | 0 h | 0.25 h | Implemented; verification pending | — |
+| 🟢 Small | <a id="f-016-t04"></a>F-016-T04 — Confirm the scheduled maintenance run | 0.25 h | 0 h | 0.25 h | Planned | — |
+| 🟢 Small | **Total** | 2.25 h | 0 h (0 of 5 steps recorded) | 0.5 h | 3 of 5 completed | |
+
+<details><summary>Done steps (3)</summary>
+
+| Effort | Step | Estimate | Actual | Status | PRs |
+|---|---|---|---|---|---|
+| — | <a id="f-016-t01"></a>F-016-T01 — Reviews, coverage enforcement, work usage and behaviour runner settings | 0.25 h | 0 h | Completed | [PR #14](https://github.com/voidbrain/hobo/pull/14) settings on |
+| — | <a id="f-016-t02"></a>F-016-T02 — First architecture review with outside-landscape comparison | 0.5 h | 0 h | Completed | [PR #14](https://github.com/voidbrain/hobo/pull/14) first architecture review |
+| — | <a id="f-016-t05"></a>F-016-T05 — Turn coverage.enforce on | 0.25 h | 0 h | Completed | [PR #15](https://github.com/voidbrain/hobo/pull/15) coverage.enforce on |
+
+</details>
+
+<details>
+<summary>Next action, estimates and PR history</summary>
+
+[Full notes & evidence](work/records/F-016.md)
+
+| Field | Value |
+|---|---|
+| PR / evidence | Steps: F-016-T01: [PR #14](https://github.com/voidbrain/hobo/pull/14) settings on · F-016-T02: [PR #14](https://github.com/voidbrain/hobo/pull/14) first architecture review · F-016-T05: [PR #15](https://github.com/voidbrain/hobo/pull/15) coverage.enforce on. [#14](https://github.com/voidbrain/hobo/pull/14) (F-016-T01, F-016-T02, CI 45801540013); [#15](https://github.com/voidbrain/hobo/pull/15) (F-016-T05, CI 45802414492) |
+| Opened | 2026-11-26 |
+| Verification | Unit/integration · 2026-11-27 · F-016-T01 and F-016-T02 (#14 CI 45801540013) and F-016-T05 (#15 CI 45802414492) green; F-016-T03 local review files complete, PR CI pending; F-016-T04 pending |
+| Reviewed | 2026-11-27 |
+
+</details>
+
+---
 ### <a id="f-005"></a>[✨ F-005](#top)
 
 **What-if: compare another order or set of stops**
@@ -520,55 +569,6 @@ Bugs (B-) and features (F-) in one list, in work-queue order. Steps: `effort` = 
 | Opened | 2026-11-26 |
 | Verification | Pending |
 | Reviewed | 2026-11-26 |
-
-</details>
-
----
-### <a id="f-016"></a>[✨ F-016](#top)
-
-**Turn on the dormant procedure settings and prove the maintenance workflow runs**
-
-| Status | Priority | Effort | Remaining | Depends on | Unlocks | Agent | Procedures | Decisions |
-|---|---|---|---|---|---|:---:|:---:|:---:|
-| 🔴 Open | 🔹 P3 | 🟡 Medium | 1.25 h | — | — | 🤖 | — | — |
-
-💻 **→** Next: F-016-T03 — First token and skills reviews (Planned).
-
-| | |
-|---|---|
-| **Issue** | The 2026-11-26 dormant-checks sweep (coordinator `docs/audits/2026-11-26-dormant-checks.md`, rows S1, S2, S3, S5, W1) found no periodic reviews (`reviews` unset), coverage regressions that only warn (`coverage.enforce` unset), work-usage measurement off, no `behaviour.runner`, and a daily maintenance workflow that had never run (the repository was created on 2026-11-25). |
-| **Reproduce** | `.harness.json` on `main` `fc67aa3`: no `reviews`, no `coverage.enforce`, `workUsage.enabled: false`, `behaviour` `{times: 3}`; `gh run list --workflow maintenance.yml`: no runs. |
-| **Check** | `.harness.json` sets `reviews` (token, architecture, skills at 30 days), `coverage.enforce: true` (switched on by F-016-T05 once a current baseline is on `main`: under enforce the check reads the baseline from `origin/main`, so the PR that refreshes it cannot enforce it), `workUsage.enabled: true` and `behaviour.runner`; the first architecture review with its outside-landscape comparison is `docs/reviews/architecture/2026-11-26.md`; CI passes with enforcement on (or a real drop is fixed or recorded); a manual maintenance run passed (run 45798434567, 2026-11-26) and a scheduled one runs on 2026-11-27 (F-016-T04). First token and skills reviews: F-016-T03. |
-
-**Feature steps**
-
-| Effort | Step | Estimate | Actual | Remaining | Status | PRs |
-|---|---|---|---|---|---|---|
-| 🟢 Small | <a id="f-016-t03"></a>F-016-T03 — First token and skills reviews | 1 h | 0 h | 1 h | Planned | — |
-| 🟢 Small | <a id="f-016-t04"></a>F-016-T04 — Confirm the scheduled maintenance run | 0.25 h | 0 h | 0.25 h | Planned | — |
-| 🟡 Medium | **Total** | 2.25 h | 0 h (0 of 5 steps recorded) | 1.25 h | 3 of 5 completed | |
-
-<details><summary>Done steps (3)</summary>
-
-| Effort | Step | Estimate | Actual | Status | PRs |
-|---|---|---|---|---|---|
-| — | <a id="f-016-t01"></a>F-016-T01 — Reviews, coverage enforcement, work usage and behaviour runner settings | 0.25 h | 0 h | Completed | [PR #14](https://github.com/voidbrain/hobo/pull/14) settings on |
-| — | <a id="f-016-t02"></a>F-016-T02 — First architecture review with outside-landscape comparison | 0.5 h | 0 h | Completed | [PR #14](https://github.com/voidbrain/hobo/pull/14) first architecture review |
-| — | <a id="f-016-t05"></a>F-016-T05 — Turn coverage.enforce on | 0.25 h | 0 h | Completed | [PR #15](https://github.com/voidbrain/hobo/pull/15) coverage.enforce on |
-
-</details>
-
-<details>
-<summary>Next action, estimates and PR history</summary>
-
-[Full notes & evidence](work/records/F-016.md)
-
-| Field | Value |
-|---|---|
-| PR / evidence | Steps: F-016-T01: [PR #14](https://github.com/voidbrain/hobo/pull/14) settings on · F-016-T02: [PR #14](https://github.com/voidbrain/hobo/pull/14) first architecture review · F-016-T05: [PR #15](https://github.com/voidbrain/hobo/pull/15) coverage.enforce on. [#14](https://github.com/voidbrain/hobo/pull/14) (F-016-T01, F-016-T02, CI 45801540013); [#15](https://github.com/voidbrain/hobo/pull/15) (F-016-T05, CI 45802414492) |
-| Opened | 2026-11-26 |
-| Verification | Unit/integration · 2026-11-27 · F-016-T01 and F-016-T02 (#14 CI 45801540013) and F-016-T05 (#15 CI 45802414492) green; F-016-T03 and F-016-T04 pending |
-| Reviewed | 2026-11-27 |
 
 </details>
 

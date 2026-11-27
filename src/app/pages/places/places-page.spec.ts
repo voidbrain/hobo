@@ -56,9 +56,9 @@ describe('PlacesPage', () => {
     const name = root.querySelector<HTMLInputElement>('#place-name')!;
     name.value = 'Lake Braies';
     name.dispatchEvent(new Event('input', { bubbles: true }));
-    root.querySelector<HTMLFormElement>('form')!.dispatchEvent(
-      new Event('submit', { bubbles: true, cancelable: true }),
-    );
+    root
+      .querySelector<HTMLFormElement>('form')!
+      .dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
     await fixture.whenStable();
 
     expect(api.create).toHaveBeenCalledWith({
@@ -69,5 +69,20 @@ describe('PlacesPage', () => {
       notes: '',
       timeSpent: null,
     });
+  });
+
+  it('requires a name before saving', async () => {
+    const fixture = TestBed.createComponent(PlacesPage);
+    await fixture.whenStable();
+    const root = fixture.nativeElement as HTMLElement;
+    root.querySelector<HTMLButtonElement>('button')?.click();
+    await fixture.whenStable();
+    root
+      .querySelector<HTMLFormElement>('form')!
+      .dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
+    await fixture.whenStable();
+
+    expect(api.create).not.toHaveBeenCalled();
+    expect(root.textContent).toContain('A name is required.');
   });
 });

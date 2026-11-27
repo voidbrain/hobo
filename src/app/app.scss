@@ -11,6 +11,14 @@
   background: var(--color-surface);
 }
 
+.bar nav {
+  margin-left: auto;
+}
+
+.bar nav a {
+  color: var(--color-accent);
+}
+
 .brand {
   color: var(--color-accent);
   font-size: var(--font-size-title);
