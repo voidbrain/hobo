@@ -41,7 +41,7 @@ The store adds `id` (a UUID), `createdAt` and `updatedAt` (ISO timestamps). Vali
 | `GET /api/places/:id` | | 200 or 404 |
 | `PATCH /api/places/:id` | the fields to change; `null` clears category, location and time spent | 200, 400 or 404 |
 | `POST /api/places/taxonomy` | `{ kind: "category" | "tag", source, target }`; `target: null` clears the category or removes the tag; all matching places change in one transaction, merged tags are de-duplicated | 200 with changed places; 400 for invalid fields or a no-op destination |
-| `DELETE /api/places/:id` | | 204 or 404 (also unlinks unreferenced place images) |
+| `DELETE /api/places/:id` | | 204 or 404; 409 with every trip name when a trip references the place (also unlinks unreferenced place images) |
 | `POST /api/places/:id/images` | raw JPEG, PNG or WebP bytes (`<= 5 MB`) | 201 with updated place (content-sniffed by magic bytes & container structure, EXIF/GPS/XMP/comments stripped, saved under `<dataDir>/images/<uuid>.<ext>`); 400, 404, 413 (refused from `Content-Length` before the body is read) or 415 |
 | `GET /api/places/:id/images/:name` | | 200 with `nosniff` and `default-src 'none'` CSP, or 404 |
 | `DELETE /api/places/:id/images/:name` | | 204 or 404 |

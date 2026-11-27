@@ -4,7 +4,7 @@
   "parent": "F-002",
   "title": "Categories and tags",
   "goal": "Places added at random can be organised later",
-  "status": "implemented",
+  "status": "verified",
   "acceptance": [
     "Filter by category and tag together, and group places by category or tag, including places with no value",
     "Rename a category or tag across every affected place, merge into an existing value, or delete and reassign to another value or clear it; the server applies the change in one transaction and merged tags are de-duplicated"
@@ -38,14 +38,14 @@
   ],
   "effort": {
     "size": "medium",
-    "estimate": "2 h agent whole step; 0.25 h remains for PR verification",
-    "basis": "Planned 2026-11-25 in the owner-approved upfront plan; implementation and local checks passed 2026-11-27. 0.25 h remains for PR review and CI. No actual: job timing is unavailable.",
+    "estimate": "2 h agent whole step",
+    "basis": "Planned 2026-11-25 in the owner-approved upfront plan; implementation, local checks and CI #28 passed 2026-11-27. No actual: job timing is unavailable.",
     "reviewed": "2026-11-27",
-    "agentHours": 0.25,
+    "agentHours": 0,
     "ownerHours": 0.0,
     "baselineAgentHours": 2,
     "estimateAgentHours": 2,
-    "days": 1,
+    "days": 0,
     "baselineDays": 1
   }
 }

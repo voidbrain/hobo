@@ -289,7 +289,16 @@ export function placesHandler(store: PlaceStore, imagesDir?: string, maps?: MapP
         }
         if (req.method === 'DELETE') {
           const existing = store.get(id);
-          if (!existing || !store.remove(id)) throw new HttpError(404, ['no such place']);
+          if (!existing) throw new HttpError(404, ['no such place']);
+          const trips = store.listTrips().filter((trip) => tripPlaceIds(trip).includes(id));
+          if (trips.length) {
+            const names = trips.map((trip) => trip.name).join(', ');
+            const noun = trips.length === 1 ? 'trip' : 'trips';
+            throw new HttpError(409, [
+              `Cannot delete ${existing.name} because it is used in ${noun}: ${names}.`,
+            ]);
+          }
+          if (!store.remove(id)) throw new HttpError(404, ['no such place']);
           unlinkIfUnreferenced(store, imagesDir, existing.images);
           return send(res, 204);
         }

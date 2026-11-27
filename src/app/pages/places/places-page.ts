@@ -1,3 +1,4 @@
+import { HttpErrorResponse } from '@angular/common/http';
 import { Component, computed, ElementRef, inject, signal, viewChild } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormField, form, required, submit } from '@angular/forms/signals';
@@ -79,7 +80,13 @@ export class PlacesPage {
   protected readonly taxonomyError = signal('');
   protected readonly formOpen = signal(false);
   protected readonly editingId = signal<string | null>(null);
+  protected readonly editingPlace = computed(() => {
+    const id = this.editingId();
+    return id ? (this.places().find((place) => place.id === id) ?? null) : null;
+  });
+  protected readonly placesTitle = viewChild<ElementRef<HTMLElement>>('placesTitle');
   protected readonly error = signal('');
+  protected readonly placeStatus = signal('');
   protected readonly model = signal<PlaceFormValue>(emptyForm());
   protected readonly placeForm = form(this.model, (path) => required(path.name));
   protected readonly location = signal<MapPoint | null>(null);
@@ -131,6 +138,7 @@ export class PlacesPage {
 
   protected startNew(): void {
     this.error.set('');
+    this.placeStatus.set('');
     this.formOpen.set(true);
     this.editingId.set(null);
     this.model.set(emptyForm());
@@ -144,6 +152,7 @@ export class PlacesPage {
 
   protected edit(place: Place): void {
     this.error.set('');
+    this.placeStatus.set('');
     this.formOpen.set(true);
     this.editingId.set(place.id);
     this.location.set(place.location);
@@ -167,6 +176,34 @@ export class PlacesPage {
     this.formOpen.set(false);
     this.editingId.set(null);
     this.locationQueries.next('');
+  }
+
+  protected async deletePlace(place: Place): Promise<void> {
+    if (!globalThis.confirm(`Delete "${place.name}"? This cannot be undone.`)) return;
+    this.error.set('');
+    this.placeStatus.set('');
+    try {
+      await firstValueFrom(this.api.remove(place.id));
+      this.places.update((places) => places.filter((saved) => saved.id !== place.id));
+      if (this.editingId() === place.id) {
+        this.editingId.set(null);
+        this.formOpen.set(false);
+      }
+      this.placeStatus.set(`${place.name} was deleted.`);
+      this.placesTitle()?.nativeElement.focus();
+    } catch (error) {
+      if (error instanceof HttpErrorResponse) {
+        const response = error.error as { errors?: unknown } | null;
+        if (
+          Array.isArray(response?.errors) &&
+          response.errors.every((message: unknown) => typeof message === 'string')
+        ) {
+          this.error.set((response.errors as string[]).join(' '));
+          return;
+        }
+      }
+      this.error.set(`Could not delete ${place.name}. Try again.`);
+    }
   }
 
   protected searchLocation(event: Event): void {

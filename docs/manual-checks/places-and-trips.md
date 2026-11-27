@@ -44,3 +44,20 @@ Expected: autocomplete suggestions come from OpenRouteService, the missing-key m
 5. Reload the page and confirm category and tag changes remain. Repeat the controls with the keyboard and confirm the success message is announced.
 
 Expected: category and tag filters combine, groups include unassigned places, rename and merge update all uses, tag merges do not duplicate values, and clearing a value removes it from every affected place.
+
+## F-002-T06 — Delete a place
+
+1. Add two places named `Unused deletion check` and `Used deletion check`.
+2. With the keyboard, choose **Delete Unused deletion check** and accept the browser confirmation. Confirm the place disappears, `Unused deletion check was deleted.` is announced, and focus returns to the **Places** heading. Reload and confirm it stays deleted.
+3. Copy the ID of `Used deletion check` from `http://127.0.0.1:4310/api/places`. Create a one-day trip reference with the local API (replace `PLACE_ID` with that ID):
+
+   ```sh
+   curl -i -X POST http://127.0.0.1:4310/api/trips \
+     -H 'content-type: application/json' \
+     -d '{"name":"Place deletion check","startDate":"2026-11-27","endDate":"2026-11-27","days":[{"date":"2026-11-27","stops":["PLACE_ID"]}]}'
+   ```
+
+4. Open **Edit Used deletion check**, choose **Delete place**, and accept the confirmation. Confirm the announced error names `Place deletion check`; the form stays open, the place remains in the list, and the trip still contains its stop. Cancel the edit.
+5. Delete the test trip through `DELETE /api/trips/<trip-id>`, then delete `Used deletion check` from the list.
+
+Expected: confirmation is keyboard-operable; successful deletion is announced and returns focus to the page; deletion is refused for a referenced place with the trip name, preserving the place and trip stop.
